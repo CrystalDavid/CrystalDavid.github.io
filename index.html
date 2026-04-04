@@ -34,7 +34,7 @@
 <body>
     <div class="container">
         <h1>电信客户流失预测：基于多维生存分析的深度探索与模型评估</h1>
-        <p style="text-align: center; color: #7f8c8d; font-size: 0.95em;">作者：[你的名字] | 课程项目 1 - Q2 Task 2</p>
+        <p style="text-align: center; color: #7f8c8d; font-size: 0.95em;">作者：David 大数据分析软件与应用 Project 1 - Q2 Task 2</p>
 
         <h2>1. 引言与研究背景</h2>
         <p>在竞争激烈的电信行业中，获客成本往往远高于留存成本。传统的客户流失预测（如逻辑回归、随机森林）通常只能回答“客户是否会流失”，却无法回答一个更为关键的业务问题：<strong>“客户在流失前还能存留多久？”</strong></p>
@@ -58,7 +58,7 @@
         <h2>4. 全局流失趋势：Kaplan-Meier 非参数估计</h2>
         <p>在深入多变量建模之前，我们首先采用非参数的 Kaplan-Meier (KM) 估计法，绘制了目标人群的整体生存概率曲线，以建立对数据的直观基线认知。</p>
         
-        <div class="placeholder">[请在此处插入图 1：Kaplan-Meier Survival Curve]</div>
+        <img src="fig1.png" alt="Kaplan-Meier Survival Curve" style="max-width: 100%; display: block; margin: 20px auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
 
         <h3>【洞察分析】</h3>
         <ul>
@@ -70,9 +70,9 @@
         <p>KM 曲线只能展示整体趋势，为了评估多个分类特征对流失率的独立且综合的影响，我们拟合了半参数的 Cox 比例风险模型。该模型的 Concordance 指数为 0.64，表明模型具备中等水平的区分与预测能力。</p>
         <p>通过对模型参数的显著性检验（所有列出的特征 p-value &lt; 0.005），我们提取出以下关键的风险与保护因素：</p>
 
-        <div class="placeholder">[请在此处插入图 2：Cox 模型 Summary 表格]</div>
-        <div class="placeholder">[请在此处插入图 3：Cox Model Hazard Ratios 森林图]</div>
-
+        <img src="fig2.png" alt="Cox Model Summary" style="max-width: 100%; display: block; margin: 20px auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <img src="fig3.png" alt="Cox Model Hazard Ratios" style="max-width: 100%; display: block; margin: 20px auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        
         <h3>【特征影响量化】</h3>
         <ul>
             <li><strong>核心保护因素：</strong>
@@ -92,7 +92,7 @@
         <h2>6. 生存时间预测与模型反思：AFT 模型的局限性</h2>
         <p>不同于 Cox 模型评估相对风险概率，加速失效时间模型是一种全参数模型，它假设特征会按比例直接加速或延缓客户的预期存活时间。本项目尝试使用 Log-Logistic 分布进行拟合。</p>
 
-        <div class="placeholder">[请在此处插入图 4：AFT 模型 Summary]</div>
+        <img src="fig4.png" alt="AFT Model Summary" style="max-width: 100%; display: block; margin: 20px auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
 
         <h3>【模型推演与异常剖析】</h3>
         <p>从特征方向上看，AFT 模型印证了 Cox 模型的结论：在线备份 (<span class="code-block">exp(coef) = 3.08</span>) 和技术支持 (<span class="code-block">exp(coef) = 2.55</span>) 能够将客户的预期存活时间大幅延长 2.5 至 3 倍。</p>
