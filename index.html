@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电信客户流失预测分析报告 - CrystalDavid的博客</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f7f6;
+        }
+        .container {
+            background-color: #fff;
+            padding: 40px 50px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        h1 { color: #2c3e50; text-align: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 5px;}
+        h2 { color: #34495e; margin-top: 35px; border-left: 4px solid #3498db; padding-left: 10px;}
+        h3 { color: #2980b9; margin-top: 25px;}
+        ul, ol { background-color: #f8fbff; padding: 20px 20px 20px 45px; border-radius: 8px; border: 1px solid #e1ecf4;}
+        li { margin-bottom: 12px; }
+        .highlight { font-weight: bold; color: #e74c3c; }
+        .code-block { background-color: #fdf6e3; padding: 2px 6px; border-radius: 4px; font-family: Consolas, monospace; color: #b58900;}
+        .placeholder { display: block; width: 100%; height: 250px; background-color: #f1f2f6; color: #7f8fa6; text-align: center; line-height: 250px; border: 2px dashed #dcdde1; margin: 25px 0; font-weight: bold; border-radius: 8px;}
+        p { text-align: justify; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>电信客户流失预测：基于多维生存分析的深度探索与模型评估</h1>
+        <p style="text-align: center; color: #7f8c8d; font-size: 0.95em;">作者：[你的名字] | 课程项目 1 - Q2 Task 2</p>
+
+        <h2>1. 引言与研究背景</h2>
+        <p>在竞争激烈的电信行业中，获客成本往往远高于留存成本。传统的客户流失预测（如逻辑回归、随机森林）通常只能回答“客户是否会流失”，却无法回答一个更为关键的业务问题：<strong>“客户在流失前还能存留多久？”</strong></p>
+        <p>为了精准把握客户生命周期，本项目引入了在医学和可靠性工程中广泛使用的生存分析方法。通过分析 IBM 提供的开源电信客户流失数据集，本文旨在量化不同业务特征对客户在网时长的动态影响，为精准营销和客户挽留策略提供数据支撑。</p>
+
+        <h2>2. 数据准备与实验设计</h2>
+        <p>生存分析的核心在于处理<strong>截尾数据</strong>——即在观察期结束时，那些尚未发生流失的客户数据。为了确保分析的业务针对性，本研究对原始数据进行了精细化过滤：</p>
+        <ul>
+            <li><strong>目标群体锁定：</strong>我们排除了长期合约用户，将分析范围严格限制在“按月付费且已开通互联网服务”的核心活跃用户群体中，因为这部分用户的流失风险最高，业务干预价值最大。</li>
+            <li><strong>变量定义：</strong>经过清洗，最终纳入分析的有效样本量为 3351 例。我们将 <span class="code-block">tenure</span>（客户在网月数）定义为生存时间（Time），将 <span class="code-block">churn</span> 定义为事件指示器（1=流失，0=留存）。</li>
+        </ul>
+
+        <h2>3. 技术实现方案与数据工程</h2>
+        <p>本项目的底层数据处理与统计建模架构主要基于 <strong>Apache Spark</strong> 与 Python 的 <strong>Lifelines</strong> 生存分析库构建。完整的代码处理流程如下：</p>
+        <ul>
+            <li><strong>Step 1: 数据摄取与强类型定义</strong><br>为了避免 Spark 在自动推断模式（<span class="code-block">inferSchema</span>）下将某些数值字段（如总费用 <span class="code-block">TotalCharges</span>）错误识别为字符串，我们在 PySpark 中显式构建了 <span class="code-block">StructType</span> 模式。这保证了数据从源头读取时的数据质量与类型安全，并以此构建了基础的青铜级数据表。</li>
+            <li><strong>Step 2: 截尾指示器构建与特征工程</strong><br>生存分析需要两个核心变量：生存时间 (Time) 与 截尾指示器 (Censor/Event)。在 PySpark 的 DataFrame API 中，我们将原始的 <span class="code-block">tenure</span>（在网月数）直接映射为生存时间；并通过条件转换（<span class="code-block">when(col('churnString') == 'Yes', 1).otherwise(0)</span>），将文本标签转化为数值型的截尾指示器。同时，通过 <span class="code-block">filter</span> 算子精准过滤出“按月付费”且“已开通互联网服务”的核心高危群体，生成用于建模的白银级数据表，有效样本量为 3351 例。</li>
+            <li><strong>Step 3: 独热编码与多维拟合</strong><br>由于 Cox 和 AFT 多变量模型无法直接处理类别型特征，我们通过 Pandas 的 <span class="code-block">get_dummies</span> 方法对诸如“网络类型”、“是否包含技术支持”等特征进行了独热编码。最后，将处理好的高维特征矩阵输入至 lifelines 库的 <span class="code-block">KaplanMeierFitter</span>、<span class="code-block">CoxPHFitter</span> 和 <span class="code-block">LogLogisticAFTFitter</span> 估算器中，进行不同参数假设下的生存率推演。</li>
+        </ul>
+
+        <h2>4. 全局流失趋势：Kaplan-Meier 非参数估计</h2>
+        <p>在深入多变量建模之前，我们首先采用非参数的 Kaplan-Meier (KM) 估计法，绘制了目标人群的整体生存概率曲线，以建立对数据的直观基线认知。</p>
+        
+        <div class="placeholder">[请在此处插入图 1：Kaplan-Meier Survival Curve]</div>
+
+        <h3>【洞察分析】</h3>
+        <ul>
+            <li><strong>中位数生存期：</strong>在不考虑任何特征差异的情况下，该群体的中位数生存时间为 <strong>34.0 个月</strong>。这意味着在第 34 个月时，已有 50% 的按月付费互联网用户选择了退网。</li>
+            <li><strong>高风险窗口期：</strong>观察 KM 曲线的斜率可以发现，生存概率并非匀速下降。在客户入网的<strong>前 10 个月内</strong>，曲线呈现出极为陡峭的阶梯式下滑，这是客户流失的“绝对高发期”；当在网时长跨越 24 个月后，曲线趋于平缓，表明客户进入了相对稳定的忠诚期。</li>
+        </ul>
+
+        <h2>5. 探寻流失驱动力：Cox 比例风险模型</h2>
+        <p>KM 曲线只能展示整体趋势，为了评估多个分类特征对流失率的独立且综合的影响，我们拟合了半参数的 Cox 比例风险模型。该模型的 Concordance 指数为 0.64，表明模型具备中等水平的区分与预测能力。</p>
+        <p>通过对模型参数的显著性检验（所有列出的特征 p-value &lt; 0.005），我们提取出以下关键的风险与保护因素：</p>
+
+        <div class="placeholder">[请在此处插入图 2：Cox 模型 Summary 表格]</div>
+        <div class="placeholder">[请在此处插入图 3：Cox Model Hazard Ratios 森林图]</div>
+
+        <h3>【特征影响量化】</h3>
+        <ul>
+            <li><strong>核心保护因素：</strong>
+                <ul style="border:none; padding-top:5px; padding-bottom:0; background:transparent;">
+                    <li><strong>在线备份：</strong><span class="code-block">exp(coef) = 0.46</span>。这是一个极强的留存信号，开通该服务的客户，其流失风险显著下降了 54%。</li>
+                    <li><strong>技术支持：</strong><span class="code-block">exp(coef) = 0.53</span>。享有专属技术支持的客户，流失风险降低了 47%。这表明优秀的服务体验能有效建立客户黏性。</li>
+                    <li><strong>家庭结构：</strong><span class="code-block">exp(coef) = 0.72</span>。有家属的客户群体稳定性更高，风险降低了 28%，可能与家庭共享宽带的转换成本较高有关。</li>
+                </ul>
+            </li>
+            <li><strong>核心风险因素：</strong>
+                <ul style="border:none; padding-top:5px; padding-bottom:0; background:transparent;">
+                    <li><strong>光纤网络：</strong><span class="code-block">exp(coef) = 1.24</span>。相比于使用基础 DSL 网络的用户，光纤用户的流失风险反而高出了 24%。这通常暗示了该细分市场存在激烈竞品挖角，或者现有光纤产品的定价/质量不符客户预期。</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h2>6. 生存时间预测与模型反思：AFT 模型的局限性</h2>
+        <p>不同于 Cox 模型评估相对风险概率，加速失效时间模型是一种全参数模型，它假设特征会按比例直接加速或延缓客户的预期存活时间。本项目尝试使用 Log-Logistic 分布进行拟合。</p>
+
+        <div class="placeholder">[请在此处插入图 4：AFT 模型 Summary]</div>
+
+        <h3>【模型推演与异常剖析】</h3>
+        <p>从特征方向上看，AFT 模型印证了 Cox 模型的结论：在线备份 (<span class="code-block">exp(coef) = 3.08</span>) 和技术支持 (<span class="code-block">exp(coef) = 2.55</span>) 能够将客户的预期存活时间大幅延长 2.5 至 3 倍。</p>
+        <p>然而，在绝对时间的预测上，模型出现了严重的错误：模型预测的整体中位数生存时间高达 <strong class="highlight">1,059,962 个月（约 8.8 万年）</strong>。这一数字显然是荒谬的。对比，这个现象出现的可能原因有以下几点：</p>
+        <ul>
+            <li><strong>分布假设的重尾特性：</strong>Log-Logistic 分布本身在处理包含大量早期截尾数据时容易产生极长的尾部。</li>
+            <li><strong>过度外推：</strong>本数据集截取的是“按月付费”群体，其真实生命周期集中在极短的 1-70 个月内。强行用参数化分布拟合这种短期截断数据，导致模型截距被极度放大 (<span class="code-block">exp(coef) = 16.22</span>)。</li>
+            <li><strong>方法论反思：</strong>这一失败尝试极具学术价值。它生动地证明了：在缺乏先验分布确信度、且数据存在严重右侧截断的商业场景中，不强制假设基准生存分布的半参数 Cox 模型，远比全参数的 AFT 模型更加稳健和贴合实际。</li>
+        </ul>
+
+        <h2>7. 数据驱动的业务增长策略</h2>
+        <p>综合多维生存分析的结论，我们向运营与产品团队提出以下切实可行的商业建议：</p>
+        <ol>
+            <li><strong>重塑“新客破冰期”干预机制：</strong>数据表明前 10 个月是流失的死亡谷。建议将客户关怀资源的 70% 倾斜至新入网的半年内，通过首月回访、3个月账单解读等主动触达，平稳度过高危期。</li>
+            <li><strong>构建“服务生态”留存壁垒：</strong>技术支持与在线备份是经过数据验证的免死金牌。建议改变单纯卖宽带的模式，推出“宽带+首年免费在线备份/专属IT支持”的捆绑套餐，通过提高用户的转换成本来锁死客户。</li>
+            <li><strong>启动光纤产品的深度危机排查：</strong>针对光纤用户流失风险异常偏高的问题，产品部门需立即展开专项调研，对比竞品的带宽资费，并联合网络工程部门排查该部分用户的网络断线率，以防高端市场的持续流失。</li>
+        </ol>
+    </div>
+</body>
+</html>
