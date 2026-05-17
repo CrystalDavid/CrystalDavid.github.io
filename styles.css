@@ -6,8 +6,8 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #000;
-    color: #fff;
+    background: #fff;
+    color: #000;
     min-height: 100vh;
 }
 
@@ -22,16 +22,16 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 0 40px;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(10px);
     z-index: 1000;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .nav-left .logo {
     font-size: 22px;
     font-weight: 700;
-    color: #fff;
+    color: #000;
     text-decoration: none;
     letter-spacing: 1px;
 }
@@ -47,25 +47,25 @@ body {
     display: inline-block;
     padding: 8px 24px;
     border-radius: 50px;
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    background: rgba(0, 0, 0, 0.05);
+    color: #000;
     text-decoration: none;
     font-size: 14px;
     font-weight: 500;
     transition: all 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.15);
 }
 
 .nav-pill:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.3);
     transform: scale(1.05);
 }
 
 .nav-pill.active {
-    background: #fff;
-    color: #000;
-    border-color: #fff;
+    background: #000;
+    color: #fff;
+    border-color: #000;
 }
 
 .nav-right {
@@ -81,16 +81,16 @@ body {
     padding: 8px 16px;
     border-radius: 50px;
     background: transparent;
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #000;
+    border: 1px solid rgba(0, 0, 0, 0.2);
     cursor: pointer;
     font-size: 13px;
     transition: all 0.3s ease;
 }
 
 .contact-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.4);
 }
 
 /* 主内容 */
@@ -110,15 +110,12 @@ body {
     font-size: 56px;
     font-weight: 700;
     margin-bottom: 16px;
-    background: linear-gradient(135deg, #fff 0%, #aaa 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #000;
 }
 
 .hero p {
     font-size: 18px;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(0, 0, 0, 0.5);
 }
 
 /* 弹窗 */
@@ -129,7 +126,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
     z-index: 2000;
     align-items: center;
@@ -141,19 +138,21 @@ body {
 }
 
 .modal {
-    background: #1a1a1a;
+    background: #fff;
     border-radius: 16px;
     padding: 32px;
     max-width: 400px;
     width: 90%;
     text-align: center;
     position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
 }
 
 .modal h3 {
     margin-bottom: 20px;
     font-size: 20px;
+    color: #000;
 }
 
 .modal-close {
@@ -162,7 +161,7 @@ body {
     right: 16px;
     background: none;
     border: none;
-    color: #fff;
+    color: #000;
     font-size: 28px;
     cursor: pointer;
     opacity: 0.6;
