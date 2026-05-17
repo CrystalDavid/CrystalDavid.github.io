@@ -1,0 +1,16 @@
+{
+  "services": [
+    {
+      "type": "web",
+      "name": "ppt-agent-backend",
+      "runtime": "node",
+      "buildCommand": "cd PPT-Agent/backend && npm install",
+      "startCommand": "cd PPT-Agent/backend && npm start",
+      "envVars": [
+        { "key": "PORT", "value": "3001" },
+        { "key": "AI_API_KEY", "sync": false },
+        { "key": "AI_BASE_URL", "value": "https://api.anthropic.com" }
+      ]
+    }
+  ]
+}

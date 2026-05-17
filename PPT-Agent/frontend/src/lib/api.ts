@@ -3,7 +3,8 @@
  * 所有请求直接调用后端，绕过 Next.js 代理（避免代理超时导致数据丢失）
  */
 
-const API = 'http://localhost:3001/api/workflow';
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
+const API = `${BACKEND_URL}/api/workflow`;
 
 export interface ChatResponse {
   sessionId: string;
@@ -142,7 +143,7 @@ export async function refinePlanningAll(sessionId: string, feedback: string): Pr
 
 export async function renderAllPages(sessionId: string): Promise<RenderResponse> {
   // 直接调用后端，绕过 Next.js 代理（避免代理超时）
-  const res = await fetch(`http://localhost:3001/api/workflow/render`, {
+  const res = await fetch(`${BACKEND_URL}/api/workflow/render`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId }),
@@ -155,7 +156,7 @@ export async function renderAllPages(sessionId: string): Promise<RenderResponse>
 }
 
 export async function renderSinglePage(sessionId: string, pageNumber: number): Promise<{ html: string }> {
-  const res = await fetch(`http://localhost:3001/api/workflow/render/page`, {
+  const res = await fetch(`${BACKEND_URL}/api/workflow/render/page`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId, pageNumber }),
@@ -168,7 +169,7 @@ export async function renderSinglePage(sessionId: string, pageNumber: number): P
 }
 
 export async function modifyRenderedPage(sessionId: string, pageNumber: number, instruction: string): Promise<{ html: string }> {
-  const res = await fetch(`http://localhost:3001/api/workflow/render/modify`, {
+  const res = await fetch(`${BACKEND_URL}/api/workflow/render/modify`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId, pageNumber, instruction }),
@@ -181,7 +182,7 @@ export async function modifyRenderedPage(sessionId: string, pageNumber: number, 
 }
 
 export async function exportPptx(sessionId: string): Promise<ExportResponse> {
-  const res = await fetch(`http://localhost:3001/api/workflow/export/pptx`, {
+  const res = await fetch(`${BACKEND_URL}/api/workflow/export/pptx`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId }),
@@ -194,7 +195,7 @@ export async function exportPptx(sessionId: string): Promise<ExportResponse> {
 }
 
 export async function exportHtml(sessionId: string): Promise<ExportResponse> {
-  const res = await fetch(`http://localhost:3001/api/workflow/export/html`, {
+  const res = await fetch(`${BACKEND_URL}/api/workflow/export/html`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId }),
