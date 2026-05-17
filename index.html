@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>David's AI Agents</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="navbar">
+        <div class="nav-left">
+            <a href="/" class="logo">David</a>
+        </div>
+        <nav class="nav-center">
+            <a href="#" class="nav-pill active" data-agent="ppt-agent">PPT-Agent</a>
+            <!-- 后续新增的Agent按钮放在这里 -->
+        </nav>
+        <div class="nav-right">
+            <button class="contact-btn" id="wechat-btn" title="微信">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9.5 2A6.5 6.5 0 0 0 3 8.5c0 1.5.5 2.9 1.4 4L3 17l4.5-1.4c1 .6 2.2 1 3.5 1h.5"/>
+                    <path d="M14.5 10a5.5 5.5 0 0 1 5.5 5.5c0 1.3-.4 2.4-1.2 3.4L20 22l-3.8-1.2c-.8.4-1.7.7-2.7.7a5.5 5.5 0 0 1-5.5-5.5"/>
+                </svg>
+                <span>微信</span>
+            </button>
+            <button class="contact-btn" id="qq-btn" title="QQ">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="5"/>
+                    <path d="M20 21a8 8 0 0 0-16 0"/>
+                </svg>
+                <span>QQ</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- 主内容区域（暂时为空） -->
+    <main class="content">
+        <div class="hero">
+            <h1>AI Agents Hub</h1>
+            <p>选择上方的 Agent 开始使用</p>
+        </div>
+    </main>
+
+    <!-- 微信弹窗 -->
+    <div class="modal-overlay" id="wechat-modal">
+        <div class="modal">
+            <button class="modal-close" id="wechat-close">&times;</button>
+            <h3>微信联系我</h3>
+            <img src="assets/2.jpg" alt="微信二维码" class="qr-img">
+        </div>
+    </div>
+
+    <!-- QQ弹窗 -->
+    <div class="modal-overlay" id="qq-modal">
+        <div class="modal">
+            <button class="modal-close" id="qq-close">&times;</button>
+            <h3>QQ联系我</h3>
+            <img src="assets/3.jpg" alt="QQ二维码" class="qr-img">
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
