@@ -41,8 +41,7 @@ document.querySelectorAll('.nav-pill').forEach(pill => {
     pill.addEventListener('click', (e) => {
         const agent = pill.dataset.agent;
         if (agent === 'ppt-agent') {
-            // PPT-Agent部署后替换为实际Vercel URL
-            window.location.href = 'https://ppt-agent.vercel.app';
+            window.location.href = 'https://lambent-zabaione-8eab6b.netlify.app';
         }
     });
 });
