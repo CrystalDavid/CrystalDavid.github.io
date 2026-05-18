@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>Article - David の小窝</title>
+    <meta name="author" content="David">
+    <meta name="description" content="文章">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="page-common.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div id="menu">
+        <nav id="desktop-menu">
+            <a class="title" href="/">
+                <span>DAVID の小窝</span>
+            </a>
+            <div class="nav-links">
+                <a href="/"><i class="fa-solid fa-house fa-fw"></i><span>Home</span></a>
+                <a href="/about.html"><i class="fa-solid fa-id-card fa-fw"></i><span>About</span></a>
+                <a href="/article.html"><i class="fa-solid fa-book fa-fw"></i><span>Article</span></a>
+                <a href="/agent.html"><i class="fa-solid fa-robot fa-fw"></i><span>Agent</span></a>
+                <a href="/musings.html"><i class="fa-solid fa-feather fa-fw"></i><span>Musings</span></a>
+            </div>
+            <div class="menu-icons">
+                <a href="#" id="theme-toggle" title="切换主题"><i class="fa-solid fa-moon fa-fw"></i></a>
+                <a href="#" id="search-toggle" title="搜索"><i class="fa-solid fa-search fa-fw"></i></a>
+            </div>
+        </nav>
+        <nav id="mobile-menu">
+            <div class="title" id="mobile-menu-toggle"><i class="fa-solid fa-bars fa-fw"></i><span>&emsp;DAVID の小窝</span></div>
+            <div class="items" id="mobile-menu-items" style="display:none;">
+                <a href="/"><div class="item"><div class="item-icon"><i class="fa-solid fa-house fa-fw"></i></div><div class="item-text">Home</div></div></a>
+                <a href="/about.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-id-card fa-fw"></i></div><div class="item-text">About</div></div></a>
+                <a href="/article.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-book fa-fw"></i></div><div class="item-text">Article</div></div></a>
+                <a href="/agent.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-robot fa-fw"></i></div><div class="item-text">Agent</div></div></a>
+                <a href="/musings.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-feather fa-fw"></i></div><div class="item-text">Musings</div></div></a>
+            </div>
+        </nav>
+    </div>
+
+    <div class="page-container">
+        <div class="page-card">
+            <div class="page-header">
+                <h1><i class="fa-solid fa-book"></i> Article</h1>
+                <p class="page-desc">技术文章与学习笔记</p>
+            </div>
+            <div class="posts-grid" id="posts-grid">
+                <div class="loading-hint">加载中...</div>
+            </div>
+        </div>
+
+        <!-- 管理员面板 -->
+        <div class="admin-panel" id="admin-panel">
+            <button class="admin-toggle-btn" id="admin-toggle">
+                <i class="fa-solid fa-lock"></i> 管理员
+            </button>
+            <div class="admin-login" id="admin-login" style="display:none;">
+                <input type="password" id="admin-pwd" placeholder="输入管理员密码">
+                <button class="admin-login-btn" id="admin-login-btn">验证</button>
+            </div>
+            <div class="admin-form" id="admin-form" style="display:none;">
+                <h3>发布新文章</h3>
+                <input type="text" id="post-title" placeholder="文章标题">
+                <textarea id="post-desc" placeholder="文章简介"></textarea>
+                <input type="text" id="post-link" placeholder="文章链接 (URL)">
+                <input type="text" id="post-tags" placeholder="标签 (逗号分隔，如: React,Node.js)">
+                <button class="admin-push-btn" id="admin-push">Push 发布</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div id="footer-wrap">
+            <div>&copy; 2025 David の小窝 <span id="footer-icon"><i class="fa-solid fa-heart fa-fw"></i></span> @David</div>
+            <div id="site-runtime"></div>
+            <div id="site-visitors">本站访问人数：<span id="busuanzi_value_site_uv">loading</span> 人</div>
+            <div>Powered by <a href="https://github.com/CrystalDavid">CrystalDavid</a> &amp; Inspired by <a href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX</a></div>
+        </div>
+    </footer>
+
+    <canvas id="fireworks-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <script src="script.js"></script>
+    <script src="site-api.js"></script>
+    <script src="page-logic.js" data-label="article"></script>
+</body>
+</html>
