@@ -67,13 +67,30 @@ a:hover {
     display: inline-block;
     margin-left: 60px;
     margin-right: 5px;
+    transition: color 0.3s;
+    cursor: pointer;
+}
+
+#menu #desktop-menu .title:hover {
+    opacity: 0.8;
+}
+
+#menu #desktop-menu .title:hover span {
+    animation: titleShake 0.5s ease;
+}
+
+@keyframes titleShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    50% { transform: translateX(3px); }
+    75% { transform: translateX(-2px); }
 }
 
 .menu-icons {
     position: absolute;
     right: 60px;
     display: flex;
-    gap: 20px;
+    gap: 8px;
 }
 
 .menu-icons a {
@@ -96,14 +113,27 @@ a:hover {
 #menu #desktop-menu a {
     color: #555;
     display: inline-block;
-    margin-left: 30px;
+    margin-left: 15px;
     padding: 4px 16px;
     border-radius: 50px;
     transition: color 0.3s;
 }
 
+#menu #desktop-menu a:hover {
+    opacity: 0.8;
+}
+
 #menu #desktop-menu a:hover i {
     animation: iconBounce 0.5s ease;
+}
+
+#menu #desktop-menu a:hover span {
+    animation: textWave 0.5s ease;
+}
+
+@keyframes textWave {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
 }
 
 @keyframes iconBounce {
@@ -182,12 +212,12 @@ a:hover {
 
 /* 星空画布 */
 #stars-canvas {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 0;
+    z-index: 1;
     opacity: 0;
     transition: opacity 0.5s ease;
     pointer-events: none;
@@ -234,14 +264,17 @@ body.dark-mode .theme-toast {
 }
 
 body.dark-mode {
-    background: #0f0f1e;
+    background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 100%);
     color: #e0e0e0;
 }
 
 body.dark-mode .post {
-    background: #1a1a2e;
+    background: rgba(26, 26, 46, 0.75);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     color: #e0e0e0;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(154, 187, 247, 0.2);
 }
 
 body.dark-mode .post-title {
@@ -249,12 +282,27 @@ body.dark-mode .post-title {
 }
 
 body.dark-mode #home-card #card-style {
-    background: #1a1a2e;
+    background: rgba(26, 26, 46, 0.75);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     color: #e0e0e0;
+    border: 1px solid rgba(154, 187, 247, 0.2);
 }
 
 body.dark-mode #footer {
     color: #e0e0e0;
+}
+
+body.dark-mode #footer #footer-wrap {
+    border-top-color: #444;
+}
+
+body.dark-mode .category-and-date {
+    color: #a0a0b0 !important;
+}
+
+body.dark-mode .description {
+    color: #d0d0d0;
 }
 
 #home-head #home-info {
