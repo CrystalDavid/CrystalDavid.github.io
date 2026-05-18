@@ -54,7 +54,7 @@ if (isDarkMode) {
         const icon = themeToggle.querySelector('i');
         if (icon) icon.className = 'fa-solid fa-sun fa-fw';
     }
-    startStarfield();
+    // startStarfield called later after it's defined
 }
 
 if (themeToggle) {
@@ -338,6 +338,11 @@ window.addEventListener('resize', () => {
 
 if (canvas) {
     initCanvas();
+}
+
+// Start starfield if dark mode was saved
+if (isDarkMode) {
+    startStarfield();
 }
 
 // 移动端菜单
