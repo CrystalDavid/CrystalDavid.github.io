@@ -95,7 +95,7 @@ function applyWallpaper(index) {
     if (wp.type === 'video') {
         if (homeBackground) homeBackground.style.display = 'none';
         if (homeVideo) {
-            homeVideo.src = wp.src;
+            homeVideo.src = encodeURI(wp.src);
             homeVideo.style.display = 'block';
             homeVideo.play();
         }
@@ -106,7 +106,10 @@ function applyWallpaper(index) {
         }
         if (homeBackground) {
             homeBackground.style.display = 'block';
-            homeBackground.style.background = `url('${wp.src}') center / cover no-repeat`;
+            homeBackground.style.backgroundImage = "url('" + encodeURI(wp.src) + "')";
+            homeBackground.style.backgroundSize = 'cover';
+            homeBackground.style.backgroundPosition = 'center';
+            homeBackground.style.backgroundRepeat = 'no-repeat';
         }
     }
 }
