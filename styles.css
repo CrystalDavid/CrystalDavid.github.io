@@ -79,12 +79,13 @@ a:hover {
     color: #555;
     transition: background 0.3s, color 0.3s;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
     flex-shrink: 0;
     white-space: nowrap;
-    padding: 4px 14px;
+    padding: 6px 14px;
     border-radius: 50px;
+    line-height: 1.4;
 }
 
 #menu #desktop-menu .title:hover {
@@ -118,11 +119,13 @@ a:hover {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 4px 12px;
+    padding: 6px 14px;
     border-radius: 50px;
     transition: background 0.3s, color 0.3s;
     white-space: nowrap;
     flex-shrink: 0;
+    font-size: 14px;
+    line-height: 1.4;
 }
 
 .nav-links a:hover {
@@ -148,21 +151,20 @@ a:hover {
 
 .menu-icons a {
     color: #555;
-    font-size: 16px;
-    padding: 4px 6px;
+    font-size: 15px;
     transition: background 0.3s, color 0.3s, transform 0.3s;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
 }
 
 .menu-icons a:hover {
     background: #ff9100;
     color: #fff !important;
-    transform: scale(1.1);
+    transform: scale(1.05);
     opacity: 1;
 }
 
@@ -265,17 +267,6 @@ body.dark-mode #stars-canvas {
 
 body.dark-mode #home-background {
     background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 100%);
-}
-
-body.dark-mode #home-head #home-info .info .wrap h1,
-body.dark-mode #home-head #home-info .info .wrap h3 {
-    color: #fff;
-    text-shadow: 0 0 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.6);
-}
-
-body.dark-mode #home-head #home-info .info .wrap h5 {
-    color: rgba(255, 255, 255, 0.8);
-    text-shadow: 0 0 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.6);
 }
 
 /* 主题切换提示 */
@@ -705,10 +696,6 @@ body.dark-mode .description {
 @media (min-width: 900px) {
     #home-head #home-info .info .wrap {
         padding: 30px 40px;
-        background: rgba(0, 0, 0, 0.35);
-        border-radius: 20px;
-        backdrop-filter: blur(2px);
-        -webkit-backdrop-filter: blur(2px);
     }
 
     #home-head #home-info .info .wrap h1 {
@@ -716,21 +703,42 @@ body.dark-mode .description {
         font-weight: bold;
         margin-bottom: 10px;
         color: #fff;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5);
+        text-shadow:
+            0 0 3px rgba(0,0,0,0.9),
+            0 0 8px rgba(0,0,0,0.7),
+            0 1px 2px rgba(0,0,0,0.9),
+            1px 0 2px rgba(0,0,0,0.9),
+            -1px 0 2px rgba(0,0,0,0.9),
+            0 -1px 2px rgba(0,0,0,0.9);
+        -webkit-text-stroke: 1px rgba(0,0,0,0.3);
     }
 
     #home-head #home-info .info .wrap h3 {
         font-size: 24px;
         margin: 10px 0;
         color: #fff;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5);
+        text-shadow:
+            0 0 3px rgba(0,0,0,0.9),
+            0 0 8px rgba(0,0,0,0.7),
+            0 1px 2px rgba(0,0,0,0.9),
+            1px 0 2px rgba(0,0,0,0.9),
+            -1px 0 2px rgba(0,0,0,0.9),
+            0 -1px 2px rgba(0,0,0,0.9);
+        -webkit-text-stroke: 0.5px rgba(0,0,0,0.3);
     }
 
     #home-head #home-info .info .wrap h5 {
         font-size: 16px;
         margin: 20px 0;
-        color: rgba(255, 255, 255, 0.85);
-        text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5);
+        color: rgba(255, 255, 255, 0.95);
+        text-shadow:
+            0 0 3px rgba(0,0,0,0.9),
+            0 0 8px rgba(0,0,0,0.7),
+            0 1px 2px rgba(0,0,0,0.9),
+            1px 0 2px rgba(0,0,0,0.9),
+            -1px 0 2px rgba(0,0,0,0.9),
+            0 -1px 2px rgba(0,0,0,0.9);
+        -webkit-text-stroke: 0.5px rgba(0,0,0,0.2);
     }
 
     #home-head #home-info .loop {
@@ -808,31 +816,48 @@ body.dark-mode .description {
 
     #home-head #home-info .info .wrap {
         padding: 30px;
-        background: rgba(0, 0, 0, 0.35);
-        border-radius: 16px;
-        backdrop-filter: blur(2px);
-        -webkit-backdrop-filter: blur(2px);
     }
 
     #home-head #home-info .info .wrap h1 {
         font-size: 36px;
         margin-bottom: 10px;
         color: #fff;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5);
+        text-shadow:
+            0 0 3px rgba(0,0,0,0.9),
+            0 0 8px rgba(0,0,0,0.7),
+            0 1px 2px rgba(0,0,0,0.9),
+            1px 0 2px rgba(0,0,0,0.9),
+            -1px 0 2px rgba(0,0,0,0.9),
+            0 -1px 2px rgba(0,0,0,0.9);
+        -webkit-text-stroke: 1px rgba(0,0,0,0.3);
     }
 
     #home-head #home-info .info .wrap h3 {
         font-size: 20px;
         margin: 10px 0;
         color: #fff;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5);
+        text-shadow:
+            0 0 3px rgba(0,0,0,0.9),
+            0 0 8px rgba(0,0,0,0.7),
+            0 1px 2px rgba(0,0,0,0.9),
+            1px 0 2px rgba(0,0,0,0.9),
+            -1px 0 2px rgba(0,0,0,0.9),
+            0 -1px 2px rgba(0,0,0,0.9);
+        -webkit-text-stroke: 0.5px rgba(0,0,0,0.3);
     }
 
     #home-head #home-info .info .wrap h5 {
         font-size: 14px;
         margin: 20px 0;
-        color: rgba(255, 255, 255, 0.85);
-        text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5);
+        color: rgba(255, 255, 255, 0.95);
+        text-shadow:
+            0 0 3px rgba(0,0,0,0.9),
+            0 0 8px rgba(0,0,0,0.7),
+            0 1px 2px rgba(0,0,0,0.9),
+            1px 0 2px rgba(0,0,0,0.9),
+            -1px 0 2px rgba(0,0,0,0.9),
+            0 -1px 2px rgba(0,0,0,0.9);
+        -webkit-text-stroke: 0.5px rgba(0,0,0,0.2);
     }
 
     #home-head #home-info .loop {

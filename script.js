@@ -406,15 +406,15 @@ setupModal(['card-qq-btn'], 'qq-modal', 'qq-close');
             this.x = x;
             this.y = y;
             const angle = Math.random() * Math.PI * 2;
-            const speed = Math.random() * 8 + 3;
+            const speed = Math.random() * 5 + 2;
             this.vx = Math.cos(angle) * speed;
             this.vy = Math.sin(angle) * speed;
             this.color = colors[Math.floor(Math.random() * colors.length)];
-            this.size = Math.random() * 5 + 3;
+            this.size = Math.random() * 4 + 2.5;
             this.opacity = 1;
             this.gravity = 0.03;
             this.life = 1;
-            this.decay = Math.random() * 0.006 + 0.004;
+            this.decay = Math.random() * 0.005 + 0.003;
             this.trail = [];
         }
         update() {
@@ -426,7 +426,7 @@ setupModal(['card-qq-btn'], 'qq-modal', 'qq-close');
             this.y += this.vy;
             this.life -= this.decay;
             this.opacity = this.life;
-            this.size *= 0.992;
+            this.size *= 0.993;
         }
         draw() {
             // Draw trail
