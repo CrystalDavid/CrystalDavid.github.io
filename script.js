@@ -98,16 +98,22 @@ function initCanvas() {
 
 // 星星类
 class Star {
-    constructor() {
-        // 从左边或下边随机生成
-        if (Math.random() > 0.5) {
-            // 从左边生成
-            this.x = -10;
+    constructor(initial = false) {
+        if (initial) {
+            // 初始化时随机分布在整个屏幕
+            this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
         } else {
-            // 从下边生成
-            this.x = Math.random() * canvas.width;
-            this.y = canvas.height + 10;
+            // 运行时从左边或下边生成
+            if (Math.random() > 0.5) {
+                // 从左边生成
+                this.x = -10;
+                this.y = Math.random() * canvas.height;
+            } else {
+                // 从下边生成
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + 10;
+            }
         }
 
         this.size = Math.random() * 2 + 0.5;
@@ -115,8 +121,8 @@ class Star {
         this.twinkleSpeed = Math.random() * 0.02 + 0.01;
 
         // 移动速度（从左下到右上的总体趋势）
-        this.speedX = Math.random() * 0.4 + 0.2;
-        this.speedY = -Math.random() * 0.4 - 0.2;
+        this.speedX = Math.random() * 0.3 + 0.15;
+        this.speedY = -Math.random() * 0.3 - 0.15;
     }
 
     draw() {
@@ -137,7 +143,7 @@ class Star {
         this.x += this.speedX;
         this.y += this.speedY;
 
-        // 边界检测：从右边或上边出去后重新生成
+        // 边界检测：从右边或上边出去后重新从左边或下边生成
         if (this.x > canvas.width + 10 || this.y < -10) {
             // 重新从左边或下边生成
             if (Math.random() > 0.5) {
@@ -216,7 +222,7 @@ function createStars() {
     stars = [];
     const starCount = Math.floor((canvas.width * canvas.height) / 6000);
     for (let i = 0; i < starCount; i++) {
-        stars.push(new Star());
+        stars.push(new Star(true)); // 初始化时传入true，让星星分布在整个屏幕
     }
 
     shootingStars = [];
