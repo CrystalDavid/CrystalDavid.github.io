@@ -112,6 +112,39 @@ a:hover {
     color: #555;
 }
 
+/* 分类筛选栏 */
+#filter-bar {
+    text-align: center;
+    padding: 15px 20px;
+    background: #e8f4fd;
+    border-bottom: 1px solid #d0e8f7;
+}
+
+#filter-content {
+    display: inline-block;
+    font-size: 14px;
+    color: #5c6b72;
+}
+
+#filter-content #filter-text {
+    margin-right: 15px;
+    font-weight: 500;
+}
+
+#filter-content #filter-clear {
+    background: #66afef;
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+#filter-content #filter-clear:hover {
+    opacity: 0.8;
+}
+
 /* Hero 区域 */
 #home-head {
     display: flex;

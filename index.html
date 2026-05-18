@@ -2,9 +2,9 @@
 <html lang="zh-CN">
 <head>
     <meta charset="utf-8">
-    <title>David's AI Agents</title>
+    <title>David の小窝</title>
     <meta name="author" content="David">
-    <meta name="description" content="David's AI Agents Hub">
+    <meta name="description" content="David の小窝">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,40 +16,40 @@
     <div id="menu">
         <nav id="desktop-menu">
             <a class="title" href="/">
-                <span>DAVID'S AGENTS</span>
+                <span>DAVID の小窝</span>
             </a>
             <a href="/">
                 <i class="fa-solid fa-house fa-fw"></i>
                 <span>&ensp;Home</span>
             </a>
-            <a href="#agents">
-                <i class="fa-solid fa-robot fa-fw"></i>
-                <span>&ensp;Agents</span>
-            </a>
-            <a href="#about">
+            <a href="#" data-category="about">
                 <i class="fa-solid fa-id-card fa-fw"></i>
                 <span>&ensp;About</span>
             </a>
-            <a href="#" id="nav-wechat-btn">
-                <i class="fa-brands fa-weixin fa-fw"></i>
-                <span>&ensp;WeChat</span>
+            <a href="#" data-category="article">
+                <i class="fa-solid fa-book fa-fw"></i>
+                <span>&ensp;Article</span>
             </a>
-            <a href="#" id="nav-qq-btn">
-                <i class="fa-brands fa-qq fa-fw"></i>
-                <span>&ensp;QQ</span>
+            <a href="#" data-category="agent">
+                <i class="fa-solid fa-robot fa-fw"></i>
+                <span>&ensp;Agent</span>
+            </a>
+            <a href="#" data-category="musings">
+                <i class="fa-solid fa-feather fa-fw"></i>
+                <span>&ensp;Musings</span>
             </a>
         </nav>
         <nav id="mobile-menu">
             <div class="title" id="mobile-menu-toggle">
                 <i class="fa-solid fa-bars fa-fw"></i>
-                <span>&emsp;DAVID'S AGENTS</span>
+                <span>&emsp;DAVID の小窝</span>
             </div>
             <div class="items" id="mobile-menu-items" style="display:none;">
                 <a href="/"><div class="item"><div class="item-icon"><i class="fa-solid fa-house fa-fw"></i></div><div class="item-text">Home</div></div></a>
-                <a href="#agents"><div class="item"><div class="item-icon"><i class="fa-solid fa-robot fa-fw"></i></div><div class="item-text">Agents</div></div></a>
-                <a href="#about"><div class="item"><div class="item-icon"><i class="fa-solid fa-id-card fa-fw"></i></div><div class="item-text">About</div></div></a>
-                <a href="#" id="mobile-wechat-btn"><div class="item"><div class="item-icon"><i class="fa-brands fa-weixin fa-fw"></i></div><div class="item-text">WeChat</div></div></a>
-                <a href="#" id="mobile-qq-btn"><div class="item"><div class="item-icon"><i class="fa-brands fa-qq fa-fw"></i></div><div class="item-text">QQ</div></div></a>
+                <a href="#" data-category="about"><div class="item"><div class="item-icon"><i class="fa-solid fa-id-card fa-fw"></i></div><div class="item-text">About</div></div></a>
+                <a href="#" data-category="article"><div class="item"><div class="item-icon"><i class="fa-solid fa-book fa-fw"></i></div><div class="item-text">Article</div></div></a>
+                <a href="#" data-category="agent"><div class="item"><div class="item-icon"><i class="fa-solid fa-robot fa-fw"></i></div><div class="item-text">Agent</div></div></a>
+                <a href="#" data-category="musings"><div class="item"><div class="item-icon"><i class="fa-solid fa-feather fa-fw"></i></div><div class="item-text">Musings</div></div></a>
             </div>
         </nav>
     </div>
@@ -64,11 +64,19 @@
             <span class="loop"></span>
             <span class="info">
                 <div class="wrap">
-                    <h1>David's Agents</h1>
-                    <h3>AI Agents Hub</h3>
-                    <h5>构建智能，连接未来</h5>
+                    <h1>David の小窝</h1>
+                    <h3>构建智能，连接未来</h3>
+                    <h5>个人开发者 / AI-Agent 开发者</h5>
                 </div>
             </span>
+        </div>
+    </div>
+
+    <!-- 分类筛选提示 -->
+    <div id="filter-bar" style="display:none;">
+        <div id="filter-content">
+            <span id="filter-text"></span>
+            <a href="#" id="filter-clear">显示全部</a>
         </div>
     </div>
 
@@ -76,11 +84,11 @@
     <div id="home-posts-wrap">
         <div id="home-posts">
             <!-- Agent 卡片: PPT-Agent -->
-            <div class="post" id="agents">
+            <div class="post" data-category="agent">
                 <h2 class="post-title">PPT-Agent</h2>
                 <div class="category-and-date">
-                    <span class="category"><i class="fa-solid fa-tag fa-fw"></i> AI Agent</span>
-                    <span class="date"><i class="fa-solid fa-calendar fa-fw"></i> 2025-05</span>
+                    <span class="category"><i class="fa-solid fa-robot fa-fw"></i> Agent</span>
+                    <span class="date"><i class="fa-solid fa-calendar fa-fw"></i> 2025年5月18日</span>
                 </div>
                 <div class="description">
                     <p>从模糊想法到专业演示文稿的 AI Agent。通过对话式交互，自动生成 PPT 大纲、内容规划和精美渲染。</p>
@@ -93,14 +101,15 @@
                 <a class="go-post" href="https://lambent-zabaione-8eab6b.netlify.app" target="_blank">进入 →</a>
             </div>
 
-            <!-- 占位卡片: 更多 Agent 即将到来 -->
-            <div class="post">
-                <h2 class="post-title">更多 Agent 即将到来...</h2>
+            <!-- 占位卡片 -->
+            <div class="post" data-category="musings">
+                <h2 class="post-title">更多内容即将到来...</h2>
                 <div class="category-and-date">
-                    <span class="category"><i class="fa-solid fa-flask fa-fw"></i> Coming Soon</span>
+                    <span class="category"><i class="fa-solid fa-feather fa-fw"></i> Musings</span>
+                    <span class="date"><i class="fa-solid fa-calendar fa-fw"></i> 2025年5月18日</span>
                 </div>
                 <div class="description">
-                    <p>更多 AI Agent 正在开发中，敬请期待。你可以通过微信或 QQ 联系我，提出你想要的 Agent 想法。</p>
+                    <p>更多内容正在准备中，敬请期待。你可以通过微信或 QQ 联系我，交流想法。</p>
                 </div>
             </div>
         </div>
@@ -114,8 +123,9 @@
                     </div>
                     <div class="name">David</div>
                     <div class="description">
-                        <p>AI Agents 开发者</p>
-                        <p>用 AI 构建实用工具</p>
+                        <p>个人开发者</p>
+                        <p>AI-Agent开发者</p>
+                        <p>用AI构建实用工具</p>
                     </div>
                     <div class="icon-links">
                         <span class="icon-link">
@@ -128,11 +138,6 @@
                             <a href="https://github.com/CrystalDavid" title="GitHub"><i class="fa-brands fa-github fa-fw"></i></a>
                         </span>
                     </div>
-                    <div class="friend-links">
-                        <div class="friend-link">
-                            <a href="https://lambent-zabaione-8eab6b.netlify.app">PPT-Agent</a>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -142,8 +147,8 @@
     <footer id="footer">
         <div id="footer-wrap">
             <div>
-                &copy; 2025 David's Agents
-                <span id="footer-icon"><i class="fa-solid fa-robot fa-fw"></i></span>
+                &copy; 2025 David の小窝
+                <span id="footer-icon"><i class="fa-solid fa-heart fa-fw"></i></span>
                 @David
             </div>
             <div>

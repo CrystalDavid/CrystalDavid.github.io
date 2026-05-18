@@ -6,13 +6,11 @@ window.addEventListener('scroll', () => {
     const scrollY = window.scrollY;
     const homeHeight = window.innerHeight;
 
-    // 滚动超过首屏后导航栏变色
     if (scrollY < homeHeight - 100) {
         menu.classList.add('menu-color');
         menu.classList.remove('hidden');
     } else {
         menu.classList.remove('menu-color');
-        // 向下滚动隐藏，向上滚动显示
         if (scrollY > lastScrollY && scrollY > 100) {
             menu.classList.add('hidden');
         } else {
@@ -22,7 +20,6 @@ window.addEventListener('scroll', () => {
     lastScrollY = scrollY;
 });
 
-// 初始状态：首屏时导航栏透明
 menu.classList.add('menu-color');
 
 // 移动端菜单
@@ -43,6 +40,59 @@ if (homeInfo) {
         window.scrollTo({
             top: window.innerHeight - 80,
             behavior: 'smooth'
+        });
+    });
+}
+
+// 分类筛选
+const filterBar = document.getElementById('filter-bar');
+const filterText = document.getElementById('filter-text');
+const filterClear = document.getElementById('filter-clear');
+const posts = document.querySelectorAll('.post[data-category]');
+
+const categoryNames = {
+    about: 'About',
+    article: 'Article',
+    agent: 'Agent',
+    musings: 'Musings'
+};
+
+document.querySelectorAll('[data-category]').forEach(link => {
+    if (link.classList.contains('post')) return; // 跳过卡片本身
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const category = link.dataset.category;
+        filterByCategory(category);
+        // 滚动到内容区
+        const postsWrap = document.getElementById('home-posts-wrap');
+        if (postsWrap) {
+            window.scrollTo({
+                top: postsWrap.offsetTop - 60,
+                behavior: 'smooth'
+            });
+        }
+    });
+});
+
+function filterByCategory(category) {
+    filterBar.style.display = 'block';
+    filterText.textContent = '当前分类：' + (categoryNames[category] || category);
+
+    posts.forEach(post => {
+        if (post.dataset.category === category) {
+            post.style.display = '';
+        } else {
+            post.style.display = 'none';
+        }
+    });
+}
+
+if (filterClear) {
+    filterClear.addEventListener('click', (e) => {
+        e.preventDefault();
+        filterBar.style.display = 'none';
+        posts.forEach(post => {
+            post.style.display = '';
         });
     });
 }
@@ -77,5 +127,5 @@ function setupModal(btnIds, modalId, closeId) {
     }
 }
 
-setupModal(['nav-wechat-btn', 'mobile-wechat-btn', 'card-wechat-btn'], 'wechat-modal', 'wechat-close');
-setupModal(['nav-qq-btn', 'mobile-qq-btn', 'card-qq-btn'], 'qq-modal', 'qq-close');
+setupModal(['card-wechat-btn'], 'wechat-modal', 'wechat-close');
+setupModal(['card-qq-btn'], 'qq-modal', 'qq-close');
