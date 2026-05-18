@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>About - David の小窝</title>
+    <meta name="author" content="David">
+    <meta name="description" content="关于 David">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .about-container {
+            max-width: 900px;
+            margin: 80px auto 50px;
+            padding: 20px;
+        }
+
+        .about-card {
+            background: #fff;
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .about-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .about-header h1 {
+            font-size: 42px;
+            color: #1e3e3f;
+            margin-bottom: 15px;
+        }
+
+        .about-date {
+            color: #5c6b72;
+            font-size: 14px;
+        }
+
+        .about-date i {
+            margin-right: 8px;
+        }
+
+        .greeting {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1e3e3f;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px dotted #e0e0e0;
+        }
+
+        .greeting-emoji {
+            display: inline-block;
+            animation: wave 1.5s ease-in-out infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(20deg); }
+            75% { transform: rotate(-10deg); }
+        }
+
+        .intro-box {
+            background: linear-gradient(135deg, #e8f4fd 0%, #f0f8ff 100%);
+            border-left: 4px solid #66afef;
+            border-radius: 20px;
+            padding: 25px 30px;
+            margin-bottom: 40px;
+            font-size: 16px;
+            color: #1e3e3f;
+            line-height: 1.8;
+        }
+
+        .section-title {
+            font-size: 24px;
+            color: #1e3e3f;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 12px;
+            color: #66afef;
+        }
+
+        .skills-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 40px;
+        }
+
+        .skills-list li {
+            padding: 12px 20px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 50px;
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .skills-list li:hover {
+            background: linear-gradient(120deg, #9abbf7 0%, #ffbbf4 100%);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(154, 187, 247, 0.4);
+        }
+
+        .skills-list li i {
+            margin-right: 8px;
+        }
+
+        .contact-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .contact-table thead {
+            background: linear-gradient(120deg, #9abbf7 0%, #a8c9f7 100%);
+            color: #fff;
+        }
+
+        .contact-table th {
+            padding: 18px 25px;
+            font-weight: 600;
+            text-align: left;
+            font-size: 16px;
+        }
+
+        .contact-table th:first-child {
+            border-radius: 20px 0 0 0;
+        }
+
+        .contact-table th:last-child {
+            border-radius: 0 20px 0 0;
+        }
+
+        .contact-table td {
+            padding: 18px 25px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 15px;
+        }
+
+        .contact-table tr:last-child td:first-child {
+            border-radius: 0 0 0 20px;
+        }
+
+        .contact-table tr:last-child td:last-child {
+            border-radius: 0 0 20px 0;
+        }
+
+        .contact-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .contact-table td:first-child {
+            font-weight: 600;
+            color: #1e3e3f;
+        }
+
+        .contact-table td:last-child {
+            color: #66afef;
+        }
+
+        .contact-table a {
+            color: #66afef;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .contact-table a:hover {
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .about-card {
+                padding: 30px 20px;
+                border-radius: 20px;
+            }
+
+            .about-header h1 {
+                font-size: 32px;
+            }
+
+            .greeting {
+                font-size: 24px;
+            }
+
+            .section-title {
+                font-size: 20px;
+            }
+
+            .skills-list li {
+                display: block;
+                margin-right: 0;
+            }
+
+            .contact-table th,
+            .contact-table td {
+                padding: 12px 15px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div id="menu">
+        <nav id="desktop-menu">
+            <a class="title" href="/">
+                <span>DAVID の小窝</span>
+            </a>
+            <a href="/">
+                <i class="fa-solid fa-house fa-fw"></i>
+                <span>&ensp;Home</span>
+            </a>
+            <a href="/about.html">
+                <i class="fa-solid fa-id-card fa-fw"></i>
+                <span>&ensp;About</span>
+            </a>
+            <a href="/article.html">
+                <i class="fa-solid fa-book fa-fw"></i>
+                <span>&ensp;Article</span>
+            </a>
+            <a href="/agent.html">
+                <i class="fa-solid fa-robot fa-fw"></i>
+                <span>&ensp;Agent</span>
+            </a>
+            <a href="/musings.html">
+                <i class="fa-solid fa-feather fa-fw"></i>
+                <span>&ensp;Musings</span>
+            </a>
+        </nav>
+        <nav id="mobile-menu">
+            <div class="title" id="mobile-menu-toggle">
+                <i class="fa-solid fa-bars fa-fw"></i>
+                <span>&emsp;DAVID の小窝</span>
+            </div>
+            <div class="items" id="mobile-menu-items" style="display:none;">
+                <a href="/"><div class="item"><div class="item-icon"><i class="fa-solid fa-house fa-fw"></i></div><div class="item-text">Home</div></div></a>
+                <a href="/about.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-id-card fa-fw"></i></div><div class="item-text">About</div></div></a>
+                <a href="/article.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-book fa-fw"></i></div><div class="item-text">Article</div></div></a>
+                <a href="/agent.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-robot fa-fw"></i></div><div class="item-text">Agent</div></div></a>
+                <a href="/musings.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-feather fa-fw"></i></div><div class="item-text">Musings</div></div></a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- About 内容 -->
+    <div class="about-container">
+        <div class="about-card">
+            <div class="about-header">
+                <h1>About</h1>
+                <div class="about-date">
+                    <i class="fa-solid fa-calendar fa-fw"></i>
+                    2026/5/18
+                </div>
+            </div>
+
+            <div class="greeting">
+                Hi there <span class="greeting-emoji">👋</span>
+            </div>
+
+            <div class="intro-box">
+                I'm David~<br><br>
+                SUStech Third-year undergraduate<br>
+                Department of Statistics, Major in Data Science and Big Data
+            </div>
+
+            <div class="section-title">
+                <i class="fa-solid fa-lightbulb"></i>
+                语言
+            </div>
+            <ul class="skills-list">
+                <li><i class="fa-solid fa-code" style="color: #9b59b6;"></i> C/C++</li>
+                <li><i class="fa-brands fa-python" style="color: #3776ab;"></i> Python</li>
+                <li><i class="fa-brands fa-node-js" style="color: #68a063;"></i> Node.js</li>
+                <li><i class="fa-solid fa-terminal" style="color: #4eaa25;"></i> Bash</li>
+            </ul>
+
+            <div class="section-title">
+                <i class="fa-solid fa-address-book"></i>
+                帐号
+            </div>
+            <table class="contact-table">
+                <thead>
+                    <tr>
+                        <th>网站</th>
+                        <th>帐号</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>QQ</td>
+                        <td>2811459442</td>
+                    </tr>
+                    <tr>
+                        <td>GitHub</td>
+                        <td><a href="https://github.com/CrystalDavid" target="_blank">CrystalDavid</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div id="footer-wrap">
+            <div>
+                &copy; 2025 David の小窝
+                <span id="footer-icon"><i class="fa-solid fa-heart fa-fw"></i></span>
+                @David
+            </div>
+            <div>
+                Powered by <a href="https://github.com/CrystalDavid">CrystalDavid</a> &amp;
+                Inspired by <a href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
