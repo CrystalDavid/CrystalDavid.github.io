@@ -1,46 +1,157 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
     <title>David's AI Agents</title>
+    <meta name="author" content="David">
+    <meta name="description" content="David's AI Agents Hub">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <!-- 顶部导航栏 -->
-    <header class="navbar">
-        <div class="nav-left">
-            <a href="/" class="logo">David</a>
-        </div>
-        <nav class="nav-center">
-            <a href="#" class="nav-pill active" data-agent="ppt-agent">PPT-Agent</a>
-            <!-- 后续新增的Agent按钮放在这里 -->
+    <div id="menu">
+        <nav id="desktop-menu">
+            <a class="title" href="/">
+                <span>DAVID'S AGENTS</span>
+            </a>
+            <a href="/">
+                <i class="fa-solid fa-house fa-fw"></i>
+                <span>&ensp;Home</span>
+            </a>
+            <a href="#agents">
+                <i class="fa-solid fa-robot fa-fw"></i>
+                <span>&ensp;Agents</span>
+            </a>
+            <a href="#about">
+                <i class="fa-solid fa-id-card fa-fw"></i>
+                <span>&ensp;About</span>
+            </a>
+            <a href="#" id="nav-wechat-btn">
+                <i class="fa-brands fa-weixin fa-fw"></i>
+                <span>&ensp;WeChat</span>
+            </a>
+            <a href="#" id="nav-qq-btn">
+                <i class="fa-brands fa-qq fa-fw"></i>
+                <span>&ensp;QQ</span>
+            </a>
         </nav>
-        <div class="nav-right">
-            <button class="contact-btn" id="wechat-btn" title="微信">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9.5 2A6.5 6.5 0 0 0 3 8.5c0 1.5.5 2.9 1.4 4L3 17l4.5-1.4c1 .6 2.2 1 3.5 1h.5"/>
-                    <path d="M14.5 10a5.5 5.5 0 0 1 5.5 5.5c0 1.3-.4 2.4-1.2 3.4L20 22l-3.8-1.2c-.8.4-1.7.7-2.7.7a5.5 5.5 0 0 1-5.5-5.5"/>
-                </svg>
-                <span>微信</span>
-            </button>
-            <button class="contact-btn" id="qq-btn" title="QQ">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="8" r="5"/>
-                    <path d="M20 21a8 8 0 0 0-16 0"/>
-                </svg>
-                <span>QQ</span>
-            </button>
-        </div>
-    </header>
+        <nav id="mobile-menu">
+            <div class="title" id="mobile-menu-toggle">
+                <i class="fa-solid fa-bars fa-fw"></i>
+                <span>&emsp;DAVID'S AGENTS</span>
+            </div>
+            <div class="items" id="mobile-menu-items" style="display:none;">
+                <a href="/"><div class="item"><div class="item-icon"><i class="fa-solid fa-house fa-fw"></i></div><div class="item-text">Home</div></div></a>
+                <a href="#agents"><div class="item"><div class="item-icon"><i class="fa-solid fa-robot fa-fw"></i></div><div class="item-text">Agents</div></div></a>
+                <a href="#about"><div class="item"><div class="item-icon"><i class="fa-solid fa-id-card fa-fw"></i></div><div class="item-text">About</div></div></a>
+                <a href="#" id="mobile-wechat-btn"><div class="item"><div class="item-icon"><i class="fa-brands fa-weixin fa-fw"></i></div><div class="item-text">WeChat</div></div></a>
+                <a href="#" id="mobile-qq-btn"><div class="item"><div class="item-icon"><i class="fa-brands fa-qq fa-fw"></i></div><div class="item-text">QQ</div></div></a>
+            </div>
+        </nav>
+    </div>
 
-    <!-- 主内容区域（暂时为空） -->
-    <main class="content">
-        <div class="hero">
-            <h1>AI Agents Hub</h1>
-            <p>选择上方的 Agent 开始使用</p>
+    <!-- Hero 全屏区域 -->
+    <div id="home-head">
+        <div id="home-background"></div>
+        <div id="home-info">
+            <span class="loop"></span>
+            <span class="loop"></span>
+            <span class="loop"></span>
+            <span class="loop"></span>
+            <span class="info">
+                <div class="wrap">
+                    <h1>David's Agents</h1>
+                    <h3>AI Agents Hub</h3>
+                    <h5>构建智能，连接未来</h5>
+                </div>
+            </span>
         </div>
-    </main>
+    </div>
+
+    <!-- 内容区域 -->
+    <div id="home-posts-wrap">
+        <div id="home-posts">
+            <!-- Agent 卡片: PPT-Agent -->
+            <div class="post" id="agents">
+                <h2 class="post-title">PPT-Agent</h2>
+                <div class="category-and-date">
+                    <span class="category"><i class="fa-solid fa-tag fa-fw"></i> AI Agent</span>
+                    <span class="date"><i class="fa-solid fa-calendar fa-fw"></i> 2025-05</span>
+                </div>
+                <div class="description">
+                    <p>从模糊想法到专业演示文稿的 AI Agent。通过对话式交互，自动生成 PPT 大纲、内容规划和精美渲染。</p>
+                </div>
+                <div class="post-tags">
+                    <span class="tag"><a href="#">#DeepSeek</a></span>
+                    <span class="tag"><a href="#">#Next.js</a></span>
+                    <span class="tag"><a href="#">#Express</a></span>
+                </div>
+                <a class="go-post" href="https://lambent-zabaione-8eab6b.netlify.app" target="_blank">进入 →</a>
+            </div>
+
+            <!-- 占位卡片: 更多 Agent 即将到来 -->
+            <div class="post">
+                <h2 class="post-title">更多 Agent 即将到来...</h2>
+                <div class="category-and-date">
+                    <span class="category"><i class="fa-solid fa-flask fa-fw"></i> Coming Soon</span>
+                </div>
+                <div class="description">
+                    <p>更多 AI Agent 正在开发中，敬请期待。你可以通过微信或 QQ 联系我，提出你想要的 Agent 想法。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 侧边个人卡片 -->
+        <div id="home-card">
+            <div id="card-style">
+                <div id="card-div">
+                    <div class="avatar">
+                        <img src="assets/2.jpg" alt="avatar">
+                    </div>
+                    <div class="name">David</div>
+                    <div class="description">
+                        <p>AI Agents 开发者</p>
+                        <p>用 AI 构建实用工具</p>
+                    </div>
+                    <div class="icon-links">
+                        <span class="icon-link">
+                            <a href="#" id="card-wechat-btn" title="WeChat"><i class="fa-brands fa-weixin fa-fw"></i></a>
+                        </span>
+                        <span class="icon-link">
+                            <a href="#" id="card-qq-btn" title="QQ"><i class="fa-brands fa-qq fa-fw"></i></a>
+                        </span>
+                        <span class="icon-link">
+                            <a href="https://github.com/CrystalDavid" title="GitHub"><i class="fa-brands fa-github fa-fw"></i></a>
+                        </span>
+                    </div>
+                    <div class="friend-links">
+                        <div class="friend-link">
+                            <a href="https://lambent-zabaione-8eab6b.netlify.app">PPT-Agent</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div id="footer-wrap">
+            <div>
+                &copy; 2025 David's Agents
+                <span id="footer-icon"><i class="fa-solid fa-robot fa-fw"></i></span>
+                @David
+            </div>
+            <div>
+                Powered by <a href="https://github.com/CrystalDavid">CrystalDavid</a> &amp;
+                Inspired by <a href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX</a>
+            </div>
+        </div>
+    </footer>
 
     <!-- 微信弹窗 -->
     <div class="modal-overlay" id="wechat-modal">
