@@ -184,6 +184,246 @@
             opacity: 0.7;
         }
 
+        .giscus-card {
+            background: #fff;
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            transition: box-shadow 0.25s, transform 0.25s;
+        }
+
+        .giscus-card:hover {
+            box-shadow: 0 0 5px #d9d9d9;
+            transform: translate(-5px, -5px);
+        }
+
+        .giscus-card .section-title {
+            margin-bottom: 20px;
+        }
+
+        /* 留言墙样式 */
+        .msg-input-area {
+            margin-bottom: 30px;
+        }
+        .msg-input-area input,
+        .msg-input-area textarea {
+            width: 100%;
+            box-sizing: border-box;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            outline: none;
+            margin-bottom: 12px;
+            resize: vertical;
+        }
+        .msg-input-area input:focus,
+        .msg-input-area textarea:focus {
+            border-color: #66afef;
+            box-shadow: 0 0 0 3px rgba(102, 175, 239, 0.15);
+        }
+        .msg-input-area textarea {
+            min-height: 80px;
+        }
+        .msg-submit-btn {
+            background: linear-gradient(120deg, #9abbf7 0%, #ffbbf4 100%);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 32px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .msg-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(154, 187, 247, 0.5);
+        }
+        .msg-submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* 留言列表 */
+        .msg-list {
+            list-style: none;
+            padding: 0;
+        }
+        .msg-item {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: transform 0.25s, box-shadow 0.25s;
+            position: relative;
+            animation: msgAppear 0.6s ease forwards;
+        }
+        .msg-item.appearing {
+            opacity: 0;
+            filter: blur(8px);
+            transform: translateY(20px);
+            animation: msgFadeIn 0.8s ease forwards;
+        }
+        @keyframes msgFadeIn {
+            0% { opacity: 0; filter: blur(8px); transform: translateY(20px); }
+            100% { opacity: 1; filter: blur(0); transform: translateY(0); }
+        }
+        @keyframes msgAppear {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .msg-item:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .msg-item:hover .msg-reactions {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .msg-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .msg-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #9abbf7, #ffbbf4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+            font-size: 14px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        .msg-nickname {
+            font-weight: bold;
+            color: #1e3e3f;
+            font-size: 15px;
+        }
+        .msg-time {
+            margin-left: auto;
+            color: #999;
+            font-size: 12px;
+        }
+        .msg-content {
+            color: #333;
+            line-height: 1.7;
+            font-size: 15px;
+            padding-left: 48px;
+        }
+
+        /* 表情反应 */
+        .msg-reactions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            padding-left: 48px;
+            opacity: 0;
+            transform: translateY(5px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .msg-reaction-btn {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 50px;
+            padding: 4px 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .msg-reaction-btn:hover {
+            background: #f0f7ff;
+            border-color: #66afef;
+            transform: scale(1.1);
+        }
+        .msg-reaction-btn.active {
+            background: #e8f4fd;
+            border-color: #66afef;
+        }
+        .msg-reaction-btn .count {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* 回复区域 */
+        .msg-replies {
+            margin-top: 12px;
+            margin-left: 48px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 12px 16px;
+            border: 1px solid #e8e8e8;
+        }
+        .msg-reply-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+            color: #555;
+            animation: msgFadeIn 0.5s ease forwards;
+        }
+        .msg-reply-item:last-child {
+            border-bottom: none;
+        }
+        .msg-reply-item .reply-name {
+            color: #66afef;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        .msg-reply-input {
+            display: none;
+            margin-top: 10px;
+            padding-left: 48px;
+        }
+        .msg-reply-input.show {
+            display: flex;
+            gap: 8px;
+        }
+        .msg-reply-input input {
+            flex: 1;
+            border: 1px solid #e0e0e0;
+            border-radius: 50px;
+            padding: 8px 16px;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .msg-reply-input input:focus {
+            border-color: #66afef;
+        }
+        .msg-reply-input button {
+            background: #66afef;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 8px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .reply-toggle-btn {
+            background: none;
+            border: none;
+            color: #66afef;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 4px 0;
+            margin-top: 6px;
+            margin-left: 48px;
+        }
+        .reply-toggle-btn:hover {
+            text-decoration: underline;
+        }
+
         @media (max-width: 768px) {
             .about-card {
                 padding: 30px 20px;
@@ -211,6 +451,16 @@
             .contact-table td {
                 padding: 12px 15px;
                 font-size: 14px;
+            }
+
+            .giscus-card {
+                padding: 25px 15px;
+            }
+            .msg-content, .msg-reactions, .msg-reply-input, .reply-toggle-btn {
+                padding-left: 0;
+            }
+            .msg-replies {
+                margin-left: 0;
             }
         }
     </style>
@@ -321,6 +571,19 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- 留言墙 -->
+        <div class="giscus-card">
+            <div class="section-title">
+                <i class="fa-solid fa-comments"></i> 留言墙
+            </div>
+            <div class="msg-input-area">
+                <input type="text" id="msg-nickname" placeholder="你的昵称" maxlength="20">
+                <textarea id="msg-content" placeholder="写下你想说的话..." maxlength="500"></textarea>
+                <button class="msg-submit-btn" id="msg-submit">发布留言</button>
+            </div>
+            <ul class="msg-list" id="msg-list"></ul>
+        </div>
     </div>
 
     <!-- Footer -->
@@ -338,6 +601,182 @@
         </div>
     </footer>
 
+    <canvas id="fireworks-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
     <script src="script.js"></script>
+    <script>
+    // 留言墙逻辑
+    (function() {
+        const STORAGE_KEY = 'david_msg_wall';
+        const REACTIONS = ['👍', '❤️', '😂', '🎉', '🤔'];
+
+        function getMessages() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            } catch(e) { return []; }
+        }
+
+        function saveMessages(msgs) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(msgs));
+        }
+
+        function formatTime(ts) {
+            const d = new Date(ts);
+            const pad = n => String(n).padStart(2, '0');
+            return d.getFullYear() + '/' + pad(d.getMonth()+1) + '/' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+        }
+
+        function getInitial(name) {
+            return name ? name.charAt(0).toUpperCase() : '?';
+        }
+
+        function renderMessages(animateId) {
+            const list = document.getElementById('msg-list');
+            const msgs = getMessages();
+            list.innerHTML = '';
+            msgs.slice().reverse().forEach(function(msg) {
+                const li = document.createElement('li');
+                li.className = 'msg-item';
+                if (msg.id === animateId) li.classList.add('appearing');
+
+                // Reactions data
+                const reactions = msg.reactions || {};
+
+                let reactionsHtml = '<div class="msg-reactions">';
+                REACTIONS.forEach(function(emoji) {
+                    const count = reactions[emoji] || 0;
+                    const active = (msg.myReactions && msg.myReactions.includes(emoji)) ? ' active' : '';
+                    reactionsHtml += '<button class="msg-reaction-btn' + active + '" data-id="' + msg.id + '" data-emoji="' + emoji + '">' + emoji + (count > 0 ? '<span class="count">' + count + '</span>' : '') + '</button>';
+                });
+                reactionsHtml += '</div>';
+
+                // Replies
+                let repliesHtml = '';
+                if (msg.replies && msg.replies.length > 0) {
+                    repliesHtml = '<div class="msg-replies">';
+                    msg.replies.forEach(function(r) {
+                        repliesHtml += '<div class="msg-reply-item"><span class="reply-name">' + escapeHtml(r.name) + '</span>' + escapeHtml(r.text) + '</div>';
+                    });
+                    repliesHtml += '</div>';
+                }
+
+                li.innerHTML = '<div class="msg-header"><div class="msg-avatar">' + getInitial(msg.nickname) + '</div><span class="msg-nickname">' + escapeHtml(msg.nickname) + '</span><span class="msg-time">' + formatTime(msg.time) + '</span></div>' +
+                    '<div class="msg-content">' + escapeHtml(msg.content) + '</div>' +
+                    reactionsHtml +
+                    repliesHtml +
+                    '<button class="reply-toggle-btn" data-id="' + msg.id + '">回复</button>' +
+                    '<div class="msg-reply-input" id="reply-input-' + msg.id + '"><input type="text" placeholder="输入回复..." maxlength="200"><button data-id="' + msg.id + '">发送</button></div>';
+
+                list.appendChild(li);
+            });
+
+            // Bind events
+            bindEvents();
+        }
+
+        function bindEvents() {
+            // Reaction buttons
+            document.querySelectorAll('.msg-reaction-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    const emoji = this.dataset.emoji;
+                    const msgs = getMessages();
+                    const msg = msgs.find(function(m) { return m.id === id; });
+                    if (!msg) return;
+                    if (!msg.reactions) msg.reactions = {};
+                    if (!msg.myReactions) msg.myReactions = [];
+                    if (msg.myReactions.includes(emoji)) {
+                        msg.reactions[emoji] = Math.max(0, (msg.reactions[emoji] || 1) - 1);
+                        msg.myReactions = msg.myReactions.filter(function(e) { return e !== emoji; });
+                    } else {
+                        msg.reactions[emoji] = (msg.reactions[emoji] || 0) + 1;
+                        msg.myReactions.push(emoji);
+                    }
+                    saveMessages(msgs);
+                    renderMessages();
+                });
+            });
+
+            // Reply toggle
+            document.querySelectorAll('.reply-toggle-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    const input = document.getElementById('reply-input-' + id);
+                    input.classList.toggle('show');
+                    if (input.classList.contains('show')) {
+                        input.querySelector('input').focus();
+                    }
+                });
+            });
+
+            // Reply submit
+            document.querySelectorAll('.msg-reply-input button').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    const input = this.parentElement.querySelector('input');
+                    const text = input.value.trim();
+                    if (!text) return;
+                    const nickname = localStorage.getItem('david_msg_nickname') || '匿名';
+                    const msgs = getMessages();
+                    const msg = msgs.find(function(m) { return m.id === id; });
+                    if (!msg) return;
+                    if (!msg.replies) msg.replies = [];
+                    msg.replies.push({ name: nickname, text: text, time: Date.now() });
+                    saveMessages(msgs);
+                    input.value = '';
+                    renderMessages();
+                });
+            });
+
+            // Reply on enter
+            document.querySelectorAll('.msg-reply-input input').forEach(function(input) {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        this.parentElement.querySelector('button').click();
+                    }
+                });
+            });
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // Submit new message
+        document.getElementById('msg-submit').addEventListener('click', function() {
+            const nicknameInput = document.getElementById('msg-nickname');
+            const contentInput = document.getElementById('msg-content');
+            const nickname = nicknameInput.value.trim();
+            const content = contentInput.value.trim();
+            if (!nickname) { nicknameInput.focus(); return; }
+            if (!content) { contentInput.focus(); return; }
+
+            localStorage.setItem('david_msg_nickname', nickname);
+
+            const msgs = getMessages();
+            const newMsg = {
+                id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+                nickname: nickname,
+                content: content,
+                time: Date.now(),
+                reactions: {},
+                myReactions: [],
+                replies: []
+            };
+            msgs.push(newMsg);
+            saveMessages(msgs);
+            contentInput.value = '';
+            renderMessages(newMsg.id);
+        });
+
+        // Restore nickname
+        const savedNick = localStorage.getItem('david_msg_nickname');
+        if (savedNick) document.getElementById('msg-nickname').value = savedNick;
+
+        // Initial render
+        renderMessages();
+    })();
+    </script>
 </body>
 </html>

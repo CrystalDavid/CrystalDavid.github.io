@@ -247,10 +247,12 @@ body.dark-mode #home-background {
 body.dark-mode #home-head #home-info .info .wrap h1,
 body.dark-mode #home-head #home-info .info .wrap h3 {
     color: #fff;
+    text-shadow: 0 0 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.6);
 }
 
 body.dark-mode #home-head #home-info .info .wrap h5 {
     color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 10px rgba(0,0,0,0.9), 0 0 20px rgba(0,0,0,0.6);
 }
 
 /* 主题切换提示 */
@@ -679,26 +681,33 @@ body.dark-mode .description {
 /* 桌面端 */
 @media (min-width: 900px) {
     #home-head #home-info .info .wrap {
-        padding: 25px;
+        padding: 30px 40px;
+        background: rgba(0, 0, 0, 0.35);
+        border-radius: 20px;
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
     }
 
     #home-head #home-info .info .wrap h1 {
         font-size: 52px;
         font-weight: bold;
         margin-bottom: 10px;
-        color: #1e1e1e;
+        color: #fff;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5);
     }
 
     #home-head #home-info .info .wrap h3 {
         font-size: 24px;
         margin: 10px 0;
-        color: #1e1e1e;
+        color: #fff;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5);
     }
 
     #home-head #home-info .info .wrap h5 {
         font-size: 16px;
         margin: 20px 0;
-        color: rgba(30, 30, 30, 0.7);
+        color: rgba(255, 255, 255, 0.85);
+        text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5);
     }
 
     #home-head #home-info .loop {
@@ -775,25 +784,32 @@ body.dark-mode .description {
     }
 
     #home-head #home-info .info .wrap {
-        padding: 50px;
+        padding: 30px;
+        background: rgba(0, 0, 0, 0.35);
+        border-radius: 16px;
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
     }
 
     #home-head #home-info .info .wrap h1 {
         font-size: 36px;
         margin-bottom: 10px;
-        color: #1e1e1e;
+        color: #fff;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5);
     }
 
     #home-head #home-info .info .wrap h3 {
         font-size: 20px;
         margin: 10px 0;
-        color: #1e1e1e;
+        color: #fff;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5);
     }
 
     #home-head #home-info .info .wrap h5 {
         font-size: 14px;
         margin: 20px 0;
-        color: rgba(30, 30, 30, 0.7);
+        color: rgba(255, 255, 255, 0.85);
+        text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(0,0,0,0.5);
     }
 
     #home-head #home-info .loop {

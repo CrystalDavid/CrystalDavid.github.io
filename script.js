@@ -378,3 +378,118 @@ function setupModal(btnIds, modalId, closeId) {
 
 setupModal(['card-wechat-btn'], 'wechat-modal', 'wechat-close');
 setupModal(['card-qq-btn'], 'qq-modal', 'qq-close');
+
+// 烟花效果
+(function() {
+    const fwCanvas = document.getElementById('fireworks-canvas');
+    if (!fwCanvas) return;
+    const fwCtx = fwCanvas.getContext('2d');
+    const particles = [];
+    const colors = ['#ff4444','#ffd700','#00e5ff','#ff00ff','#76ff03','#ff9100','#ff69b4','#448aff'];
+    let fwAnimId = null;
+    let globalMode = false;
+    let globalTimer = null;
+    let globalSpawnTimer = null;
+    const clickTimes = [];
+
+    function resizeFwCanvas() {
+        fwCanvas.width = window.innerWidth;
+        fwCanvas.height = window.innerHeight;
+    }
+    resizeFwCanvas();
+    window.addEventListener('resize', resizeFwCanvas);
+
+    class Particle {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            const angle = Math.random() * Math.PI * 2;
+            const speed = Math.random() * 5 + 2;
+            this.vx = Math.cos(angle) * speed;
+            this.vy = Math.sin(angle) * speed;
+            this.color = colors[Math.floor(Math.random() * colors.length)];
+            this.size = Math.random() * 3 + 2;
+            this.opacity = 1;
+            this.gravity = 0.06;
+            this.life = 1;
+            this.decay = Math.random() * 0.02 + 0.015;
+        }
+        update() {
+            this.vx *= 0.98;
+            this.vy += this.gravity;
+            this.x += this.vx;
+            this.y += this.vy;
+            this.life -= this.decay;
+            this.opacity = this.life;
+            this.size *= 0.98;
+        }
+        draw() {
+            fwCtx.save();
+            fwCtx.globalAlpha = Math.max(0, this.opacity);
+            fwCtx.fillStyle = this.color;
+            fwCtx.beginPath();
+            fwCtx.arc(this.x, this.y, Math.max(0, this.size), 0, Math.PI * 2);
+            fwCtx.fill();
+            fwCtx.restore();
+        }
+        isDead() {
+            return this.life <= 0 || this.size <= 0.2;
+        }
+    }
+
+    function spawnBurst(x, y, count) {
+        for (let i = 0; i < count; i++) {
+            particles.push(new Particle(x, y));
+        }
+        if (!fwAnimId) animateFireworks();
+    }
+
+    function animateFireworks() {
+        fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
+        for (let i = particles.length - 1; i >= 0; i--) {
+            particles[i].update();
+            particles[i].draw();
+            if (particles[i].isDead()) particles.splice(i, 1);
+        }
+        if (particles.length > 0 || globalMode) {
+            fwAnimId = requestAnimationFrame(animateFireworks);
+        } else {
+            fwAnimId = null;
+        }
+    }
+
+    function startGlobalFireworks() {
+        globalMode = true;
+        if (!fwAnimId) animateFireworks();
+        globalSpawnTimer = setInterval(function() {
+            const rx = Math.random() * fwCanvas.width;
+            const ry = Math.random() * fwCanvas.height * 0.6;
+            spawnBurst(rx, ry, 30);
+        }, 300);
+        globalTimer = setTimeout(function() {
+            globalMode = false;
+            clearInterval(globalSpawnTimer);
+            globalSpawnTimer = null;
+            globalTimer = null;
+        }, 5000);
+    }
+
+    document.addEventListener('click', function(e) {
+        // Skip clicks on interactive elements
+        if (e.target.closest('a, button, input, textarea, select, .modal-overlay')) return;
+
+        spawnBurst(e.clientX, e.clientY, 20);
+
+        // Rapid-click detection
+        const now = Date.now();
+        clickTimes.push(now);
+        // Keep only clicks within last 1 second
+        while (clickTimes.length > 0 && now - clickTimes[0] > 1000) {
+            clickTimes.shift();
+        }
+        if (clickTimes.length >= 5 && !globalMode) {
+            clickTimes.length = 0;
+            startGlobalFireworks();
+        }
+    });
+})();
