@@ -406,27 +406,27 @@ setupModal(['card-qq-btn'], 'qq-modal', 'qq-close');
             this.x = x;
             this.y = y;
             const angle = Math.random() * Math.PI * 2;
-            const speed = Math.random() * 6 + 2.5;
+            const speed = Math.random() * 8 + 3;
             this.vx = Math.cos(angle) * speed;
             this.vy = Math.sin(angle) * speed;
             this.color = colors[Math.floor(Math.random() * colors.length)];
-            this.size = Math.random() * 4 + 2;
+            this.size = Math.random() * 5 + 3;
             this.opacity = 1;
-            this.gravity = 0.05;
+            this.gravity = 0.03;
             this.life = 1;
-            this.decay = Math.random() * 0.015 + 0.01;
+            this.decay = Math.random() * 0.006 + 0.004;
             this.trail = [];
         }
         update() {
             this.trail.push({x: this.x, y: this.y, opacity: this.opacity * 0.5});
-            if (this.trail.length > 5) this.trail.shift();
+            if (this.trail.length > 6) this.trail.shift();
             this.vx *= 0.98;
             this.vy += this.gravity;
             this.x += this.vx;
             this.y += this.vy;
             this.life -= this.decay;
             this.opacity = this.life;
-            this.size *= 0.985;
+            this.size *= 0.992;
         }
         draw() {
             // Draw trail
@@ -483,9 +483,9 @@ setupModal(['card-qq-btn'], 'qq-modal', 'qq-close');
         if (!fwAnimId) animateFireworks();
         globalSpawnTimer = setInterval(function() {
             const rx = Math.random() * fwCanvas.width;
-            const ry = Math.random() * fwCanvas.height * 0.7;
-            spawnBurst(rx, ry, 35);
-        }, 250);
+            const ry = Math.random() * fwCanvas.height * 0.8;
+            spawnBurst(rx, ry, 60);
+        }, 120);
         globalTimer = setTimeout(function() {
             globalMode = false;
             clearInterval(globalSpawnTimer);
@@ -498,7 +498,7 @@ setupModal(['card-qq-btn'], 'qq-modal', 'qq-close');
         // Skip clicks on form inputs and modals only
         if (e.target.closest('input, textarea, select, .modal-overlay')) return;
 
-        spawnBurst(e.clientX, e.clientY, 25);
+        spawnBurst(e.clientX, e.clientY, 40);
 
         // Rapid-click detection
         const now = Date.now();
@@ -512,4 +512,21 @@ setupModal(['card-qq-btn'], 'qq-modal', 'qq-close');
             startGlobalFireworks();
         }
     });
+})();
+
+// 站点运行时间计时器
+(function() {
+    const startDate = new Date('2025-05-18');
+    function updateRuntime() {
+        const now = new Date();
+        const diff = now - startDate;
+        const days = Math.floor(diff / 86400000);
+        const hours = Math.floor((diff % 86400000) / 3600000);
+        const mins = Math.floor((diff % 3600000) / 60000);
+        const secs = Math.floor((diff % 60000) / 1000);
+        const el = document.getElementById('site-runtime');
+        if (el) el.textContent = '本站已运行 ' + days + ' 天 ' + hours + ' 小时 ' + mins + ' 分 ' + secs + ' 秒';
+    }
+    updateRuntime();
+    setInterval(updateRuntime, 1000);
 })();

@@ -52,6 +52,16 @@ a:hover {
     color: #fff;
 }
 
+#menu.menu-color #desktop-menu a:hover,
+#menu.menu-color #desktop-menu .nav-links a:hover,
+#menu.menu-color #desktop-menu .title:hover {
+    color: #fff !important;
+}
+
+#menu.menu-color .menu-icons a:hover {
+    color: #fff !important;
+}
+
 #menu.hidden {
     top: -50px;
 }
@@ -67,16 +77,20 @@ a:hover {
 
 #menu #desktop-menu .title {
     color: #555;
-    transition: color 0.3s;
+    transition: background 0.3s, color 0.3s;
     cursor: pointer;
     font-size: 18px;
     font-weight: bold;
     flex-shrink: 0;
     white-space: nowrap;
+    padding: 4px 14px;
+    border-radius: 50px;
 }
 
 #menu #desktop-menu .title:hover {
-    opacity: 0.8;
+    background: linear-gradient(120deg, #9abbf7 0%, #ffbbf4 100%);
+    color: #fff !important;
+    opacity: 1;
 }
 
 #menu #desktop-menu .title:hover span {
@@ -106,13 +120,15 @@ a:hover {
     gap: 4px;
     padding: 4px 12px;
     border-radius: 50px;
-    transition: color 0.3s;
+    transition: background 0.3s, color 0.3s;
     white-space: nowrap;
     flex-shrink: 0;
 }
 
 .nav-links a:hover {
-    opacity: 0.8;
+    background: linear-gradient(120deg, #9abbf7 0%, #ffbbf4 100%);
+    color: #fff !important;
+    opacity: 1;
 }
 
 .nav-links a:hover i {
@@ -134,12 +150,19 @@ a:hover {
     color: #555;
     font-size: 16px;
     padding: 4px 6px;
-    transition: transform 0.3s;
-    display: inline-block;
+    transition: background 0.3s, color 0.3s, transform 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
 }
 
 .menu-icons a:hover {
-    transform: scale(1.15);
+    background: #ff9100;
+    color: #fff !important;
+    transform: scale(1.1);
     opacity: 1;
 }
 
