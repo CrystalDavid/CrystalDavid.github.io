@@ -409,3 +409,18 @@ body.dark-mode .empty-state i {
 body.dark-mode .admin-form h3 {
     color: #9abbf7;
 }
+
+/* Delete shatter animation */
+@keyframes shatter {
+    0% { transform: scale(1); opacity: 1; filter: blur(0); }
+    30% { transform: scale(1.02); opacity: 0.9; filter: blur(0); }
+    60% { transform: scale(0.95) rotate(1deg); opacity: 0.6; filter: blur(2px); }
+    80% { transform: scale(0.8) rotate(-1deg); opacity: 0.3; filter: blur(4px); }
+    100% { transform: scale(0.5) rotate(2deg); opacity: 0; filter: blur(8px); height: 0; padding: 0; margin: 0; overflow: hidden; }
+}
+
+.post-card.shattering,
+.msg-item.shattering {
+    animation: shatter 0.8s ease forwards;
+    pointer-events: none;
+}

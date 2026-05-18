@@ -534,7 +534,7 @@ setupModal(['card-qq-btn'], 'qq-modal', 'qq-close');
 
 // 站点运行时间计时器
 (function() {
-    const startDate = new Date('2025-05-18');
+    const startDate = new Date('2026-05-17T00:00:00');
     function updateRuntime() {
         const now = new Date();
         const diff = now - startDate;

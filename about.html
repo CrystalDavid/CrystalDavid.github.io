@@ -525,6 +525,18 @@
             background: rgba(40, 40, 70, 0.8);
             border-color: rgba(154, 187, 247, 0.3);
         }
+
+        @keyframes shatter {
+            0% { transform: scale(1); opacity: 1; filter: blur(0); }
+            30% { transform: scale(1.02); opacity: 0.9; }
+            60% { transform: scale(0.95) rotate(1deg); opacity: 0.6; filter: blur(2px); }
+            80% { transform: scale(0.8) rotate(-1deg); opacity: 0.3; filter: blur(4px); }
+            100% { transform: scale(0.5) rotate(2deg); opacity: 0; filter: blur(8px); height: 0; padding: 0; margin: 0; overflow: hidden; }
+        }
+        .msg-item.shattering {
+            animation: shatter 0.8s ease forwards;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -768,7 +780,7 @@
                 li.addEventListener('mouseleave', function() { btn.style.opacity='0'; });
                 btn.addEventListener('click', async function() {
                     if (!confirm('确定删除这条留言？')) return;
-                    try { await SiteAPI.closeIssue(parseInt(this.dataset.issue)); li.remove(); } catch(e) { alert('删除失败'); }
+                    try { await SiteAPI.closeIssue(parseInt(this.dataset.issue)); li.classList.add('shattering'); setTimeout(function(){li.remove();},850); } catch(e) { alert('删除失败'); }
                 });
             });
         }

@@ -101,7 +101,8 @@
                 if (!confirm('确定删除这条内容？')) return;
                 try {
                     await SiteAPI.closeIssue(parseInt(this.dataset.issue));
-                    el.remove();
+                    el.classList.add('shattering');
+                    setTimeout(function() { el.remove(); }, 850);
                 } catch(e) { alert('删除失败'); }
             });
         }
