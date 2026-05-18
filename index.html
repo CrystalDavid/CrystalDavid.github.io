@@ -38,6 +38,14 @@
                 <i class="fa-solid fa-feather fa-fw"></i>
                 <span>&ensp;Musings</span>
             </a>
+            <div class="menu-icons">
+                <a href="#" id="theme-toggle" title="切换主题">
+                    <i class="fa-solid fa-moon fa-fw"></i>
+                </a>
+                <a href="#" id="search-toggle" title="搜索">
+                    <i class="fa-solid fa-search fa-fw"></i>
+                </a>
+            </div>
         </nav>
         <nav id="mobile-menu">
             <div class="title" id="mobile-menu-toggle">
@@ -52,11 +60,17 @@
                 <a href="/musings.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-feather fa-fw"></i></div><div class="item-text">Musings</div></div></a>
             </div>
         </nav>
+        <!-- 主题切换提示 -->
+        <div id="theme-toast" class="theme-toast">
+            <i class="fa-solid fa-moon"></i>
+            <span>已切换到深色模式</span>
+        </div>
     </div>
 
     <!-- Hero 全屏区域 -->
     <div id="home-head">
         <div id="home-background"></div>
+        <canvas id="stars-canvas"></canvas>
         <div id="home-info">
             <span class="loop"></span>
             <span class="loop"></span>

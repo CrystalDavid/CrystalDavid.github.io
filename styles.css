@@ -47,12 +47,19 @@ a:hover {
     color: #fff;
 }
 
+#menu.menu-color .menu-icons a {
+    color: #fff;
+}
+
 #menu.hidden {
     top: -50px;
 }
 
 #menu #desktop-menu {
     height: 50px;
+    display: flex;
+    align-items: center;
+    position: relative;
 }
 
 #menu #desktop-menu .title {
@@ -62,31 +69,37 @@ a:hover {
     margin-right: 5px;
 }
 
+.menu-icons {
+    position: absolute;
+    right: 60px;
+    display: flex;
+    gap: 20px;
+}
+
+.menu-icons a {
+    color: #555;
+    font-size: 18px;
+    padding: 8px;
+    transition: transform 0.3s;
+    display: inline-block;
+}
+
+.menu-icons a:hover {
+    transform: scale(1.2);
+    opacity: 1;
+}
+
+.menu-icons a:hover i {
+    animation: iconBounce 0.5s ease;
+}
+
 #menu #desktop-menu a {
     color: #555;
     display: inline-block;
     margin-left: 30px;
     padding: 4px 16px;
     border-radius: 50px;
-    position: relative;
-    overflow: hidden;
     transition: color 0.3s;
-}
-
-#menu #desktop-menu a::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    transition: left 0.5s ease;
-    z-index: -1;
-}
-
-#menu #desktop-menu a:hover::before {
-    left: 100%;
 }
 
 #menu #desktop-menu a:hover i {
@@ -150,6 +163,7 @@ a:hover {
     height: 100vh;
     width: 100vw;
     user-select: none;
+    position: relative;
 }
 
 #home-head #home-background {
@@ -163,6 +177,84 @@ a:hover {
     top: 0;
     width: 100vw;
     z-index: -1;
+    transition: background 0.5s ease;
+}
+
+/* 星空画布 */
+#stars-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+}
+
+body.dark-mode #stars-canvas {
+    opacity: 1;
+}
+
+body.dark-mode #home-background {
+    background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 100%);
+}
+
+/* 主题切换提示 */
+.theme-toast {
+    position: fixed;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: rgba(255, 255, 255, 0.95);
+    color: #1e3e3f;
+    padding: 12px 24px;
+    border-radius: 50px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.theme-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+body.dark-mode .theme-toast {
+    background: rgba(30, 30, 50, 0.95);
+    color: #fff;
+}
+
+body.dark-mode {
+    background: #0f0f1e;
+    color: #e0e0e0;
+}
+
+body.dark-mode .post {
+    background: #1a1a2e;
+    color: #e0e0e0;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .post-title {
+    color: #9abbf7;
+}
+
+body.dark-mode #home-card #card-style {
+    background: #1a1a2e;
+    color: #e0e0e0;
+}
+
+body.dark-mode #footer {
+    color: #e0e0e0;
 }
 
 #home-head #home-info {
@@ -622,7 +714,7 @@ a:hover {
 
     #home-posts-wrap {
         max-width: 1200px;
-        margin-top: -80px;
+        margin-top: 20px;
         position: relative;
         z-index: 5;
     }
@@ -716,7 +808,7 @@ a:hover {
 
     #home-posts-wrap {
         width: 100%;
-        margin-top: -40px;
+        margin-top: 20px;
         position: relative;
         z-index: 5;
     }
