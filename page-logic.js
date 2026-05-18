@@ -6,6 +6,7 @@
     const grid = document.getElementById('posts-grid');
     const EMOJI_MAP = { '👍': '+1', '❤️': 'heart', '😂': 'laugh', '🎉': 'hooray', '🚀': 'rocket' };
     const EMOJIS = Object.keys(EMOJI_MAP);
+    let isAdmin = false;
 
     async function loadPosts() {
         try {
@@ -70,6 +71,11 @@
         });
         html += '</div>';
 
+        // Admin delete button
+        if (isAdmin) {
+            html += '<button class="admin-delete-btn" data-issue="' + issue.number + '" title="删除" style="position:absolute;top:15px;right:15px;background:#ff4444;color:#fff;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;"><i class="fa-solid fa-trash"></i></button>';
+        }
+
         el.innerHTML = html;
 
         // Bind reaction clicks
@@ -85,6 +91,20 @@
                 } catch(e) {}
             });
         });
+
+        // Admin delete
+        const delBtn = el.querySelector('.admin-delete-btn');
+        if (delBtn) {
+            el.addEventListener('mouseenter', function() { delBtn.style.opacity = '1'; });
+            el.addEventListener('mouseleave', function() { delBtn.style.opacity = '0'; });
+            delBtn.addEventListener('click', async function() {
+                if (!confirm('确定删除这条内容？')) return;
+                try {
+                    await SiteAPI.closeIssue(parseInt(this.dataset.issue));
+                    el.remove();
+                } catch(e) { alert('删除失败'); }
+            });
+        }
 
         return el;
     }
@@ -120,9 +140,12 @@
             const pwd = adminPwd.value;
             const ok = await SiteAPI.verifyPassword(pwd);
             if (ok) {
+                isAdmin = true;
                 adminLogin.style.display = 'none';
                 adminToggle.style.display = 'none';
                 adminForm.style.display = 'block';
+                // Reload posts with delete buttons
+                await loadPosts();
             } else {
                 adminPwd.style.borderColor = '#ff4444';
                 setTimeout(function() { adminPwd.style.borderColor = ''; }, 1500);

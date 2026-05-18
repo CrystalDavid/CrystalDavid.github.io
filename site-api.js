@@ -78,6 +78,21 @@
         return res.json();
     }
 
+    async function closeIssue(issueNumber) {
+        const token = _getToken();
+        const url = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/issues/' + issueNumber;
+        const res = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': 'token ' + token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ state: 'closed' })
+        });
+        if (!res.ok) throw new Error('Failed to close issue: ' + res.status);
+        return res.json();
+    }
+
     async function uploadFile(file) {
         const token = _getToken();
         const reader = new FileReader();
@@ -108,6 +123,7 @@
         verifyPassword: verifyPassword,
         fetchIssues: fetchIssues,
         createIssue: createIssue,
+        closeIssue: closeIssue,
         getReactions: getReactions,
         addReaction: addReaction,
         uploadFile: uploadFile,

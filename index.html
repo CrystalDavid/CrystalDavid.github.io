@@ -170,22 +170,24 @@
     <script>
     // Home feed: load all issues sorted by date
     (function() {
-        const ICONS = { article: 'fa-solid fa-book', agent: 'fa-solid fa-robot', musings: 'fa-solid fa-feather' };
-        const LABELS = { article: 'Article', agent: 'Agent', musings: 'Musings' };
+        const ICONS = { article: 'fa-solid fa-book', agent: 'fa-solid fa-robot', musings: 'fa-solid fa-feather', message: 'fa-solid fa-comment' };
+        const LABELS = { article: 'Article', agent: 'Agent', musings: 'Musings', message: '留言' };
         const container = document.getElementById('home-posts-dynamic');
         if (!container) return;
 
         async function loadFeed() {
             try {
-                const [articles, agents, musings] = await Promise.all([
+                const [articles, agents, musings, messages] = await Promise.all([
                     SiteAPI.fetchIssues('article'),
                     SiteAPI.fetchIssues('agent'),
-                    SiteAPI.fetchIssues('musings')
+                    SiteAPI.fetchIssues('musings'),
+                    SiteAPI.fetchIssues('message')
                 ]);
                 const all = [];
                 articles.forEach(function(i) { i._label = 'article'; all.push(i); });
                 agents.forEach(function(i) { i._label = 'agent'; all.push(i); });
                 musings.forEach(function(i) { i._label = 'musings'; all.push(i); });
+                messages.forEach(function(i) { i._label = 'message'; all.push(i); });
 
                 all.sort(function(a, b) { return new Date(b.created_at) - new Date(a.created_at); });
 
