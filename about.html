@@ -652,6 +652,33 @@
             </div>
             <ul class="msg-list" id="msg-list"></ul>
         </div>
+
+        <!-- 管理员编辑 About -->
+        <div class="giscus-card" id="about-admin-panel">
+            <button class="admin-toggle-btn" id="about-admin-toggle" style="background:linear-gradient(120deg, #667eea 0%, #764ba2 100%);color:#fff;border:none;border-radius:50px;padding:10px 24px;font-size:14px;font-weight:bold;cursor:pointer;">
+                <i class="fa-solid fa-lock"></i> 管理员编辑
+            </button>
+            <div id="about-admin-login" style="display:none;margin-top:20px;text-align:center;">
+                <input type="password" id="about-admin-pwd" placeholder="输入管理员密码" style="border:2px solid #e0e0e0;border-radius:50px;padding:10px 20px;font-size:14px;outline:none;width:200px;">
+                <button id="about-admin-login-btn" style="background:#667eea;color:#fff;border:none;border-radius:50px;padding:10px 20px;font-size:14px;cursor:pointer;margin-left:10px;">验证</button>
+            </div>
+            <div id="about-admin-form" style="display:none;margin-top:20px;">
+                <h3 style="font-size:24px;text-align:center;margin-bottom:20px;color:#1e3e3f;"><i class="fa-solid fa-pen-to-square" style="color:#66afef;margin-right:10px;"></i>编辑 About 页面</h3>
+
+                <label style="font-weight:bold;display:block;margin-bottom:6px;">个人介绍</label>
+                <textarea id="about-edit-intro" style="width:100%;box-sizing:border-box;border:2px solid #e0e0e0;border-radius:12px;padding:12px;font-size:14px;min-height:80px;margin-bottom:16px;font-family:inherit;outline:none;"></textarea>
+
+                <label style="font-weight:bold;display:block;margin-bottom:6px;">技能/语言 区块标题</label>
+                <input type="text" id="about-edit-skills-title" style="width:100%;box-sizing:border-box;border:2px solid #e0e0e0;border-radius:12px;padding:10px;font-size:14px;margin-bottom:8px;outline:none;">
+                <label style="font-weight:bold;display:block;margin-bottom:6px;">技能列表（每行一个，格式：图标类名|颜色|名称）</label>
+                <textarea id="about-edit-skills" style="width:100%;box-sizing:border-box;border:2px solid #e0e0e0;border-radius:12px;padding:12px;font-size:13px;min-height:100px;margin-bottom:16px;font-family:monospace;outline:none;" placeholder="fa-solid fa-code|#9b59b6|C/C++&#10;fa-brands fa-python|#3776ab|Python"></textarea>
+
+                <label style="font-weight:bold;display:block;margin-bottom:6px;">帐号列表（每行一个，格式：网站名|帐号或链接文字|链接URL(可选)）</label>
+                <textarea id="about-edit-accounts" style="width:100%;box-sizing:border-box;border:2px solid #e0e0e0;border-radius:12px;padding:12px;font-size:13px;min-height:80px;margin-bottom:16px;font-family:monospace;outline:none;" placeholder="QQ|2811459442&#10;GitHub|CrystalDavid|https://github.com/CrystalDavid"></textarea>
+
+                <button id="about-admin-save" style="display:block;width:100%;background:linear-gradient(120deg, #667eea 0%, #764ba2 100%);color:#fff;border:none;border-radius:50px;padding:14px;font-size:16px;font-weight:bold;cursor:pointer;">保存修改</button>
+            </div>
+        </div>
     </div>
 
     <!-- Footer -->
@@ -849,6 +876,138 @@
 
         // Initial render
         renderMessages();
+    })();
+
+    // About 管理员编辑逻辑
+    (function() {
+        const ABOUT_KEY = 'david_about_data';
+        const PWD_HASH = 'da3fb9830dbd1b3ee2e799a06b3d8b486e5285fc508264f87777905827510551';
+
+        async function hashStr(str) {
+            const buf = new TextEncoder().encode(str);
+            const hash = await crypto.subtle.digest('SHA-256', buf);
+            return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function getAboutData() {
+            try { return JSON.parse(localStorage.getItem(ABOUT_KEY)); } catch(e) { return null; }
+        }
+
+        function saveAboutData(data) {
+            localStorage.setItem(ABOUT_KEY, JSON.stringify(data));
+        }
+
+        function applyAboutData(data) {
+            if (!data) return;
+            // Apply intro
+            if (data.intro) {
+                const introBox = document.querySelector('.intro-box');
+                if (introBox) introBox.innerHTML = data.intro.replace(/\n/g, '<br>');
+            }
+            // Apply skills title
+            if (data.skillsTitle) {
+                const titleEl = document.querySelectorAll('.section-title')[0];
+                if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-lightbulb"></i> ' + data.skillsTitle;
+            }
+            // Apply skills list
+            if (data.skills && data.skills.length) {
+                const list = document.querySelector('.skills-list');
+                if (list) {
+                    list.innerHTML = '';
+                    data.skills.forEach(function(s) {
+                        const li = document.createElement('li');
+                        li.innerHTML = '<i class="' + s.icon + '" style="color:' + s.color + ';"></i> ' + s.name;
+                        list.appendChild(li);
+                    });
+                }
+            }
+            // Apply accounts
+            if (data.accounts && data.accounts.length) {
+                const tbody = document.querySelector('.contact-table tbody');
+                if (tbody) {
+                    tbody.innerHTML = '';
+                    data.accounts.forEach(function(a) {
+                        const tr = document.createElement('tr');
+                        const td1 = document.createElement('td');
+                        td1.textContent = a.site;
+                        const td2 = document.createElement('td');
+                        if (a.url) {
+                            td2.innerHTML = '<a href="' + a.url + '" target="_blank">' + a.value + '</a>';
+                        } else {
+                            td2.textContent = a.value;
+                        }
+                        tr.appendChild(td1);
+                        tr.appendChild(td2);
+                        tbody.appendChild(tr);
+                    });
+                }
+            }
+        }
+
+        // Load saved data on page load
+        var savedData = getAboutData();
+        if (savedData) applyAboutData(savedData);
+
+        // Admin toggle
+        var toggle = document.getElementById('about-admin-toggle');
+        var login = document.getElementById('about-admin-login');
+        var form = document.getElementById('about-admin-form');
+        var pwdInput = document.getElementById('about-admin-pwd');
+        var loginBtn = document.getElementById('about-admin-login-btn');
+        var saveBtn = document.getElementById('about-admin-save');
+
+        if (toggle) toggle.addEventListener('click', function() {
+            login.style.display = login.style.display === 'none' ? 'block' : 'none';
+        });
+
+        if (loginBtn) loginBtn.addEventListener('click', async function() {
+            var h = await hashStr(pwdInput.value);
+            if (h === PWD_HASH) {
+                login.style.display = 'none';
+                toggle.style.display = 'none';
+                form.style.display = 'block';
+                // Populate form with current data
+                var cur = getAboutData() || {};
+                document.getElementById('about-edit-intro').value = cur.intro || "I'm David~\n\nSUStech Third-year undergraduate\nDepartment of Statistics, Major in Data Science and Big Data";
+                document.getElementById('about-edit-skills-title').value = cur.skillsTitle || '语言';
+                var skillsText = (cur.skills || [
+                    {icon:'fa-solid fa-code',color:'#9b59b6',name:'C/C++'},
+                    {icon:'fa-brands fa-python',color:'#3776ab',name:'Python'},
+                    {icon:'fa-brands fa-node-js',color:'#68a063',name:'Node.js'},
+                    {icon:'fa-solid fa-terminal',color:'#4eaa25',name:'Bash'}
+                ]).map(function(s) { return s.icon + '|' + s.color + '|' + s.name; }).join('\n');
+                document.getElementById('about-edit-skills').value = skillsText;
+                var accountsText = (cur.accounts || [
+                    {site:'QQ',value:'2811459442',url:''},
+                    {site:'GitHub',value:'CrystalDavid',url:'https://github.com/CrystalDavid'}
+                ]).map(function(a) { return a.site + '|' + a.value + (a.url ? '|' + a.url : ''); }).join('\n');
+                document.getElementById('about-edit-accounts').value = accountsText;
+            } else {
+                pwdInput.style.borderColor = '#ff4444';
+                setTimeout(function() { pwdInput.style.borderColor = ''; }, 1500);
+            }
+        });
+
+        if (pwdInput) pwdInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') loginBtn.click();
+        });
+
+        if (saveBtn) saveBtn.addEventListener('click', function() {
+            var data = {};
+            data.intro = document.getElementById('about-edit-intro').value;
+            data.skillsTitle = document.getElementById('about-edit-skills-title').value;
+            data.skills = document.getElementById('about-edit-skills').value.split('\n').filter(Boolean).map(function(line) {
+                var parts = line.split('|');
+                return { icon: parts[0].trim(), color: parts[1] ? parts[1].trim() : '#666', name: parts[2] ? parts[2].trim() : '' };
+            });
+            data.accounts = document.getElementById('about-edit-accounts').value.split('\n').filter(Boolean).map(function(line) {
+                var parts = line.split('|');
+                return { site: parts[0].trim(), value: parts[1] ? parts[1].trim() : '', url: parts[2] ? parts[2].trim() : '' };
+            });
+            saveAboutData(data);
+            applyAboutData(data);
+            alert('保存成功！');
+        });
     })();
     </script>
 </body>

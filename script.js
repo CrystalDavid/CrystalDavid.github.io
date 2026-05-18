@@ -45,29 +45,42 @@ if (titleLink) {
 // 主题切换
 const themeToggle = document.getElementById('theme-toggle');
 const themeToast = document.getElementById('theme-toast');
-let isDarkMode = false;
+let isDarkMode = localStorage.getItem('dark-mode') === 'true';
+
+// Apply saved dark mode on load
+if (isDarkMode) {
+    document.body.classList.add('dark-mode');
+    if (themeToggle) {
+        const icon = themeToggle.querySelector('i');
+        if (icon) icon.className = 'fa-solid fa-sun fa-fw';
+    }
+    startStarfield();
+}
 
 if (themeToggle) {
     themeToggle.addEventListener('click', (e) => {
         e.preventDefault();
         isDarkMode = !isDarkMode;
         document.body.classList.toggle('dark-mode');
+        localStorage.setItem('dark-mode', isDarkMode);
 
         // 更新图标
         const icon = themeToggle.querySelector('i');
         if (isDarkMode) {
             icon.className = 'fa-solid fa-sun fa-fw';
-            themeToast.innerHTML = '<i class="fa-solid fa-moon"></i><span>已切换到深色模式</span>';
+            if (themeToast) themeToast.innerHTML = '<i class="fa-solid fa-moon"></i><span>已切换到深色模式</span>';
         } else {
             icon.className = 'fa-solid fa-moon fa-fw';
-            themeToast.innerHTML = '<i class="fa-solid fa-sun"></i><span>已切换到浅色模式</span>';
+            if (themeToast) themeToast.innerHTML = '<i class="fa-solid fa-sun"></i><span>已切换到浅色模式</span>';
         }
 
         // 显示提示
-        themeToast.classList.add('show');
-        setTimeout(() => {
-            themeToast.classList.remove('show');
-        }, 2000);
+        if (themeToast) {
+            themeToast.classList.add('show');
+            setTimeout(() => {
+                themeToast.classList.remove('show');
+            }, 2000);
+        }
 
         // 控制星空
         if (isDarkMode) {
