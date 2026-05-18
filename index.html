@@ -18,32 +18,34 @@
             <a class="title" href="/">
                 <span>DAVID の小窝</span>
             </a>
-            <a href="/">
-                <i class="fa-solid fa-house fa-fw"></i>
-                <span>&nbsp;Home</span>
-            </a>
-            <a href="/about.html">
-                <i class="fa-solid fa-id-card fa-fw"></i>
-                <span>&nbsp;About</span>
-            </a>
-            <a href="/article.html">
-                <i class="fa-solid fa-book fa-fw"></i>
-                <span>&nbsp;Article</span>
-            </a>
-            <a href="/agent.html">
-                <i class="fa-solid fa-robot fa-fw"></i>
-                <span>&nbsp;Agent</span>
-            </a>
-            <a href="/musings.html">
-                <i class="fa-solid fa-feather fa-fw"></i>
-                <span>&nbsp;Musings</span>
-            </a>
-            <a href="#" id="theme-toggle" class="icon-btn" title="切换主题">
-                <i class="fa-solid fa-moon fa-fw"></i>
-            </a>
-            <a href="#" id="search-toggle" class="icon-btn" title="搜索">
-                <i class="fa-solid fa-search fa-fw"></i>
-            </a>
+            <div class="nav-links">
+                <a href="/">
+                    <i class="fa-solid fa-house fa-fw"></i><span>Home</span>
+                </a>
+                <a href="/about.html">
+                    <i class="fa-solid fa-id-card fa-fw"></i><span>About</span>
+                </a>
+                <a href="/article.html">
+                    <i class="fa-solid fa-book fa-fw"></i><span>Article</span>
+                </a>
+                <a href="/agent.html">
+                    <i class="fa-solid fa-robot fa-fw"></i><span>Agent</span>
+                </a>
+                <a href="/musings.html">
+                    <i class="fa-solid fa-feather fa-fw"></i><span>Musings</span>
+                </a>
+            </div>
+            <div class="menu-icons">
+                <a href="#" id="wallpaper-toggle" title="切换壁纸">
+                    <i class="fa-solid fa-image fa-fw"></i>
+                </a>
+                <a href="#" id="theme-toggle" title="切换主题">
+                    <i class="fa-solid fa-moon fa-fw"></i>
+                </a>
+                <a href="#" id="search-toggle" title="搜索">
+                    <i class="fa-solid fa-search fa-fw"></i>
+                </a>
+            </div>
         </nav>
         <nav id="mobile-menu">
             <div class="title" id="mobile-menu-toggle">
@@ -68,12 +70,9 @@
     <!-- Hero 全屏区域 -->
     <div id="home-head">
         <div id="home-background"></div>
+        <video id="home-video" muted loop playsinline style="display:none;position:absolute;top:0;left:0;width:100vw;height:100vh;object-fit:cover;z-index:-1;"></video>
         <canvas id="stars-canvas"></canvas>
         <div id="home-info">
-            <span class="loop"></span>
-            <span class="loop"></span>
-            <span class="loop"></span>
-            <span class="loop"></span>
             <span class="info">
                 <div class="wrap">
                     <h1>David の小窝</h1>

@@ -59,17 +59,17 @@ a:hover {
     height: 50px;
     display: flex;
     align-items: center;
-    padding: 0 40px;
+    padding: 0 30px;
 }
 
 #menu #desktop-menu .title {
     color: #555;
     display: inline-block;
-    margin-right: 15px;
     transition: color 0.3s;
     cursor: pointer;
     font-size: 18px;
     font-weight: bold;
+    flex-shrink: 0;
 }
 
 #menu #desktop-menu .title:hover {
@@ -90,12 +90,17 @@ a:hover {
 .nav-links {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 20px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .nav-links a {
     color: #555;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     padding: 4px 12px;
     border-radius: 50px;
     transition: color 0.3s;
@@ -118,6 +123,7 @@ a:hover {
     display: flex;
     gap: 10px;
     margin-left: auto;
+    flex-shrink: 0;
 }
 
 .menu-icons a {
@@ -234,6 +240,15 @@ body.dark-mode #home-background {
     background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 100%);
 }
 
+body.dark-mode #home-head #home-info .info .wrap h1,
+body.dark-mode #home-head #home-info .info .wrap h3 {
+    color: #fff;
+}
+
+body.dark-mode #home-head #home-info .info .wrap h5 {
+    color: rgba(255, 255, 255, 0.8);
+}
+
 /* 主题切换提示 */
 .theme-toast {
     position: fixed;
@@ -314,42 +329,9 @@ body.dark-mode .description {
 
 #home-head #home-info .info {
     align-items: center;
-    border-radius: 50%;
     display: flex;
     justify-content: center;
     text-align: center;
-}
-
-#home-head #home-info .loop:nth-child(1) {
-    animation: loop1 10s linear infinite;
-    background: #fff;
-    border-radius: 38% 62% 63% 37%/41% 44% 56% 59%;
-    opacity: 0.3;
-    transform: rotate(30deg);
-}
-
-#home-head #home-info .loop:nth-child(2) {
-    animation: loop2 15s linear infinite;
-    background: #fff;
-    border-radius: 38% 62% 63% 37%/41% 44% 56% 59%;
-    opacity: 0.45;
-    transform: rotate(60deg);
-}
-
-#home-head #home-info .loop:nth-child(3) {
-    animation: loop3 10s linear infinite;
-    background: #fff;
-    border-radius: 38% 62% 63% 37%/41% 44% 56% 59%;
-    opacity: 0.3;
-    transform: rotate(90deg);
-}
-
-#home-head #home-info .loop:nth-child(4) {
-    animation: loop4 15s linear infinite;
-    background: #fff;
-    border-radius: 38% 62% 63% 37%/41% 44% 56% 59%;
-    opacity: 0.45;
-    transform: rotate(120deg);
 }
 
 /* 内容区域 */
@@ -646,34 +628,13 @@ body.dark-mode .description {
     border-radius: 100px;
 }
 
-/* 动画 */
-@keyframes loop1 {
-    from { transform: rotate(30deg); }
-    to { transform: rotate(390deg); }
-}
-
-@keyframes loop2 {
-    from { transform: rotate(60deg); }
-    to { transform: rotate(420deg); }
-}
-
-@keyframes loop3 {
-    from { transform: rotate(90deg); }
-    to { transform: rotate(450deg); }
-}
-
-@keyframes loop4 {
-    from { transform: rotate(120deg); }
-    to { transform: rotate(480deg); }
-}
-
 /* 向下滚动箭头 */
 .scroll-arrow {
     position: absolute;
     bottom: 50px;
     left: 50%;
     transform: translateX(-50%);
-    color: rgba(255, 255, 255, 0.95);
+    color: rgba(30, 30, 30, 0.8);
     cursor: pointer;
     animation: arrowFloat 2.5s ease-in-out infinite, arrowPulse 2s ease-in-out infinite;
     z-index: 100;
@@ -721,26 +682,23 @@ body.dark-mode .description {
         font-size: 52px;
         font-weight: bold;
         margin-bottom: 10px;
-        color: #fff;
+        color: #1e1e1e;
     }
 
     #home-head #home-info .info .wrap h3 {
         font-size: 24px;
         margin: 10px 0;
-        color: #fff;
+        color: #1e1e1e;
     }
 
     #home-head #home-info .info .wrap h5 {
         font-size: 16px;
         margin: 20px 0;
-        color: rgba(255, 255, 255, 0.8);
+        color: rgba(30, 30, 30, 0.7);
     }
 
     #home-head #home-info .loop {
-        display: inline-block;
-        height: 500px;
-        position: absolute;
-        width: 500px;
+        display: none;
     }
 
     #home-head #home-info,
@@ -771,7 +729,7 @@ body.dark-mode .description {
     }
 
     #menu #desktop-menu {
-        display: block;
+        display: flex;
     }
 
     #menu #mobile-menu {
@@ -805,7 +763,6 @@ body.dark-mode .description {
 
     #home-head #home-info .info {
         align-items: center;
-        background: #ffffffa6;
         display: flex;
         height: 350px;
         justify-content: center;
@@ -820,19 +777,19 @@ body.dark-mode .description {
     #home-head #home-info .info .wrap h1 {
         font-size: 36px;
         margin-bottom: 10px;
-        color: #1e3e3f;
+        color: #1e1e1e;
     }
 
     #home-head #home-info .info .wrap h3 {
         font-size: 20px;
         margin: 10px 0;
-        color: #1e3e3f;
+        color: #1e1e1e;
     }
 
     #home-head #home-info .info .wrap h5 {
         font-size: 14px;
         margin: 20px 0;
-        color: #5c6b72;
+        color: rgba(30, 30, 30, 0.7);
     }
 
     #home-head #home-info .loop {

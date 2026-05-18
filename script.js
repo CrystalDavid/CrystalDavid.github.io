@@ -76,6 +76,49 @@ if (themeToggle) {
     });
 }
 
+// 壁纸切换
+const wallpapers = [
+    { src: 'assets/壁纸.png', type: 'image' },
+    { src: 'assets/壁纸1.mp4', type: 'video' },
+    { src: 'assets/壁纸2.png', type: 'image' },
+    { src: 'assets/壁纸3.png', type: 'image' },
+    { src: 'assets/壁纸4.mp4', type: 'video' },
+];
+let currentWallpaper = 0;
+
+const wallpaperToggle = document.getElementById('wallpaper-toggle');
+const homeBackground = document.getElementById('home-background');
+const homeVideo = document.getElementById('home-video');
+
+function applyWallpaper(index) {
+    const wp = wallpapers[index];
+    if (wp.type === 'video') {
+        if (homeBackground) homeBackground.style.display = 'none';
+        if (homeVideo) {
+            homeVideo.src = wp.src;
+            homeVideo.style.display = 'block';
+            homeVideo.play();
+        }
+    } else {
+        if (homeVideo) {
+            homeVideo.pause();
+            homeVideo.style.display = 'none';
+        }
+        if (homeBackground) {
+            homeBackground.style.display = 'block';
+            homeBackground.style.background = `url('${wp.src}') center / cover no-repeat`;
+        }
+    }
+}
+
+if (wallpaperToggle) {
+    wallpaperToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        currentWallpaper = (currentWallpaper + 1) % wallpapers.length;
+        applyWallpaper(currentWallpaper);
+    });
+}
+
 // 搜索按钮（暂无功能）
 const searchToggle = document.getElementById('search-toggle');
 if (searchToggle) {
