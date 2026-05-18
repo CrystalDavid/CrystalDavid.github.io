@@ -32,67 +32,13 @@ if (mobileToggle) {
     });
 }
 
-// 点击首屏向下滚动
-const homeInfo = document.getElementById('home-info');
-if (homeInfo) {
-    homeInfo.style.cursor = 'pointer';
-    homeInfo.addEventListener('click', () => {
+// 向下滚动箭头点击
+const scrollArrow = document.getElementById('scroll-arrow');
+if (scrollArrow) {
+    scrollArrow.addEventListener('click', () => {
         window.scrollTo({
             top: window.innerHeight - 80,
             behavior: 'smooth'
-        });
-    });
-}
-
-// 分类筛选
-const filterBar = document.getElementById('filter-bar');
-const filterText = document.getElementById('filter-text');
-const filterClear = document.getElementById('filter-clear');
-const posts = document.querySelectorAll('.post[data-category]');
-
-const categoryNames = {
-    about: 'About',
-    article: 'Article',
-    agent: 'Agent',
-    musings: 'Musings'
-};
-
-document.querySelectorAll('[data-category]').forEach(link => {
-    if (link.classList.contains('post')) return; // 跳过卡片本身
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const category = link.dataset.category;
-        filterByCategory(category);
-        // 滚动到内容区
-        const postsWrap = document.getElementById('home-posts-wrap');
-        if (postsWrap) {
-            window.scrollTo({
-                top: postsWrap.offsetTop - 60,
-                behavior: 'smooth'
-            });
-        }
-    });
-});
-
-function filterByCategory(category) {
-    filterBar.style.display = 'block';
-    filterText.textContent = '当前分类：' + (categoryNames[category] || category);
-
-    posts.forEach(post => {
-        if (post.dataset.category === category) {
-            post.style.display = '';
-        } else {
-            post.style.display = 'none';
-        }
-    });
-}
-
-if (filterClear) {
-    filterClear.addEventListener('click', (e) => {
-        e.preventDefault();
-        filterBar.style.display = 'none';
-        posts.forEach(post => {
-            post.style.display = '';
         });
     });
 }

@@ -22,19 +22,19 @@
                 <i class="fa-solid fa-house fa-fw"></i>
                 <span>&ensp;Home</span>
             </a>
-            <a href="#" data-category="about">
+            <a href="/about.html">
                 <i class="fa-solid fa-id-card fa-fw"></i>
                 <span>&ensp;About</span>
             </a>
-            <a href="#" data-category="article">
+            <a href="/article.html">
                 <i class="fa-solid fa-book fa-fw"></i>
                 <span>&ensp;Article</span>
             </a>
-            <a href="#" data-category="agent">
+            <a href="/agent.html">
                 <i class="fa-solid fa-robot fa-fw"></i>
                 <span>&ensp;Agent</span>
             </a>
-            <a href="#" data-category="musings">
+            <a href="/musings.html">
                 <i class="fa-solid fa-feather fa-fw"></i>
                 <span>&ensp;Musings</span>
             </a>
@@ -46,10 +46,10 @@
             </div>
             <div class="items" id="mobile-menu-items" style="display:none;">
                 <a href="/"><div class="item"><div class="item-icon"><i class="fa-solid fa-house fa-fw"></i></div><div class="item-text">Home</div></div></a>
-                <a href="#" data-category="about"><div class="item"><div class="item-icon"><i class="fa-solid fa-id-card fa-fw"></i></div><div class="item-text">About</div></div></a>
-                <a href="#" data-category="article"><div class="item"><div class="item-icon"><i class="fa-solid fa-book fa-fw"></i></div><div class="item-text">Article</div></div></a>
-                <a href="#" data-category="agent"><div class="item"><div class="item-icon"><i class="fa-solid fa-robot fa-fw"></i></div><div class="item-text">Agent</div></div></a>
-                <a href="#" data-category="musings"><div class="item"><div class="item-icon"><i class="fa-solid fa-feather fa-fw"></i></div><div class="item-text">Musings</div></div></a>
+                <a href="/about.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-id-card fa-fw"></i></div><div class="item-text">About</div></div></a>
+                <a href="/article.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-book fa-fw"></i></div><div class="item-text">Article</div></div></a>
+                <a href="/agent.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-robot fa-fw"></i></div><div class="item-text">Agent</div></div></a>
+                <a href="/musings.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-feather fa-fw"></i></div><div class="item-text">Musings</div></div></a>
             </div>
         </nav>
     </div>
@@ -70,21 +70,21 @@
                 </div>
             </span>
         </div>
-    </div>
-
-    <!-- 分类筛选提示 -->
-    <div id="filter-bar" style="display:none;">
-        <div id="filter-content">
-            <span id="filter-text"></span>
-            <a href="#" id="filter-clear">显示全部</a>
+        <!-- 向下滚动箭头 -->
+        <div class="scroll-arrow" id="scroll-arrow">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <polyline points="7 6 12 11 17 6" opacity="0.5"></polyline>
+            </svg>
         </div>
     </div>
+
 
     <!-- 内容区域 -->
     <div id="home-posts-wrap">
         <div id="home-posts">
             <!-- Agent 卡片: PPT-Agent -->
-            <div class="post" data-category="agent">
+            <div class="post">
                 <h2 class="post-title">PPT-Agent</h2>
                 <div class="category-and-date">
                     <span class="category"><i class="fa-solid fa-robot fa-fw"></i> Agent</span>
@@ -102,7 +102,7 @@
             </div>
 
             <!-- 占位卡片 -->
-            <div class="post" data-category="musings">
+            <div class="post">
                 <h2 class="post-title">更多内容即将到来...</h2>
                 <div class="category-and-date">
                     <span class="category"><i class="fa-solid fa-feather fa-fw"></i> Musings</span>

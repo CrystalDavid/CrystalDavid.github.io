@@ -66,6 +66,17 @@ a:hover {
     color: #555;
     display: inline-block;
     margin-left: 30px;
+    padding: 4px 16px;
+    border-radius: 50px;
+    transition: background 0.3s, backdrop-filter 0.3s, box-shadow 0.3s;
+}
+
+#menu #desktop-menu a:hover {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 2px 16px rgba(255, 255, 255, 0.2);
+    opacity: 1;
 }
 
 #menu #desktop-menu a span {
@@ -110,39 +121,6 @@ a:hover {
 
 #menu #mobile-menu .items a {
     color: #555;
-}
-
-/* 分类筛选栏 */
-#filter-bar {
-    text-align: center;
-    padding: 15px 20px;
-    background: #e8f4fd;
-    border-bottom: 1px solid #d0e8f7;
-}
-
-#filter-content {
-    display: inline-block;
-    font-size: 14px;
-    color: #5c6b72;
-}
-
-#filter-content #filter-text {
-    margin-right: 15px;
-    font-weight: 500;
-}
-
-#filter-content #filter-clear {
-    background: #66afef;
-    color: #fff;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    text-decoration: none;
-    transition: opacity 0.2s;
-}
-
-#filter-content #filter-clear:hover {
-    opacity: 0.8;
 }
 
 /* Hero 区域 */
@@ -519,6 +497,50 @@ a:hover {
 @keyframes loop4 {
     from { transform: rotate(120deg); }
     to { transform: rotate(480deg); }
+}
+
+/* 向下滚动箭头 */
+.scroll-arrow {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255, 255, 255, 0.95);
+    cursor: pointer;
+    animation: arrowFloat 2.5s ease-in-out infinite, arrowPulse 2s ease-in-out infinite;
+    z-index: 10;
+    transition: transform 0.3s ease;
+}
+
+.scroll-arrow:hover {
+    animation-play-state: paused;
+    transform: translateX(-50%) scale(1.2);
+}
+
+.scroll-arrow svg {
+    filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.3));
+    width: 40px;
+    height: 40px;
+}
+
+@keyframes arrowFloat {
+    0%, 100% {
+        transform: translateX(-50%) translateY(0);
+    }
+    50% {
+        transform: translateX(-50%) translateY(15px);
+    }
+}
+
+@keyframes arrowPulse {
+    0%, 100% {
+        opacity: 0.5;
+        filter: drop-shadow(0 3px 8px rgba(255, 255, 255, 0.2));
+    }
+    50% {
+        opacity: 1;
+        filter: drop-shadow(0 3px 12px rgba(255, 255, 255, 0.6));
+    }
 }
 
 /* 桌面端 */
