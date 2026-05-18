@@ -110,14 +110,11 @@
 
 .post-card-tags span {
     display: inline-block;
-    background: linear-gradient(120deg, #9abbf7 0%, #ffbbf4 100%);
-    color: #fff;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: bold;
-    padding: 3px 10px;
-    border-radius: 50px;
-    margin-right: 6px;
+    margin-right: 10px;
     margin-bottom: 4px;
+    color: #66afef;
 }
 
 .post-card-link {
@@ -325,4 +322,77 @@
     .admin-login input {
         width: 100%;
     }
+}
+
+/* Dark mode for pages */
+body.dark-mode .page-card,
+body.dark-mode .admin-panel {
+    background: rgba(26, 26, 46, 0.75);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    color: #e0e0e0;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(154, 187, 247, 0.2);
+}
+
+body.dark-mode .page-header h1 {
+    color: #9abbf7;
+}
+
+body.dark-mode .page-desc {
+    color: #a0a0b0;
+}
+
+body.dark-mode .post-card {
+    background: rgba(40, 40, 70, 0.6);
+    border: 1px solid rgba(154, 187, 247, 0.15);
+}
+
+body.dark-mode .post-card-title {
+    color: #9abbf7;
+}
+
+body.dark-mode .post-card-date {
+    color: #a0a0b0;
+}
+
+body.dark-mode .post-card-desc {
+    color: #d0d0d0;
+}
+
+body.dark-mode .post-card-tags span {
+    color: #9abbf7;
+}
+
+body.dark-mode .reaction-btn {
+    background: rgba(40, 40, 70, 0.8);
+    border-color: rgba(154, 187, 247, 0.3);
+    color: #e0e0e0;
+}
+
+body.dark-mode .reaction-btn:hover {
+    background: rgba(60, 60, 100, 0.8);
+    border-color: #9abbf7;
+}
+
+body.dark-mode .admin-form input,
+body.dark-mode .admin-form textarea,
+body.dark-mode .admin-login input {
+    background: rgba(40, 40, 70, 0.6);
+    border-color: rgba(154, 187, 247, 0.3);
+    color: #e0e0e0;
+}
+
+body.dark-mode .admin-form input:focus,
+body.dark-mode .admin-form textarea:focus,
+body.dark-mode .admin-login input:focus {
+    border-color: #9abbf7;
+}
+
+body.dark-mode .empty-state {
+    color: #a0a0b0;
+}
+
+body.dark-mode .empty-state i {
+    color: #555;
 }

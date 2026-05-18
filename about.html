@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="utf-8">
-    <title>About - David の小窝</title>
+    <title>About - Davidの小窝</title>
     <meta name="author" content="David">
     <meta name="description" content="关于 David">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -463,6 +463,68 @@
                 margin-left: 0;
             }
         }
+
+        /* Dark mode */
+        body.dark-mode .about-card,
+        body.dark-mode .giscus-card {
+            background: rgba(26, 26, 46, 0.75);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            color: #e0e0e0;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(154, 187, 247, 0.2);
+        }
+        body.dark-mode .about-header h1,
+        body.dark-mode .greeting {
+            color: #9abbf7;
+        }
+        body.dark-mode .section-title {
+            color: #e0e0e0;
+        }
+        body.dark-mode .intro-box {
+            background: rgba(40, 40, 70, 0.6);
+            border-left-color: #9abbf7;
+            color: #d0d0d0;
+        }
+        body.dark-mode .skills-list li {
+            background: rgba(40, 40, 70, 0.6);
+            color: #d0d0d0;
+        }
+        body.dark-mode .skills-list li:hover {
+            background: linear-gradient(120deg, #9abbf7 0%, #ffbbf4 100%);
+            color: #fff;
+        }
+        body.dark-mode .contact-table td {
+            background: rgba(40, 40, 70, 0.6);
+            border-bottom-color: rgba(154, 187, 247, 0.15);
+            color: #d0d0d0;
+        }
+        body.dark-mode .contact-table td:first-child {
+            color: #e0e0e0;
+        }
+        body.dark-mode .msg-item {
+            background: rgba(40, 40, 70, 0.6);
+        }
+        body.dark-mode .msg-nickname {
+            color: #9abbf7;
+        }
+        body.dark-mode .msg-content {
+            color: #d0d0d0;
+        }
+        body.dark-mode .msg-input-area input,
+        body.dark-mode .msg-input-area textarea {
+            background: rgba(40, 40, 70, 0.6);
+            border-color: rgba(154, 187, 247, 0.3);
+            color: #e0e0e0;
+        }
+        body.dark-mode .msg-replies {
+            background: rgba(30, 30, 50, 0.6);
+            border-color: rgba(154, 187, 247, 0.15);
+        }
+        body.dark-mode .msg-reaction-btn {
+            background: rgba(40, 40, 70, 0.8);
+            border-color: rgba(154, 187, 247, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -470,7 +532,7 @@
     <div id="menu">
         <nav id="desktop-menu">
             <a class="title" href="/">
-                <span>DAVID の小窝</span>
+                <span>Davidの小窝</span>
             </a>
             <div class="nav-links">
                 <a href="/">
@@ -504,7 +566,7 @@
         <nav id="mobile-menu">
             <div class="title" id="mobile-menu-toggle">
                 <i class="fa-solid fa-bars fa-fw"></i>
-                <span>&emsp;DAVID の小窝</span>
+                <span>&emsp;Davidの小窝</span>
             </div>
             <div class="items" id="mobile-menu-items" style="display:none;">
                 <a href="/"><div class="item"><div class="item-icon"><i class="fa-solid fa-house fa-fw"></i></div><div class="item-text">Home</div></div></a>
@@ -514,7 +576,13 @@
                 <a href="/musings.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-feather fa-fw"></i></div><div class="item-text">Musings</div></div></a>
             </div>
         </nav>
+        <div id="theme-toast" class="theme-toast">
+            <i class="fa-solid fa-moon"></i>
+            <span>已切换到深色模式</span>
+        </div>
     </div>
+
+    <canvas id="stars-canvas"></canvas>
 
     <!-- About 内容 -->
     <div class="about-container">
@@ -590,7 +658,7 @@
     <footer id="footer">
         <div id="footer-wrap">
             <div>
-                &copy; 2025 David の小窝
+                &copy; 2025 Davidの小窝
                 <span id="footer-icon"><i class="fa-solid fa-heart fa-fw"></i></span>
                 @David
             </div>

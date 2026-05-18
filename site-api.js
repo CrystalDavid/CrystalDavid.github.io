@@ -78,6 +78,31 @@
         return res.json();
     }
 
+    async function uploadFile(file) {
+        const token = _getToken();
+        const reader = new FileReader();
+        const base64 = await new Promise(function(resolve) {
+            reader.onload = function() { resolve(reader.result.split(',')[1]); };
+            reader.readAsDataURL(file);
+        });
+        const filename = 'uploads/' + Date.now() + '-' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+        const url = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + filename;
+        const res = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'token ' + token,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: 'Upload media: ' + file.name,
+                content: base64
+            })
+        });
+        if (!res.ok) throw new Error('Upload failed: ' + res.status);
+        const data = await res.json();
+        return data.content.download_url;
+    }
+
     // Expose API
     window.SiteAPI = {
         verifyPassword: verifyPassword,
@@ -85,6 +110,7 @@
         createIssue: createIssue,
         getReactions: getReactions,
         addReaction: addReaction,
+        uploadFile: uploadFile,
         REACTIONS_MAP: {
             '👍': '+1',
             '❤️': 'heart',

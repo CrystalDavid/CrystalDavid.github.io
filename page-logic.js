@@ -154,9 +154,15 @@
 
                 // Musings specific fields
                 const dateEl = document.getElementById('post-date');
-                const mediaEl = document.getElementById('post-media');
+                const mediaFileEl = document.getElementById('post-media-file');
                 if (dateEl) bodyData.date = dateEl.value.trim() || new Date().toLocaleDateString('zh-CN');
-                if (mediaEl) bodyData.media = mediaEl.value.trim();
+
+                // Handle file upload for musings
+                if (mediaFileEl && mediaFileEl.files && mediaFileEl.files[0]) {
+                    adminPush.textContent = '上传文件中...';
+                    const mediaUrl = await SiteAPI.uploadFile(mediaFileEl.files[0]);
+                    bodyData.media = mediaUrl;
+                }
 
                 await SiteAPI.createIssue(title, JSON.stringify(bodyData), [LABEL]);
 
@@ -166,7 +172,7 @@
                 if (linkEl) linkEl.value = '';
                 if (tagsEl) tagsEl.value = '';
                 if (dateEl) dateEl.value = '';
-                if (mediaEl) mediaEl.value = '';
+                if (mediaFileEl) mediaFileEl.value = '';
 
                 // Reload posts
                 await loadPosts();
