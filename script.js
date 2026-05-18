@@ -2,25 +2,27 @@
 const menu = document.getElementById('menu');
 let lastScrollY = 0;
 
-window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY;
-    const homeHeight = window.innerHeight;
+if (menu) {
+    window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        const homeHeight = window.innerHeight;
 
-    if (scrollY < homeHeight - 100) {
-        menu.classList.add('menu-color');
-        menu.classList.remove('hidden');
-    } else {
-        menu.classList.remove('menu-color');
-        if (scrollY > lastScrollY && scrollY > 100) {
-            menu.classList.add('hidden');
-        } else {
+        if (scrollY < homeHeight - 100) {
+            menu.classList.add('menu-color');
             menu.classList.remove('hidden');
+        } else {
+            menu.classList.remove('menu-color');
+            if (scrollY > lastScrollY && scrollY > 100) {
+                menu.classList.add('hidden');
+            } else {
+                menu.classList.remove('hidden');
+            }
         }
-    }
-    lastScrollY = scrollY;
-});
+        lastScrollY = scrollY;
+    });
 
-menu.classList.add('menu-color');
+    menu.classList.add('menu-color');
+}
 
 // 标题点击逻辑
 const titleLink = document.querySelector('#desktop-menu .title');
@@ -404,28 +406,46 @@ setupModal(['card-qq-btn'], 'qq-modal', 'qq-close');
             this.x = x;
             this.y = y;
             const angle = Math.random() * Math.PI * 2;
-            const speed = Math.random() * 5 + 2;
+            const speed = Math.random() * 6 + 2.5;
             this.vx = Math.cos(angle) * speed;
             this.vy = Math.sin(angle) * speed;
             this.color = colors[Math.floor(Math.random() * colors.length)];
-            this.size = Math.random() * 3 + 2;
+            this.size = Math.random() * 4 + 2;
             this.opacity = 1;
-            this.gravity = 0.06;
+            this.gravity = 0.05;
             this.life = 1;
-            this.decay = Math.random() * 0.02 + 0.015;
+            this.decay = Math.random() * 0.015 + 0.01;
+            this.trail = [];
         }
         update() {
+            this.trail.push({x: this.x, y: this.y, opacity: this.opacity * 0.5});
+            if (this.trail.length > 5) this.trail.shift();
             this.vx *= 0.98;
             this.vy += this.gravity;
             this.x += this.vx;
             this.y += this.vy;
             this.life -= this.decay;
             this.opacity = this.life;
-            this.size *= 0.98;
+            this.size *= 0.985;
         }
         draw() {
+            // Draw trail
+            for (let i = 0; i < this.trail.length; i++) {
+                const t = this.trail[i];
+                const trailOpacity = (i / this.trail.length) * this.opacity * 0.4;
+                fwCtx.save();
+                fwCtx.globalAlpha = Math.max(0, trailOpacity);
+                fwCtx.fillStyle = this.color;
+                fwCtx.beginPath();
+                fwCtx.arc(t.x, t.y, Math.max(0, this.size * 0.6), 0, Math.PI * 2);
+                fwCtx.fill();
+                fwCtx.restore();
+            }
+            // Draw particle with glow
             fwCtx.save();
             fwCtx.globalAlpha = Math.max(0, this.opacity);
+            fwCtx.shadowColor = this.color;
+            fwCtx.shadowBlur = 8;
             fwCtx.fillStyle = this.color;
             fwCtx.beginPath();
             fwCtx.arc(this.x, this.y, Math.max(0, this.size), 0, Math.PI * 2);
@@ -463,9 +483,9 @@ setupModal(['card-qq-btn'], 'qq-modal', 'qq-close');
         if (!fwAnimId) animateFireworks();
         globalSpawnTimer = setInterval(function() {
             const rx = Math.random() * fwCanvas.width;
-            const ry = Math.random() * fwCanvas.height * 0.6;
-            spawnBurst(rx, ry, 30);
-        }, 300);
+            const ry = Math.random() * fwCanvas.height * 0.7;
+            spawnBurst(rx, ry, 35);
+        }, 250);
         globalTimer = setTimeout(function() {
             globalMode = false;
             clearInterval(globalSpawnTimer);
@@ -475,10 +495,10 @@ setupModal(['card-qq-btn'], 'qq-modal', 'qq-close');
     }
 
     document.addEventListener('click', function(e) {
-        // Skip clicks on interactive elements
-        if (e.target.closest('a, button, input, textarea, select, .modal-overlay')) return;
+        // Skip clicks on form inputs and modals only
+        if (e.target.closest('input, textarea, select, .modal-overlay')) return;
 
-        spawnBurst(e.clientX, e.clientY, 20);
+        spawnBurst(e.clientX, e.clientY, 25);
 
         // Rapid-click detection
         const now = Date.now();
