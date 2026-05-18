@@ -155,13 +155,11 @@
                 // Musings specific fields - auto date
                 const dateEl = document.getElementById('post-date');
                 const mediaFileEl = document.getElementById('post-media-file');
-                if (LABEL === 'musings') {
-                    const now = new Date();
-                    const pad = n => String(n).padStart(2, '0');
-                    bodyData.date = now.getFullYear() + '/' + pad(now.getMonth()+1) + '/' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
-                } else if (dateEl) {
-                    bodyData.date = dateEl.value.trim() || new Date().toLocaleDateString('zh-CN');
-                }
+
+                // Auto-generate date for all post types
+                const now = new Date();
+                const pad = n => String(n).padStart(2, '0');
+                bodyData.date = now.getFullYear() + '/' + pad(now.getMonth()+1) + '/' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
 
                 // Handle file upload for musings
                 if (mediaFileEl && mediaFileEl.files && mediaFileEl.files[0]) {
