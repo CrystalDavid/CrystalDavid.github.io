@@ -3,3 +3,9 @@ node_modules/
 *.log
 PPT-Agent/backend/.env
 PPT-Agent/backend/output/
+hexo-theme-particlex/
+assets/关于*.png
+assets/小箭头.png
+assets/点击效果.png
+assets/现状.png
+assets/1.png

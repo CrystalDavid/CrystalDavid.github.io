@@ -203,10 +203,7 @@ a:hover {
 }
 
 #home-head #home-background {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+    background: url('assets/壁纸.png') center / cover no-repeat;
     height: 100vh;
     left: 0;
     position: absolute;
