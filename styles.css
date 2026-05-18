@@ -59,19 +59,17 @@ a:hover {
     height: 50px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     padding: 0 40px;
 }
 
 #menu #desktop-menu .title {
     color: #555;
     display: inline-block;
-    margin-right: 30px;
+    margin-right: 15px;
     transition: color 0.3s;
     cursor: pointer;
     font-size: 18px;
     font-weight: bold;
-    flex-shrink: 0;
 }
 
 #menu #desktop-menu .title:hover {
@@ -92,15 +90,34 @@ a:hover {
 .nav-links {
     display: flex;
     align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
+    gap: 8px;
+}
+
+.nav-links a {
+    color: #555;
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 50px;
+    transition: color 0.3s;
+    white-space: nowrap;
+}
+
+.nav-links a:hover {
+    opacity: 0.8;
+}
+
+.nav-links a:hover i {
+    animation: iconBounce 0.5s ease;
+}
+
+.nav-links a:hover span {
+    animation: textWave 0.5s ease;
 }
 
 .menu-icons {
     display: flex;
     gap: 10px;
     margin-left: auto;
-    flex-shrink: 0;
 }
 
 .menu-icons a {
@@ -118,26 +135,6 @@ a:hover {
 
 .menu-icons a:hover i {
     animation: iconBounce 0.5s ease;
-}
-
-#menu #desktop-menu a:not(.title) {
-    color: #555;
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 50px;
-    transition: color 0.3s;
-}
-
-#menu #desktop-menu a:not(.title):hover {
-    opacity: 0.8;
-}
-
-#menu #desktop-menu a:not(.title):hover i {
-    animation: iconBounce 0.5s ease;
-}
-
-#menu #desktop-menu a:not(.title):hover span {
-    animation: textWave 0.5s ease;
 }
 
 @keyframes textWave {
