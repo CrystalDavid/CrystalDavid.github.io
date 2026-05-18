@@ -59,16 +59,17 @@ a:hover {
     height: 50px;
     display: flex;
     align-items: center;
-    position: relative;
+    padding: 0 60px;
 }
 
 #menu #desktop-menu .title {
     color: #555;
     display: inline-block;
-    margin-left: 60px;
-    margin-right: 5px;
+    margin-right: 20px;
     transition: color 0.3s;
     cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
 }
 
 #menu #desktop-menu .title:hover {
@@ -76,33 +77,32 @@ a:hover {
 }
 
 #menu #desktop-menu .title:hover span {
-    animation: titleShake 0.5s ease;
+    animation: titleBounce 0.5s ease;
 }
 
-@keyframes titleShake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-3px); }
-    50% { transform: translateX(3px); }
-    75% { transform: translateX(-2px); }
+@keyframes titleBounce {
+    0%, 100% { transform: translateY(0); }
+    25% { transform: translateY(-4px); }
+    50% { transform: translateY(0); }
+    75% { transform: translateY(-2px); }
 }
 
 .menu-icons {
-    position: absolute;
-    right: 60px;
     display: flex;
     gap: 8px;
+    margin-left: 15px;
 }
 
 .menu-icons a {
     color: #555;
-    font-size: 18px;
-    padding: 8px;
+    font-size: 16px;
+    padding: 4px 12px;
     transition: transform 0.3s;
     display: inline-block;
 }
 
 .menu-icons a:hover {
-    transform: scale(1.2);
+    transform: scale(1.15);
     opacity: 1;
 }
 

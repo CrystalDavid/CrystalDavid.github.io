@@ -99,23 +99,24 @@ function initCanvas() {
 // 星星类
 class Star {
     constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
+        // 从左边或下边随机生成
+        if (Math.random() > 0.5) {
+            // 从左边生成
+            this.x = -10;
+            this.y = Math.random() * canvas.height;
+        } else {
+            // 从下边生成
+            this.x = Math.random() * canvas.width;
+            this.y = canvas.height + 10;
+        }
+
         this.size = Math.random() * 2 + 0.5;
         this.opacity = Math.random() * 0.5 + 0.3;
         this.twinkleSpeed = Math.random() * 0.02 + 0.01;
 
-        // 移动速度和方向（从左下到右上）
-        this.speedX = Math.random() * 0.3 + 0.1;
-        this.speedY = -Math.random() * 0.3 - 0.1;
-
-        // 随机决定是否走不规则路径
-        this.irregular = Math.random() > 0.5;
-        if (this.irregular) {
-            this.waveAmplitude = Math.random() * 2 + 1;
-            this.waveFrequency = Math.random() * 0.02 + 0.01;
-            this.waveOffset = Math.random() * Math.PI * 2;
-        }
+        // 移动速度（从左下到右上的总体趋势）
+        this.speedX = Math.random() * 0.4 + 0.2;
+        this.speedY = -Math.random() * 0.4 - 0.2;
     }
 
     draw() {
@@ -132,25 +133,20 @@ class Star {
             this.twinkleSpeed = -this.twinkleSpeed;
         }
 
-        // 移动
-        if (this.irregular) {
-            // 不规则路径（像浮游生物）
-            this.x += this.speedX + Math.sin(Date.now() * this.waveFrequency + this.waveOffset) * this.waveAmplitude * 0.1;
-            this.y += this.speedY + Math.cos(Date.now() * this.waveFrequency + this.waveOffset) * this.waveAmplitude * 0.1;
-        } else {
-            // 规则路径（直线）
-            this.x += this.speedX;
-            this.y += this.speedY;
-        }
+        // 直线移动（从左下到右上）
+        this.x += this.speedX;
+        this.y += this.speedY;
 
-        // 边界检测：从右上角出去后从左下角重新进入
-        if (this.x > canvas.width + 10) {
-            this.x = -10;
-            this.y = canvas.height + Math.random() * 100;
-        }
-        if (this.y < -10) {
-            this.y = canvas.height + 10;
-            this.x = Math.random() * canvas.width * 0.3;
+        // 边界检测：从右边或上边出去后重新生成
+        if (this.x > canvas.width + 10 || this.y < -10) {
+            // 重新从左边或下边生成
+            if (Math.random() > 0.5) {
+                this.x = -10;
+                this.y = Math.random() * canvas.height;
+            } else {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + 10;
+            }
         }
     }
 }
@@ -162,12 +158,21 @@ class ShootingStar {
     }
 
     reset() {
-        this.x = Math.random() * canvas.width * 0.3;
-        this.y = canvas.height + Math.random() * 200;
+        // 从左边或下边随机生成
+        if (Math.random() > 0.5) {
+            // 从左边生成
+            this.x = -50;
+            this.y = Math.random() * canvas.height * 0.7 + canvas.height * 0.3;
+        } else {
+            // 从下边生成
+            this.x = Math.random() * canvas.width * 0.5;
+            this.y = canvas.height + 50;
+        }
+
         this.length = Math.random() * 80 + 40;
         this.speed = Math.random() * 8 + 6;
         this.opacity = 1;
-        this.curve = Math.random() * 0.3 - 0.15;
+        this.curve = Math.random() * 0.2 - 0.1;
     }
 
     draw() {
@@ -198,7 +203,7 @@ class ShootingStar {
         this.y -= this.speed;
         this.opacity -= 0.008;
 
-        if (this.opacity <= 0 || this.y < -100) {
+        if (this.opacity <= 0 || this.y < -100 || this.x > canvas.width + 100) {
             this.reset();
         }
     }
