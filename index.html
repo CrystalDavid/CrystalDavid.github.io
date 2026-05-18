@@ -203,7 +203,7 @@
                     var label = issue._label;
                     var icon = ICONS[label] || 'fa-solid fa-file';
                     var catName = LABELS[label] || label;
-                    var date = data.date || new Date(issue.created_at).toLocaleString('zh-CN');
+                    var date = data.date || formatDate(issue.created_at);
 
                     var div = document.createElement('div');
                     div.className = 'post';
@@ -230,6 +230,12 @@
             var d = document.createElement('div');
             d.textContent = str;
             return d.innerHTML;
+        }
+
+        function formatDate(isoStr) {
+            var d = new Date(isoStr);
+            var pad = function(n){return String(n).padStart(2,'0');};
+            return d.getFullYear()+'/'+pad(d.getMonth()+1)+'/'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
         }
 
         loadFeed();

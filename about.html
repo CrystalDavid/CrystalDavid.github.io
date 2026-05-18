@@ -601,9 +601,10 @@
         <div class="about-card">
             <div class="about-header">
                 <h1>About</h1>
-                <div class="about-date">
+                <div class="about-date" id="about-date">
                     <i class="fa-solid fa-calendar fa-fw"></i>
-                    2026/5/18
+                    <span id="about-date-text">2026/05/17 00:00:00</span>
+                </div>
                 </div>
             </div>
 
@@ -847,6 +848,11 @@
 
         function applyAboutData(data) {
             if (!data) return;
+            // Apply last edit date
+            if (data.lastEdit) {
+                var dateEl = document.getElementById('about-date-text');
+                if (dateEl) dateEl.textContent = data.lastEdit;
+            }
             // Apply intro
             if (data.intro) {
                 const introBox = document.querySelector('.intro-box');
@@ -952,6 +958,10 @@
                 var parts = line.split('|');
                 return { site: parts[0].trim(), value: parts[1] ? parts[1].trim() : '', url: parts[2] ? parts[2].trim() : '' };
             });
+            // Add last edit timestamp
+            var now = new Date();
+            var pad = function(n){return String(n).padStart(2,'0');};
+            data.lastEdit = now.getFullYear()+'/'+pad(now.getMonth()+1)+'/'+pad(now.getDate())+' '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
             saveAboutData(data);
             applyAboutData(data);
             alert('保存成功！');

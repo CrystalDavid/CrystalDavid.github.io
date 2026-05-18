@@ -504,9 +504,9 @@ body.dark-mode .description {
 
 #home-card #card-div .icon-links,
 #home-card #card-div .friend-links {
-    border-top: #cdcdcd solid 1px;
+    border-top: #e8e8e8 solid 1px;
     margin: 10px auto;
-    padding-top: 10px;
+    padding-top: 20px;
     width: 85%;
 }
 

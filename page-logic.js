@@ -35,7 +35,7 @@
         el.className = 'post-card';
 
         let html = '<div class="post-card-title">' + escapeHtml(data.title || issue.title) + '</div>';
-        html += '<div class="post-card-date"><i class="fa-solid fa-calendar fa-fw"></i> ' + (data.date || new Date(issue.created_at).toLocaleDateString('zh-CN')) + '</div>';
+        html += '<div class="post-card-date"><i class="fa-solid fa-calendar fa-fw"></i> ' + (data.date || formatDate(issue.created_at)) + '</div>';
 
         if (data.content) {
             html += '<div class="post-card-desc">' + escapeHtml(data.content) + '</div>';
@@ -120,6 +120,12 @@
         const div = document.createElement('div');
         div.textContent = str;
         return div.innerHTML;
+    }
+
+    function formatDate(isoStr) {
+        var d = new Date(isoStr);
+        var pad = function(n){return String(n).padStart(2,'0');};
+        return d.getFullYear()+'/'+pad(d.getMonth()+1)+'/'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
     }
 
     // Admin panel logic
