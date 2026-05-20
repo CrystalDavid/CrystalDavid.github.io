@@ -6,6 +6,26 @@
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
 const API = `${BACKEND_URL}/api/workflow`;
 
+/**
+ * 带重试的 fetch 封装
+ */
+async function fetchWithRetry(url: string, options: RequestInit, retries = 3): Promise<Response> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await globalThis.fetch(url, options);
+      return res;
+    } catch (err) {
+      if (attempt < retries) {
+        const delay = Math.min(3000 * Math.pow(2, attempt), 15000);
+        await new Promise(r => setTimeout(r, delay));
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw new Error('请求失败');
+}
+
 export interface ChatResponse {
   sessionId: string;
   stage: string;
@@ -51,7 +71,7 @@ export interface ExportResponse {
 }
 
 export async function sendMessage(sessionId: string | null, message: string): Promise<ChatResponse> {
-  const res = await fetch(`${API}/chat`, {
+  const res = await fetchWithRetry(`${API}/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId, message }),
@@ -64,7 +84,7 @@ export async function sendMessage(sessionId: string | null, message: string): Pr
 }
 
 export async function refineBrief(sessionId: string, feedback: string): Promise<BriefResponse> {
-  const res = await fetch(`${API}/brief/refine`, {
+  const res = await fetchWithRetry(`${API}/brief/refine`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId, feedback }),
@@ -77,7 +97,7 @@ export async function refineBrief(sessionId: string, feedback: string): Promise<
 }
 
 export async function generateOutline(sessionId: string): Promise<OutlineResponse> {
-  const res = await fetch(`${API}/outline`, {
+  const res = await fetchWithRetry(`${API}/outline`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId }),
@@ -90,7 +110,7 @@ export async function generateOutline(sessionId: string): Promise<OutlineRespons
 }
 
 export async function refineOutline(sessionId: string, feedback: string): Promise<OutlineResponse> {
-  const res = await fetch(`${API}/outline/refine`, {
+  const res = await fetchWithRetry(`${API}/outline/refine`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId, feedback }),
@@ -103,7 +123,7 @@ export async function refineOutline(sessionId: string, feedback: string): Promis
 }
 
 export async function generatePlanningDraft(sessionId: string): Promise<PlanningResponse> {
-  const res = await fetch(`${API}/planning`, {
+  const res = await fetchWithRetry(`${API}/planning`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId }),
@@ -116,7 +136,7 @@ export async function generatePlanningDraft(sessionId: string): Promise<Planning
 }
 
 export async function refinePlanningPage(sessionId: string, pageNumber: number, feedback: string): Promise<PlanningResponse> {
-  const res = await fetch(`${API}/planning/refine`, {
+  const res = await fetchWithRetry(`${API}/planning/refine`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId, pageNumber, feedback }),
@@ -129,7 +149,7 @@ export async function refinePlanningPage(sessionId: string, pageNumber: number, 
 }
 
 export async function refinePlanningAll(sessionId: string, feedback: string): Promise<PlanningResponse> {
-  const res = await fetch(`${API}/planning/refine-all`, {
+  const res = await fetchWithRetry(`${API}/planning/refine-all`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId, feedback }),
@@ -143,7 +163,7 @@ export async function refinePlanningAll(sessionId: string, feedback: string): Pr
 
 export async function renderAllPages(sessionId: string): Promise<RenderResponse> {
   // 直接调用后端，绕过 Next.js 代理（避免代理超时）
-  const res = await fetch(`${BACKEND_URL}/api/workflow/render`, {
+  const res = await fetchWithRetry(`${BACKEND_URL}/api/workflow/render`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId }),
@@ -156,7 +176,7 @@ export async function renderAllPages(sessionId: string): Promise<RenderResponse>
 }
 
 export async function renderSinglePage(sessionId: string, pageNumber: number): Promise<{ html: string }> {
-  const res = await fetch(`${BACKEND_URL}/api/workflow/render/page`, {
+  const res = await fetchWithRetry(`${BACKEND_URL}/api/workflow/render/page`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId, pageNumber }),
@@ -169,7 +189,7 @@ export async function renderSinglePage(sessionId: string, pageNumber: number): P
 }
 
 export async function modifyRenderedPage(sessionId: string, pageNumber: number, instruction: string): Promise<{ html: string }> {
-  const res = await fetch(`${BACKEND_URL}/api/workflow/render/modify`, {
+  const res = await fetchWithRetry(`${BACKEND_URL}/api/workflow/render/modify`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId, pageNumber, instruction }),
@@ -181,8 +201,8 @@ export async function modifyRenderedPage(sessionId: string, pageNumber: number, 
   return res.json();
 }
 
-export async function exportPptx(sessionId: string): Promise<ExportResponse> {
-  const res = await fetch(`${BACKEND_URL}/api/workflow/export/pptx`, {
+export async function exportHtml(sessionId: string): Promise<ExportResponse> {
+  const res = await fetchWithRetry(`${BACKEND_URL}/api/workflow/export/html`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId }),
@@ -194,8 +214,8 @@ export async function exportPptx(sessionId: string): Promise<ExportResponse> {
   return res.json();
 }
 
-export async function exportHtml(sessionId: string): Promise<ExportResponse> {
-  const res = await fetch(`${BACKEND_URL}/api/workflow/export/html`, {
+export async function exportPdf(sessionId: string): Promise<ExportResponse> {
+  const res = await fetchWithRetry(`${BACKEND_URL}/api/workflow/export/pdf`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId }),
