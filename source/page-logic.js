@@ -187,6 +187,14 @@
     const adminPwd = document.getElementById('admin-pwd');
     const adminLoginBtn = document.getElementById('admin-login-btn');
     const adminPush = document.getElementById('admin-push');
+    const postFile = document.getElementById('post-file');
+    const postFileName = document.getElementById('post-file-name');
+
+    if (postFile && postFileName) {
+        postFile.addEventListener('change', function() {
+            postFileName.textContent = this.files && this.files[0] ? this.files[0].name : '未选择文件';
+        });
+    }
 
     if (adminToggle) {
         adminToggle.addEventListener('click', function() {
@@ -280,12 +288,11 @@
 
     async function publishHexoArticle(title, desc) {
         const fileEl = document.getElementById('post-file');
-        const slugEl = document.getElementById('post-slug');
         const tagsEl = document.getElementById('post-tags');
         const tokenEl = document.getElementById('post-token');
         const file = fileEl && fileEl.files ? fileEl.files[0] : null;
         const token = tokenEl ? tokenEl.value.trim() : '';
-        if (!file) throw new Error('请选择 PDF 或 Word 文件');
+        if (!file) throw new Error('请选择 Markdown、PDF 或 Word 文件');
         if (!token) throw new Error('请输入 GitHub token');
 
         adminPush.textContent = '解析文件中...';
@@ -293,7 +300,7 @@
         const now = new Date();
         const pad = n => String(n).padStart(2, '0');
         const dateText = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
-        const slug = normalizeSlug((slugEl && slugEl.value.trim()) || title || file.name);
+        const slug = normalizeSlug(title || file.name);
         const datePrefix = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
         const safeFileName = file.name.replace(/[^a-zA-Z0-9._\-\u4e00-\u9fa5]/g, '_');
         const assetDir = 'source/assets/articles/' + datePrefix + '-' + slug;
@@ -325,21 +332,26 @@
 
         document.getElementById('post-title').value = '';
         document.getElementById('post-desc').value = '';
-        if (slugEl) slugEl.value = '';
         if (tagsEl) tagsEl.value = '';
         if (fileEl) fileEl.value = '';
+        if (postFileName) postFileName.textContent = '未选择文件';
 
         alert('文章已提交到 GitHub。GitHub Pages 构建完成后会出现在 Article 页面。');
     }
 
     async function extractDocumentText(file) {
         const lower = file.name.toLowerCase();
+        if (lower.endsWith('.md') || lower.endsWith('.markdown')) return extractMarkdownText(file);
         if (lower.endsWith('.pdf')) return extractPdfText(file);
         if (lower.endsWith('.docx')) return extractDocxText(file);
         if (lower.endsWith('.doc')) {
             return '暂不支持在浏览器内解析旧版 .doc 正文，请另存为 .docx 后上传。\n\n原文件已随文章上传。';
         }
-        throw new Error('仅支持 PDF、DOCX 或 DOC 文件');
+        throw new Error('仅支持 Markdown、PDF、DOCX 或 DOC 文件');
+    }
+
+    async function extractMarkdownText(file) {
+        return file.text();
     }
 
     async function extractPdfText(file) {

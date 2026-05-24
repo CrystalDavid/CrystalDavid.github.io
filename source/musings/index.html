@@ -1,16 +1,16 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="utf-8">
-    <title>Agent - Davidの小窝</title>
+    <title>Musings - Davidの小窝</title>
     <meta name="author" content="David">
-    <meta name="description" content="AI Agent 项目">
+    <meta name="description" content="碎碎念">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="page-common.css">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/page-common.css">
 </head>
 <body>
     <div id="menu">
@@ -18,10 +18,10 @@
             <a class="title" href="/"><span>Davidの小窝</span></a>
             <div class="nav-links">
                 <a href="/"><i class="fa-solid fa-house fa-fw"></i><span>Home</span></a>
-                <a href="/about.html"><i class="fa-solid fa-id-card fa-fw"></i><span>About</span></a>
-                <a href="/article.html"><i class="fa-solid fa-book fa-fw"></i><span>Article</span></a>
-                <a href="/agent.html"><i class="fa-solid fa-robot fa-fw"></i><span>Agent</span></a>
-                <a href="/musings.html"><i class="fa-solid fa-feather fa-fw"></i><span>Musings</span></a>
+                <a href="/about/"><i class="fa-solid fa-id-card fa-fw"></i><span>About</span></a>
+                <a href="/article/"><i class="fa-solid fa-book fa-fw"></i><span>Article</span></a>
+                <a href="/agent/"><i class="fa-solid fa-robot fa-fw"></i><span>Agent</span></a>
+                <a href="/musings/"><i class="fa-solid fa-feather fa-fw"></i><span>Musings</span></a>
             </div>
             <div class="menu-icons">
                 <a href="#" id="theme-toggle" title="切换主题"><i class="fa-solid fa-moon fa-fw"></i></a>
@@ -32,10 +32,10 @@
             <div class="title" id="mobile-menu-toggle"><i class="fa-solid fa-bars fa-fw"></i><span>&emsp;Davidの小窝</span></div>
             <div class="items" id="mobile-menu-items" style="display:none;">
                 <a href="/"><div class="item"><div class="item-icon"><i class="fa-solid fa-house fa-fw"></i></div><div class="item-text">Home</div></div></a>
-                <a href="/about.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-id-card fa-fw"></i></div><div class="item-text">About</div></div></a>
-                <a href="/article.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-book fa-fw"></i></div><div class="item-text">Article</div></div></a>
-                <a href="/agent.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-robot fa-fw"></i></div><div class="item-text">Agent</div></div></a>
-                <a href="/musings.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-feather fa-fw"></i></div><div class="item-text">Musings</div></div></a>
+                <a href="/about/"><div class="item"><div class="item-icon"><i class="fa-solid fa-id-card fa-fw"></i></div><div class="item-text">About</div></div></a>
+                <a href="/article/"><div class="item"><div class="item-icon"><i class="fa-solid fa-book fa-fw"></i></div><div class="item-text">Article</div></div></a>
+                <a href="/agent/"><div class="item"><div class="item-icon"><i class="fa-solid fa-robot fa-fw"></i></div><div class="item-text">Agent</div></div></a>
+                <a href="/musings/"><div class="item"><div class="item-icon"><i class="fa-solid fa-feather fa-fw"></i></div><div class="item-text">Musings</div></div></a>
             </div>
         </nav>
         <div id="theme-toast" class="theme-toast">
@@ -49,8 +49,8 @@
     <div class="page-container">
         <div class="page-card">
             <div class="page-header">
-                <h1><i class="fa-solid fa-robot"></i> Agent</h1>
-                <p class="page-desc">AI Agent 项目展示</p>
+                <h1><i class="fa-solid fa-feather"></i> Musings</h1>
+                <p class="page-desc">碎碎念与随想</p>
             </div>
             <div class="posts-grid" id="posts-grid">
                 <div class="loading-hint">加载中...</div>
@@ -64,11 +64,13 @@
                 <button class="admin-login-btn" id="admin-login-btn">验证</button>
             </div>
             <div class="admin-form" id="admin-form" style="display:none;">
-                <h3><i class="fa-solid fa-robot"></i> 发布新 Agent</h3>
-                <input type="text" id="post-title" placeholder="Agent 名称">
-                <textarea id="post-desc" placeholder="Agent 简介"></textarea>
-                <input type="text" id="post-link" placeholder="Agent 链接 (URL)">
-                <input type="text" id="post-tags" placeholder="标签 (逗号分隔)">
+                <h3><i class="fa-solid fa-feather"></i> 发布碎碎念</h3>
+                <input type="text" id="post-title" placeholder="标题">
+                <textarea id="post-desc" placeholder="正文内容"></textarea>
+                <div style="margin-bottom:12px;">
+                    <label style="display:block;margin-bottom:6px;font-size:14px;color:#666;">上传图片/视频（可选）</label>
+                    <input type="file" id="post-media-file" accept="image/*,video/*" style="font-size:14px;">
+                </div>
                 <button class="admin-push-btn" id="admin-push">Push 发布</button>
             </div>
         </div>
@@ -85,8 +87,8 @@
 
     <canvas id="fireworks-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <script src="script.js?v=5"></script>
-    <script src="site-api.js"></script>
-    <script src="page-logic.js" data-label="agent"></script>
+    <script src="/script.js?v=5"></script>
+    <script src="/site-api.js"></script>
+    <script src="/page-logic.js" data-label="musings"></script>
 </body>
 </html>

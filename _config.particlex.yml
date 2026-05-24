@@ -22,19 +22,19 @@ menu:
   About:
     name: id-card
     theme: solid
-    link: /about.html
+    link: /about/
   Article:
     name: book
     theme: solid
-    link: /article.html
+    link: /article/
   Agent:
     name: robot
     theme: solid
-    link: /agent.html
+    link: /agent/
   Musings:
     name: feather
     theme: solid
-    link: /musings.html
+    link: /musings/
   Archives:
     name: box-archive
     theme: solid

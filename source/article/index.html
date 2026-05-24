@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="utf-8">
@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="page-common.css">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/page-common.css">
 </head>
 <body>
     <!-- 顶部导航栏 -->
@@ -21,10 +21,10 @@
             </a>
             <div class="nav-links">
                 <a href="/"><i class="fa-solid fa-house fa-fw"></i><span>Home</span></a>
-                <a href="/about.html"><i class="fa-solid fa-id-card fa-fw"></i><span>About</span></a>
-                <a href="/article.html"><i class="fa-solid fa-book fa-fw"></i><span>Article</span></a>
-                <a href="/agent.html"><i class="fa-solid fa-robot fa-fw"></i><span>Agent</span></a>
-                <a href="/musings.html"><i class="fa-solid fa-feather fa-fw"></i><span>Musings</span></a>
+                <a href="/about/"><i class="fa-solid fa-id-card fa-fw"></i><span>About</span></a>
+                <a href="/article/"><i class="fa-solid fa-book fa-fw"></i><span>Article</span></a>
+                <a href="/agent/"><i class="fa-solid fa-robot fa-fw"></i><span>Agent</span></a>
+                <a href="/musings/"><i class="fa-solid fa-feather fa-fw"></i><span>Musings</span></a>
             </div>
             <div class="menu-icons">
                 <a href="#" id="theme-toggle" title="切换主题"><i class="fa-solid fa-moon fa-fw"></i></a>
@@ -35,10 +35,10 @@
             <div class="title" id="mobile-menu-toggle"><i class="fa-solid fa-bars fa-fw"></i><span>&emsp;Davidの小窝</span></div>
             <div class="items" id="mobile-menu-items" style="display:none;">
                 <a href="/"><div class="item"><div class="item-icon"><i class="fa-solid fa-house fa-fw"></i></div><div class="item-text">Home</div></div></a>
-                <a href="/about.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-id-card fa-fw"></i></div><div class="item-text">About</div></div></a>
-                <a href="/article.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-book fa-fw"></i></div><div class="item-text">Article</div></div></a>
-                <a href="/agent.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-robot fa-fw"></i></div><div class="item-text">Agent</div></div></a>
-                <a href="/musings.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-feather fa-fw"></i></div><div class="item-text">Musings</div></div></a>
+                <a href="/about/"><div class="item"><div class="item-icon"><i class="fa-solid fa-id-card fa-fw"></i></div><div class="item-text">About</div></div></a>
+                <a href="/article/"><div class="item"><div class="item-icon"><i class="fa-solid fa-book fa-fw"></i></div><div class="item-text">Article</div></div></a>
+                <a href="/agent/"><div class="item"><div class="item-icon"><i class="fa-solid fa-robot fa-fw"></i></div><div class="item-text">Agent</div></div></a>
+                <a href="/musings/"><div class="item"><div class="item-icon"><i class="fa-solid fa-feather fa-fw"></i></div><div class="item-text">Musings</div></div></a>
             </div>
         </nav>
         <div id="theme-toast" class="theme-toast">
@@ -73,11 +73,14 @@
                 <h3><i class="fa-solid fa-book"></i> 发布新文章</h3>
                 <input type="text" id="post-title" placeholder="文章标题">
                 <textarea id="post-desc" placeholder="文章简介"></textarea>
-                <input type="file" id="post-file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
-                <input type="text" id="post-slug" placeholder="文章路径，可选，如 ai-usage-notes">
+                <div class="file-picker">
+                    <input type="file" id="post-file" accept=".md,.markdown,.pdf,.doc,.docx,text/markdown,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                    <label for="post-file" class="file-picker-btn"><i class="fa-solid fa-file-arrow-up"></i> 选择文件</label>
+                    <span id="post-file-name" class="file-picker-name">未选择文件</span>
+                </div>
                 <input type="text" id="post-tags" placeholder="标签 (逗号分隔，如: React,Node.js)">
                 <input type="password" id="post-token" placeholder="GitHub token，仅本次发布使用">
-                <p class="admin-help">会生成 source/_posts/*.md 并上传原文件到 source/assets/articles/，push 后自动触发 GitHub Pages 构建。</p>
+                <p class="admin-help">会自动按文章标题生成路径，生成 source/_posts/*.md 并上传原文件到 source/assets/articles/，push 后自动触发 GitHub Pages 构建。</p>
                 <button class="admin-push-btn" id="admin-push">生成 Hexo 文章并发布</button>
             </div>
         </div>
@@ -95,10 +98,10 @@
 
     <canvas id="fireworks-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <script src="script.js?v=5"></script>
-    <script src="site-api.js"></script>
+    <script src="/script.js?v=5"></script>
+    <script src="/site-api.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js"></script>
-    <script src="page-logic.js" data-label="article"></script>
+    <script src="/page-logic.js" data-label="article"></script>
 </body>
 </html>

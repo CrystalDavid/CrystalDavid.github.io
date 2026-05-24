@@ -263,8 +263,54 @@
 }
 
 .admin-form input[type="file"] {
-    background: #fff;
+    display: none;
+}
+
+.file-picker {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    transition: border-color 0.3s;
+}
+
+.file-picker:focus-within {
+    border-color: #667eea;
+}
+
+.file-picker-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex: 0 0 auto;
+    background: linear-gradient(120deg, #9abbf7 0%, #ffbbf4 100%);
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 8px 20px;
+    border-radius: 50px;
     cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.file-picker-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(154, 187, 247, 0.5);
+}
+
+.file-picker-name {
+    min-width: 0;
+    color: #77838f;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .admin-help {
@@ -398,10 +444,15 @@ body.dark-mode .reaction-btn:hover {
 
 body.dark-mode .admin-form input,
 body.dark-mode .admin-form textarea,
-body.dark-mode .admin-login input {
+body.dark-mode .admin-login input,
+body.dark-mode .file-picker {
     background: rgba(40, 40, 70, 0.6);
     border-color: rgba(154, 187, 247, 0.3);
     color: #e0e0e0;
+}
+
+body.dark-mode .file-picker-name {
+    color: #a0a0b0;
 }
 
 body.dark-mode .admin-help {
@@ -410,7 +461,8 @@ body.dark-mode .admin-help {
 
 body.dark-mode .admin-form input:focus,
 body.dark-mode .admin-form textarea:focus,
-body.dark-mode .admin-login input:focus {
+body.dark-mode .admin-login input:focus,
+body.dark-mode .file-picker:focus-within {
     border-color: #9abbf7;
 }
 
