@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Pencil, RefreshCw, X } from 'lucide-react';
 import type { RenderedPage } from '@/lib/api';
@@ -127,33 +127,8 @@ export default function RenderPanel({ pages, isLoading, sessionId, onPagesUpdate
               </div>
             </div>
 
-            {/* 幻灯片容器 - CSS transform 缩放 */}
-            <div className="relative w-full rounded-xl overflow-hidden shadow-lg bg-slate-100" style={{ paddingBottom: '56.25%' }}>
-              <div className="absolute inset-0 flex items-start justify-center overflow-hidden">
-                <iframe
-                  srcDoc={page.html}
-                  className="border-0 origin-top-left"
-                  title={`Slide ${page.page_number}`}
-                  sandbox="allow-scripts"
-                  style={{
-                    width: '1280px',
-                    height: '720px',
-                    transform: 'scale(var(--slide-scale, 0.7))',
-                    transformOrigin: 'top left',
-                  }}
-                  ref={(el) => {
-                    if (el) {
-                      const container = el.parentElement;
-                      if (container) {
-                        const scale = container.clientWidth / 1280;
-                        el.style.setProperty('--slide-scale', String(scale));
-                        el.style.transform = `scale(${scale})`;
-                      }
-                    }
-                  }}
-                />
-              </div>
-            </div>
+            {/* 幻灯片容器 - 固定 16:9 比例，iframe 缩放 */}
+            <SlideFrame html={page.html} pageNumber={page.page_number} />
 
             {/* 编辑区域 */}
             {editingPage === page.page_number && (
@@ -207,6 +182,66 @@ export default function RenderPanel({ pages, isLoading, sessionId, onPagesUpdate
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+/**
+ * SlideFrame: renders a 1280×720 iframe scaled down to fit a responsive container.
+ * Uses ResizeObserver to compute scale = containerWidth / 1280, then applies
+ * CSS transform on the iframe itself. No injected CSS that could conflict with
+ * the AI-generated slide styles.
+ */
+function SlideFrame({ html, pageNumber }: { html: string; pageNumber: number }) {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [scale, setScale] = React.useState(0.8); // sensible default for max-w-5xl (1024/1280)
+
+  React.useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const update = () => {
+      const w = container.clientWidth;
+      if (w > 0) setScale(w / 1280);
+    };
+
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, []);
+
+  const scaledHeight = 720 * scale;
+
+  // Only inject a minimal reset that won't conflict with AI styles
+  const resetStyle = `<style>html,body{margin:0;padding:0;overflow:hidden;}</style>`;
+  let srcDoc = html;
+  if (html.includes('</head>')) {
+    srcDoc = html.replace('</head>', resetStyle + '</head>');
+  } else if (html.includes('<body')) {
+    srcDoc = html.replace('<body', resetStyle + '<body');
+  } else {
+    srcDoc = resetStyle + html;
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-full rounded-xl overflow-hidden shadow-lg bg-slate-100"
+      style={{ height: scaledHeight }}
+    >
+      <iframe
+        srcDoc={srcDoc}
+        style={{
+          width: 1280,
+          height: 720,
+          border: 'none',
+          transformOrigin: 'top left',
+          transform: `scale(${scale})`,
+        }}
+        title={`Slide ${pageNumber}`}
+        sandbox="allow-scripts"
+      />
     </div>
   );
 }
