@@ -1,6 +1,9 @@
 node_modules/
 .env
 *.log
+public/
+db.json
+.deploy_git/
 PPT-Agent/backend/.env
 PPT-Agent/backend/output/
 hexo-theme-particlex/

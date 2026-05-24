@@ -1,0 +1,142 @@
+avatar: /assets/头像.png
+
+background:
+  - /assets/壁纸.png
+  - /assets/壁纸2.png
+  - /assets/壁纸3.png
+
+loading: /images/loading.gif
+
+colors:
+  - "#66afef"
+  - "#9abbf7"
+  - "#ffbbf4"
+  - "#00bcd4"
+  - "#00a596"
+
+menu:
+  Home:
+    name: house
+    theme: solid
+    link: /
+  About:
+    name: id-card
+    theme: solid
+    link: /about.html
+  Article:
+    name: book
+    theme: solid
+    link: /article.html
+  Agent:
+    name: robot
+    theme: solid
+    link: /agent.html
+  Musings:
+    name: feather
+    theme: solid
+    link: /musings.html
+  Archives:
+    name: box-archive
+    theme: solid
+    link: /archives/
+  Tags:
+    name: tags
+    theme: solid
+    link: /tags/
+
+card:
+  enable: true
+  description: |
+    个人开发者
+    AI-Agent 开发者
+    用 AI 构建实用工具
+  iconLinks:
+    GitHub:
+      name: github
+      theme: brands
+      link: https://github.com/CrystalDavid
+  friendLinks:
+
+footer:
+  since: 2025
+  ICP:
+    enable: false
+    code:
+    link:
+
+polyfill:
+  enable: true
+  features:
+    - default
+
+highlight:
+  enable: true
+  style: github
+
+math:
+  enable: false
+
+preview:
+  enable: true
+
+crypto:
+  enable: false
+
+search:
+  enable: false
+
+giscus:
+  enable: false
+  src: https://giscus.app/client.js
+  repo: CrystalDavid/CrystalDavid.github.io
+  repoID:
+  category:
+  categoryID:
+  mapping: pathname
+  strict: 0
+  reactionsEnabled: 1
+  emitMetadata: 0
+  inputPosition: bottom
+  theme: preferred_color_scheme
+  lang: zh-CN
+
+gitalk:
+  enable: false
+  clientID:
+  clientSecret:
+  repo:
+  owner:
+  admin:
+  language: zh-CN
+  proxy:
+
+waline:
+  enable: false
+  serverURL:
+  locale:
+  commentCount: true
+  pageview: false
+  emoji:
+    - https://unpkg.com/@waline/emojis@1.2.0/weibo
+    - https://unpkg.com/@waline/emojis@1.2.0/alus
+    - https://unpkg.com/@waline/emojis@1.2.0/bilibili
+    - https://unpkg.com/@waline/emojis@1.2.0/qq
+    - https://unpkg.com/@waline/emojis@1.2.0/tieba
+    - https://unpkg.com/@waline/emojis@1.2.0/tw-emoji
+  meta:
+    - nick
+    - mail
+    - link
+  requiredMeta:
+    - nick
+  lang: zh-CN
+  wordLimit: 0
+  login: enable
+  pageSize: 10
+
+twikoo:
+  enable: false
+  envID:
+  region:
+  path: location.pathname
+  lang: zh-CN

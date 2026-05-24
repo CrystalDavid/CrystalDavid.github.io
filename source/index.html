@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>Davidの小窝</title>
+    <meta name="author" content="David">
+    <meta name="description" content="Davidの小窝">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div id="menu">
+        <nav id="desktop-menu">
+            <a class="title" href="/">
+                <span>Davidの小窝</span>
+            </a>
+            <div class="nav-links">
+                <a href="/">
+                    <i class="fa-solid fa-house fa-fw"></i><span>Home</span>
+                </a>
+                <a href="/about.html">
+                    <i class="fa-solid fa-id-card fa-fw"></i><span>About</span>
+                </a>
+                <a href="/article.html">
+                    <i class="fa-solid fa-book fa-fw"></i><span>Article</span>
+                </a>
+                <a href="/agent.html">
+                    <i class="fa-solid fa-robot fa-fw"></i><span>Agent</span>
+                </a>
+                <a href="/musings.html">
+                    <i class="fa-solid fa-feather fa-fw"></i><span>Musings</span>
+                </a>
+            </div>
+            <div class="menu-icons">
+                <a href="#" id="wallpaper-toggle" title="切换壁纸">
+                    <i class="fa-solid fa-image fa-fw"></i>
+                </a>
+                <a href="#" id="theme-toggle" title="切换主题">
+                    <i class="fa-solid fa-moon fa-fw"></i>
+                </a>
+                <a href="#" id="search-toggle" title="搜索">
+                    <i class="fa-solid fa-search fa-fw"></i>
+                </a>
+            </div>
+        </nav>
+        <nav id="mobile-menu">
+            <div class="title" id="mobile-menu-toggle">
+                <i class="fa-solid fa-bars fa-fw"></i>
+                <span>&emsp;Davidの小窝</span>
+            </div>
+            <div class="items" id="mobile-menu-items" style="display:none;">
+                <a href="/"><div class="item"><div class="item-icon"><i class="fa-solid fa-house fa-fw"></i></div><div class="item-text">Home</div></div></a>
+                <a href="/about.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-id-card fa-fw"></i></div><div class="item-text">About</div></div></a>
+                <a href="/article.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-book fa-fw"></i></div><div class="item-text">Article</div></div></a>
+                <a href="/agent.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-robot fa-fw"></i></div><div class="item-text">Agent</div></div></a>
+                <a href="/musings.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-feather fa-fw"></i></div><div class="item-text">Musings</div></div></a>
+            </div>
+        </nav>
+        <!-- 主题切换提示 -->
+        <div id="theme-toast" class="theme-toast">
+            <i class="fa-solid fa-moon"></i>
+            <span>已切换到深色模式</span>
+        </div>
+    </div>
+
+    <!-- Hero 全屏区域 -->
+    <div id="home-head">
+        <div id="home-background"></div>
+        <video id="home-video" muted loop playsinline style="display:none;position:absolute;top:0;left:0;width:100vw;height:100vh;object-fit:cover;z-index:-1;"></video>
+        <canvas id="stars-canvas"></canvas>
+        <div id="home-info">
+            <span class="info">
+                <div class="wrap">
+                    <h1>Davidの小窝</h1>
+                    <h3>构建智能，连接未来</h3>
+                    <h5>个人开发者 / AI-Agent 开发者</h5>
+                </div>
+            </span>
+        </div>
+        <!-- 向下滚动箭头 -->
+        <div class="scroll-arrow" id="scroll-arrow">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <polyline points="7 6 12 11 17 6" opacity="0.5"></polyline>
+            </svg>
+        </div>
+    </div>
+
+
+    <!-- 内容区域 -->
+    <div id="home-posts-wrap">
+        <div id="home-posts">
+            <div id="home-posts-dynamic"></div>
+        </div>
+
+        <!-- 侧边个人卡片 -->
+        <div id="home-card">
+            <div id="card-style">
+                <div id="card-div">
+                    <div class="avatar">
+                        <img src="assets/头像.png" alt="avatar">
+                    </div>
+                    <div class="name">David</div>
+                    <div class="description">
+                        <p>个人开发者</p>
+                        <p>AI-Agent开发者</p>
+                        <p>用AI构建实用工具</p>
+                    </div>
+                    <div class="icon-links">
+                        <span class="icon-link">
+                            <a href="#" id="card-wechat-btn" title="WeChat"><i class="fa-brands fa-weixin fa-fw"></i></a>
+                        </span>
+                        <span class="icon-link">
+                            <a href="#" id="card-qq-btn" title="QQ"><i class="fa-brands fa-qq fa-fw"></i></a>
+                        </span>
+                        <span class="icon-link">
+                            <a href="https://github.com/CrystalDavid" title="GitHub"><i class="fa-brands fa-github fa-fw"></i></a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div id="footer-wrap">
+            <div>
+                &copy; 2025 Davidの小窝
+                <span id="footer-icon"><i class="fa-solid fa-heart fa-fw"></i></span>
+                @David
+            </div>
+            <div id="site-runtime"></div>
+            <div id="site-visitors">
+                本站访问人数：<span id="busuanzi_value_site_uv">loading</span> 人
+            </div>
+            <div>
+                Powered by <a href="https://github.com/CrystalDavid">CrystalDavid</a> &amp;
+                Inspired by <a href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 微信弹窗 -->
+    <div class="modal-overlay" id="wechat-modal">
+        <div class="modal">
+            <button class="modal-close" id="wechat-close">&times;</button>
+            <h3>微信联系我</h3>
+            <img src="assets/2.jpg" alt="微信二维码" class="qr-img">
+        </div>
+    </div>
+
+    <!-- QQ弹窗 -->
+    <div class="modal-overlay" id="qq-modal">
+        <div class="modal">
+            <button class="modal-close" id="qq-close">&times;</button>
+            <h3>QQ联系我</h3>
+            <img src="assets/3.jpg" alt="QQ二维码" class="qr-img">
+        </div>
+    </div>
+
+    <canvas id="fireworks-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <script src="script.js?v=5"></script>
+    <script src="site-api.js"></script>
+    <script>
+    // Home feed: load all issues sorted by date
+    (function() {
+        const ICONS = { article: 'fa-solid fa-book', agent: 'fa-solid fa-robot', musings: 'fa-solid fa-feather', message: 'fa-solid fa-comment' };
+        const LABELS = { article: 'Article', agent: 'Agent', musings: 'Musings', message: '留言' };
+        const container = document.getElementById('home-posts-dynamic');
+        if (!container) return;
+
+        async function loadFeed() {
+            try {
+                const [articles, hexoArticles, agents, musings, messages] = await Promise.all([
+                    SiteAPI.fetchIssues('article'),
+                    fetchHexoArticles(),
+                    SiteAPI.fetchIssues('agent'),
+                    SiteAPI.fetchIssues('musings'),
+                    SiteAPI.fetchIssues('message')
+                ]);
+                const all = [];
+                articles.forEach(function(i) { i._label = 'article'; all.push(i); });
+                hexoArticles.forEach(function(i) { i._label = 'article'; all.push(i); });
+                agents.forEach(function(i) { i._label = 'agent'; all.push(i); });
+                musings.forEach(function(i) { i._label = 'musings'; all.push(i); });
+                messages.forEach(function(i) { i._label = 'message'; all.push(i); });
+
+                all.sort(function(a, b) { return new Date(b.created_at) - new Date(a.created_at); });
+
+                if (all.length === 0) {
+                    container.innerHTML = '<div class="post"><h2 class="post-title">暂无内容</h2><div class="description"><p>敬请期待...</p></div></div>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                all.forEach(function(issue) {
+                    var data;
+                    try { data = JSON.parse(issue.body); } catch(e) { data = { content: issue.body }; }
+                    var label = issue._label;
+                    var icon = ICONS[label] || 'fa-solid fa-file';
+                    var catName = LABELS[label] || label;
+                    var date = data.date || formatDate(issue.created_at);
+
+                    var div = document.createElement('div');
+                    div.className = 'post';
+                    var html = '<h2 class="post-title">' + escapeHtml(data.title || issue.title) + '</h2>';
+                    html += '<div class="category-and-date"><span class="category"><i class="' + icon + ' fa-fw"></i> ' + catName + '</span>';
+                    html += '<span class="date"><i class="fa-solid fa-calendar fa-fw"></i> ' + escapeHtml(date) + '</span></div>';
+                    if (data.content) html += '<div class="description"><p>' + escapeHtml(data.content) + '</p></div>';
+                    if (data.tags) {
+                        html += '<div class="post-tags">';
+                        data.tags.split(',').forEach(function(t) { if (t.trim()) html += '<span class="tag"><a href="#">#' + escapeHtml(t.trim()) + '</a></span>'; });
+                        html += '</div>';
+                    }
+                    if (data.link) html += '<a class="go-post" href="' + escapeHtml(data.link) + '" target="_blank">进入 →</a>';
+                    div.innerHTML = html;
+                    container.appendChild(div);
+                });
+            } catch(e) {
+                container.innerHTML = '<div class="post"><h2 class="post-title">加载失败</h2><div class="description"><p>请刷新重试</p></div></div>';
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            var d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML;
+        }
+
+        function formatDate(isoStr) {
+            var d = new Date(isoStr);
+            var pad = function(n){return String(n).padStart(2,'0');};
+            return d.getFullYear()+'/'+pad(d.getMonth()+1)+'/'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
+        }
+
+        async function fetchHexoArticles() {
+            try {
+                var res = await fetch('/article-data.json', { cache: 'no-store' });
+                if (!res.ok) return [];
+                var posts = await res.json();
+                return posts.map(function(post) {
+                    return {
+                        title: post.title,
+                        created_at: post.date || new Date().toISOString(),
+                        body: JSON.stringify(post),
+                        _hexo: true
+                    };
+                });
+            } catch(e) {
+                return [];
+            }
+        }
+
+        loadFeed();
+    })();
+    </script>
+</body>
+</html>

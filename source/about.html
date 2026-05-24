@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>About - Davidの小窝</title>
+    <meta name="author" content="David">
+    <meta name="description" content="关于 David">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .about-container {
+            max-width: 900px;
+            margin: 80px auto 50px;
+            padding: 20px;
+        }
+
+        .about-card {
+            background: #fff;
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .about-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .about-header h1 {
+            font-size: 42px;
+            color: #1e3e3f;
+            margin-bottom: 15px;
+        }
+
+        .about-date {
+            color: #5c6b72;
+            font-size: 14px;
+        }
+
+        .about-date i {
+            margin-right: 8px;
+        }
+
+        .greeting {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1e3e3f;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px dotted #e0e0e0;
+        }
+
+        .greeting-emoji {
+            display: inline-block;
+            animation: wave 1.5s ease-in-out infinite;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(20deg); }
+            75% { transform: rotate(-10deg); }
+        }
+
+        .intro-box {
+            background: linear-gradient(135deg, #e8f4fd 0%, #f0f8ff 100%);
+            border-left: 4px solid #66afef;
+            border-radius: 20px;
+            padding: 25px 30px;
+            margin-bottom: 40px;
+            font-size: 16px;
+            color: #1e3e3f;
+            line-height: 1.8;
+        }
+
+        .section-title {
+            font-size: 24px;
+            color: #1e3e3f;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 12px;
+            color: #66afef;
+        }
+
+        .skills-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 40px;
+        }
+
+        .skills-list li {
+            padding: 12px 20px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 50px;
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .skills-list li:hover {
+            background: linear-gradient(120deg, #9abbf7 0%, #ffbbf4 100%);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(154, 187, 247, 0.4);
+        }
+
+        .skills-list li i {
+            margin-right: 8px;
+        }
+
+        .contact-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .contact-table thead {
+            background: linear-gradient(120deg, #9abbf7 0%, #a8c9f7 100%);
+            color: #fff;
+        }
+
+        .contact-table th {
+            padding: 18px 25px;
+            font-weight: 600;
+            text-align: left;
+            font-size: 16px;
+        }
+
+        .contact-table th:first-child {
+            border-radius: 20px 0 0 0;
+        }
+
+        .contact-table th:last-child {
+            border-radius: 0 20px 0 0;
+        }
+
+        .contact-table td {
+            padding: 18px 25px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 15px;
+        }
+
+        .contact-table tr:last-child td:first-child {
+            border-radius: 0 0 0 20px;
+        }
+
+        .contact-table tr:last-child td:last-child {
+            border-radius: 0 0 20px 0;
+        }
+
+        .contact-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .contact-table td:first-child {
+            font-weight: 600;
+            color: #1e3e3f;
+        }
+
+        .contact-table td:last-child {
+            color: #66afef;
+        }
+
+        .contact-table a {
+            color: #66afef;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .contact-table a:hover {
+            opacity: 0.7;
+        }
+
+        .giscus-card {
+            background: #fff;
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            transition: box-shadow 0.25s, transform 0.25s;
+        }
+
+        .giscus-card:hover {
+            box-shadow: 0 0 5px #d9d9d9;
+            transform: translate(-5px, -5px);
+        }
+
+        .giscus-card .section-title {
+            margin-bottom: 20px;
+        }
+
+        /* 留言墙样式 */
+        .msg-input-area {
+            margin-bottom: 30px;
+        }
+        .msg-input-area input,
+        .msg-input-area textarea {
+            width: 100%;
+            box-sizing: border-box;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            outline: none;
+            margin-bottom: 12px;
+            resize: vertical;
+        }
+        .msg-input-area input:focus,
+        .msg-input-area textarea:focus {
+            border-color: #66afef;
+            box-shadow: 0 0 0 3px rgba(102, 175, 239, 0.15);
+        }
+        .msg-input-area textarea {
+            min-height: 80px;
+        }
+        .msg-submit-btn {
+            background: linear-gradient(120deg, #9abbf7 0%, #ffbbf4 100%);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 32px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .msg-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(154, 187, 247, 0.5);
+        }
+        .msg-submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* 留言列表 */
+        .msg-list {
+            list-style: none;
+            padding: 0;
+        }
+        .msg-item {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: transform 0.25s, box-shadow 0.25s;
+            position: relative;
+            animation: msgAppear 0.6s ease forwards;
+        }
+        .msg-item.appearing {
+            opacity: 0;
+            filter: blur(8px);
+            transform: translateY(20px);
+            animation: msgFadeIn 0.8s ease forwards;
+        }
+        @keyframes msgFadeIn {
+            0% { opacity: 0; filter: blur(8px); transform: translateY(20px); }
+            100% { opacity: 1; filter: blur(0); transform: translateY(0); }
+        }
+        @keyframes msgAppear {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .msg-item:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .msg-item:hover .msg-reactions {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .msg-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .msg-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #9abbf7, #ffbbf4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+            font-size: 14px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        .msg-nickname {
+            font-weight: bold;
+            color: #1e3e3f;
+            font-size: 15px;
+        }
+        .msg-time {
+            margin-left: auto;
+            color: #999;
+            font-size: 12px;
+        }
+        .msg-content {
+            color: #333;
+            line-height: 1.7;
+            font-size: 15px;
+            padding-left: 48px;
+        }
+
+        /* 表情反应 */
+        .msg-reactions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            padding-left: 48px;
+            opacity: 0;
+            transform: translateY(5px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .msg-reaction-btn {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 50px;
+            padding: 4px 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .msg-reaction-btn:hover {
+            background: #f0f7ff;
+            border-color: #66afef;
+            transform: scale(1.1);
+        }
+        .msg-reaction-btn.active {
+            background: #e8f4fd;
+            border-color: #66afef;
+        }
+        .msg-reaction-btn .count {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* 回复区域 */
+        .msg-replies {
+            margin-top: 12px;
+            margin-left: 48px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 12px 16px;
+            border: 1px solid #e8e8e8;
+        }
+        .msg-reply-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+            color: #555;
+            animation: msgFadeIn 0.5s ease forwards;
+        }
+        .msg-reply-item:last-child {
+            border-bottom: none;
+        }
+        .msg-reply-item .reply-name {
+            color: #66afef;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        .msg-reply-input {
+            display: none;
+            margin-top: 10px;
+            padding-left: 48px;
+        }
+        .msg-reply-input.show {
+            display: flex;
+            gap: 8px;
+        }
+        .msg-reply-input input {
+            flex: 1;
+            border: 1px solid #e0e0e0;
+            border-radius: 50px;
+            padding: 8px 16px;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .msg-reply-input input:focus {
+            border-color: #66afef;
+        }
+        .msg-reply-input button {
+            background: #66afef;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 8px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .reply-toggle-btn {
+            background: none;
+            border: none;
+            color: #66afef;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 4px 0;
+            margin-top: 6px;
+            margin-left: 48px;
+        }
+        .reply-toggle-btn:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .about-card {
+                padding: 30px 20px;
+                border-radius: 20px;
+            }
+
+            .about-header h1 {
+                font-size: 32px;
+            }
+
+            .greeting {
+                font-size: 24px;
+            }
+
+            .section-title {
+                font-size: 20px;
+            }
+
+            .skills-list li {
+                display: block;
+                margin-right: 0;
+            }
+
+            .contact-table th,
+            .contact-table td {
+                padding: 12px 15px;
+                font-size: 14px;
+            }
+
+            .giscus-card {
+                padding: 25px 15px;
+            }
+            .msg-content, .msg-reactions, .msg-reply-input, .reply-toggle-btn {
+                padding-left: 0;
+            }
+            .msg-replies {
+                margin-left: 0;
+            }
+        }
+
+        /* Dark mode */
+        body.dark-mode .about-card,
+        body.dark-mode .giscus-card {
+            background: rgba(26, 26, 46, 0.75);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            color: #e0e0e0;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(154, 187, 247, 0.2);
+        }
+        body.dark-mode .about-header h1,
+        body.dark-mode .greeting {
+            color: #9abbf7;
+        }
+        body.dark-mode .section-title {
+            color: #e0e0e0;
+        }
+        body.dark-mode .intro-box {
+            background: rgba(40, 40, 70, 0.6);
+            border-left-color: #9abbf7;
+            color: #d0d0d0;
+        }
+        body.dark-mode .skills-list li {
+            background: rgba(40, 40, 70, 0.6);
+            color: #d0d0d0;
+        }
+        body.dark-mode .skills-list li:hover {
+            background: linear-gradient(120deg, #9abbf7 0%, #ffbbf4 100%);
+            color: #fff;
+        }
+        body.dark-mode .contact-table td {
+            background: rgba(40, 40, 70, 0.6);
+            border-bottom-color: rgba(154, 187, 247, 0.15);
+            color: #d0d0d0;
+        }
+        body.dark-mode .contact-table td:first-child {
+            color: #e0e0e0;
+        }
+        body.dark-mode .msg-item {
+            background: rgba(40, 40, 70, 0.6);
+        }
+        body.dark-mode .msg-nickname {
+            color: #9abbf7;
+        }
+        body.dark-mode .msg-content {
+            color: #d0d0d0;
+        }
+        body.dark-mode .msg-input-area input,
+        body.dark-mode .msg-input-area textarea {
+            background: rgba(40, 40, 70, 0.6);
+            border-color: rgba(154, 187, 247, 0.3);
+            color: #e0e0e0;
+        }
+        body.dark-mode .msg-replies {
+            background: rgba(30, 30, 50, 0.6);
+            border-color: rgba(154, 187, 247, 0.15);
+        }
+        body.dark-mode .msg-reaction-btn {
+            background: rgba(40, 40, 70, 0.8);
+            border-color: rgba(154, 187, 247, 0.3);
+        }
+
+        @keyframes shatter {
+            0% { transform: scale(1); opacity: 1; filter: blur(0); }
+            30% { transform: scale(1.02); opacity: 0.9; }
+            60% { transform: scale(0.95) rotate(1deg); opacity: 0.6; filter: blur(2px); }
+            80% { transform: scale(0.8) rotate(-1deg); opacity: 0.3; filter: blur(4px); }
+            100% { transform: scale(0.5) rotate(2deg); opacity: 0; filter: blur(8px); height: 0; padding: 0; margin: 0; overflow: hidden; }
+        }
+        .msg-item.shattering {
+            animation: shatter 0.8s ease forwards;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div id="menu">
+        <nav id="desktop-menu">
+            <a class="title" href="/">
+                <span>Davidの小窝</span>
+            </a>
+            <div class="nav-links">
+                <a href="/">
+                    <i class="fa-solid fa-house fa-fw"></i><span>Home</span>
+                </a>
+                <a href="/about.html">
+                    <i class="fa-solid fa-id-card fa-fw"></i><span>About</span>
+                </a>
+                <a href="/article.html">
+                    <i class="fa-solid fa-book fa-fw"></i><span>Article</span>
+                </a>
+                <a href="/agent.html">
+                    <i class="fa-solid fa-robot fa-fw"></i><span>Agent</span>
+                </a>
+                <a href="/musings.html">
+                    <i class="fa-solid fa-feather fa-fw"></i><span>Musings</span>
+                </a>
+            </div>
+            <div class="menu-icons">
+                <a href="#" id="wallpaper-toggle" title="切换壁纸">
+                    <i class="fa-solid fa-image fa-fw"></i>
+                </a>
+                <a href="#" id="theme-toggle" title="切换主题">
+                    <i class="fa-solid fa-moon fa-fw"></i>
+                </a>
+                <a href="#" id="search-toggle" title="搜索">
+                    <i class="fa-solid fa-search fa-fw"></i>
+                </a>
+            </div>
+        </nav>
+        <nav id="mobile-menu">
+            <div class="title" id="mobile-menu-toggle">
+                <i class="fa-solid fa-bars fa-fw"></i>
+                <span>&emsp;Davidの小窝</span>
+            </div>
+            <div class="items" id="mobile-menu-items" style="display:none;">
+                <a href="/"><div class="item"><div class="item-icon"><i class="fa-solid fa-house fa-fw"></i></div><div class="item-text">Home</div></div></a>
+                <a href="/about.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-id-card fa-fw"></i></div><div class="item-text">About</div></div></a>
+                <a href="/article.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-book fa-fw"></i></div><div class="item-text">Article</div></div></a>
+                <a href="/agent.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-robot fa-fw"></i></div><div class="item-text">Agent</div></div></a>
+                <a href="/musings.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-feather fa-fw"></i></div><div class="item-text">Musings</div></div></a>
+            </div>
+        </nav>
+        <div id="theme-toast" class="theme-toast">
+            <i class="fa-solid fa-moon"></i>
+            <span>已切换到深色模式</span>
+        </div>
+    </div>
+
+    <canvas id="stars-canvas"></canvas>
+
+    <!-- About 内容 -->
+    <div class="about-container">
+        <div class="about-card">
+            <div class="about-header">
+                <h1>About</h1>
+                <div class="about-date" id="about-date">
+                    <i class="fa-solid fa-calendar fa-fw"></i>
+                    <span id="about-date-text">2026/05/17 00:00:00</span>
+                </div>
+            </div>
+
+            <div class="greeting">
+                Hi there <span class="greeting-emoji">👋</span>
+            </div>
+
+            <div class="intro-box">
+                I'm David~<br><br>
+                SUStech Third-year undergraduate<br>
+                Department of Statistics, Major in Data Science and Big Data
+            </div>
+
+            <div class="section-title">
+                <i class="fa-solid fa-lightbulb"></i>
+                语言
+            </div>
+            <ul class="skills-list">
+                <li><i class="fa-solid fa-code" style="color: #9b59b6;"></i> C/C++</li>
+                <li><i class="fa-brands fa-python" style="color: #3776ab;"></i> Python</li>
+                <li><i class="fa-brands fa-node-js" style="color: #68a063;"></i> Node.js</li>
+                <li><i class="fa-solid fa-terminal" style="color: #4eaa25;"></i> Bash</li>
+            </ul>
+
+            <div class="section-title">
+                <i class="fa-solid fa-address-book"></i>
+                帐号
+            </div>
+            <table class="contact-table">
+                <thead>
+                    <tr>
+                        <th>网站</th>
+                        <th>帐号</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>QQ</td>
+                        <td>2811459442</td>
+                    </tr>
+                    <tr>
+                        <td>GitHub</td>
+                        <td><a href="https://github.com/CrystalDavid" target="_blank">CrystalDavid</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 留言墙 -->
+        <div class="giscus-card">
+            <div class="section-title">
+                <i class="fa-solid fa-comments"></i> 留言墙
+            </div>
+            <div class="msg-input-area">
+                <input type="text" id="msg-nickname" placeholder="你的昵称" maxlength="20">
+                <textarea id="msg-content" placeholder="写下你想说的话..." maxlength="500"></textarea>
+                <button class="msg-submit-btn" id="msg-submit">发布留言</button>
+            </div>
+            <ul class="msg-list" id="msg-list"></ul>
+        </div>
+
+        <!-- 管理员编辑 About -->
+        <div class="giscus-card" id="about-admin-panel" style="text-align:center;">
+            <button class="admin-toggle-btn" id="about-admin-toggle" style="background:linear-gradient(120deg, #667eea 0%, #764ba2 100%);color:#fff;border:none;border-radius:50px;padding:10px 24px;font-size:14px;font-weight:bold;cursor:pointer;">
+                <i class="fa-solid fa-lock"></i> 管理员
+            </button>
+            <div id="about-admin-login" style="display:none;margin-top:20px;text-align:center;">
+                <input type="password" id="about-admin-pwd" placeholder="输入管理员密码" style="border:2px solid #e0e0e0;border-radius:50px;padding:10px 20px;font-size:14px;outline:none;width:200px;">
+                <button id="about-admin-login-btn" style="background:#667eea;color:#fff;border:none;border-radius:50px;padding:10px 20px;font-size:14px;cursor:pointer;margin-left:10px;">验证</button>
+            </div>
+            <div id="about-admin-form" style="display:none;margin-top:20px;">
+                <h3 style="font-size:24px;text-align:center;margin-bottom:20px;color:#1e3e3f;"><i class="fa-solid fa-pen-to-square" style="color:#66afef;margin-right:10px;"></i><span style="color:#66afef;">编辑 About 页面</span></h3>
+
+                <label style="font-weight:bold;display:block;margin-bottom:6px;">个人介绍</label>
+                <textarea id="about-edit-intro" style="width:100%;box-sizing:border-box;border:2px solid #e0e0e0;border-radius:12px;padding:12px;font-size:14px;min-height:80px;margin-bottom:16px;font-family:inherit;outline:none;"></textarea>
+
+                <label style="font-weight:bold;display:block;margin-bottom:6px;">技能/语言 区块标题</label>
+                <input type="text" id="about-edit-skills-title" style="width:100%;box-sizing:border-box;border:2px solid #e0e0e0;border-radius:12px;padding:10px;font-size:14px;margin-bottom:8px;outline:none;">
+                <label style="font-weight:bold;display:block;margin-bottom:6px;">技能列表（每行一个，格式：图标类名|颜色|名称）</label>
+                <textarea id="about-edit-skills" style="width:100%;box-sizing:border-box;border:2px solid #e0e0e0;border-radius:12px;padding:12px;font-size:13px;min-height:100px;margin-bottom:16px;font-family:monospace;outline:none;" placeholder="fa-solid fa-code|#9b59b6|C/C++&#10;fa-brands fa-python|#3776ab|Python"></textarea>
+
+                <label style="font-weight:bold;display:block;margin-bottom:6px;">帐号列表（每行一个，格式：网站名|帐号或链接文字|链接URL(可选)）</label>
+                <textarea id="about-edit-accounts" style="width:100%;box-sizing:border-box;border:2px solid #e0e0e0;border-radius:12px;padding:12px;font-size:13px;min-height:80px;margin-bottom:16px;font-family:monospace;outline:none;" placeholder="QQ|2811459442&#10;GitHub|CrystalDavid|https://github.com/CrystalDavid"></textarea>
+
+                <button id="about-admin-save" style="display:block;width:100%;background:linear-gradient(120deg, #667eea 0%, #764ba2 100%);color:#fff;border:none;border-radius:50px;padding:14px;font-size:16px;font-weight:bold;cursor:pointer;">保存修改</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div id="footer-wrap">
+            <div>
+                &copy; 2025 Davidの小窝
+                <span id="footer-icon"><i class="fa-solid fa-heart fa-fw"></i></span>
+                @David
+            </div>
+            <div id="site-runtime"></div>
+            <div id="site-visitors">
+                本站访问人数：<span id="busuanzi_value_site_uv">loading</span> 人
+            </div>
+            <div>
+                Powered by <a href="https://github.com/CrystalDavid">CrystalDavid</a> &amp;
+                Inspired by <a href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX</a>
+            </div>
+        </div>
+    </footer>
+
+    <canvas id="fireworks-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <script src="script.js?v=5"></script>
+    <script src="site-api.js"></script>
+    <script>
+    // 留言墙逻辑 (GitHub Issues backend)
+    (function() {
+        const REACTIONS = ['👍', '❤️', '😂', '🎉', '🤔'];
+        const REACTION_MAP = {'👍':'+1','❤️':'heart','😂':'laugh','🎉':'hooray','🤔':'confused'};
+        let aboutAdmin = false;
+
+        async function loadMessages() {
+            const list = document.getElementById('msg-list');
+            try {
+                const issues = await SiteAPI.fetchIssues('message');
+                if (!issues || issues.length === 0) {
+                    list.innerHTML = '<li style="text-align:center;color:#999;padding:30px;">暂无留言，来说点什么吧~</li>';
+                    return;
+                }
+                list.innerHTML = '';
+                issues.forEach(function(issue) {
+                    var data;
+                    try { data = JSON.parse(issue.body); } catch(e) { data = {nickname:'匿名',content:issue.body}; }
+                    var li = document.createElement('li');
+                    li.className = 'msg-item';
+                    var initial = data.nickname ? data.nickname.charAt(0).toUpperCase() : '?';
+                    var time = data.date || new Date(issue.created_at).toLocaleString('zh-CN');
+
+                    var html = '<div class="msg-header"><div class="msg-avatar">' + initial + '</div><span class="msg-nickname">' + esc(data.nickname||'匿名') + '</span><span class="msg-time">' + esc(time) + '</span></div>';
+                    html += '<div class="msg-content">' + esc(data.content||'') + '</div>';
+                    html += '<div class="msg-reactions">';
+                    REACTIONS.forEach(function(emoji) {
+                        var apiName = REACTION_MAP[emoji];
+                        var count = issue.reactions && issue.reactions[apiName] ? issue.reactions[apiName] : 0;
+                        html += '<button class="msg-reaction-btn" data-issue="'+issue.number+'" data-reaction="'+apiName+'">'+emoji+(count>0?'<span class="count">'+count+'</span>':'')+'</button>';
+                    });
+                    html += '</div>';
+                    if (aboutAdmin) {
+                        html += '<button class="msg-delete-btn" data-issue="'+issue.number+'" style="position:absolute;top:10px;right:10px;background:#ff4444;color:#fff;border:none;border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:12px;opacity:0;transition:opacity 0.3s;display:flex;align-items:center;justify-content:center;"><i class="fa-solid fa-trash"></i></button>';
+                    }
+                    li.innerHTML = html;
+                    list.appendChild(li);
+                });
+                bindMsgEvents();
+            } catch(e) {
+                list.innerHTML = '<li style="text-align:center;color:#999;padding:30px;">加载失败</li>';
+            }
+        }
+
+        function bindMsgEvents() {
+            document.querySelectorAll('.msg-reaction-btn').forEach(function(btn) {
+                btn.addEventListener('click', async function() {
+                    var issueNum = this.dataset.issue;
+                    var reaction = this.dataset.reaction;
+                    try {
+                        await SiteAPI.addReaction(parseInt(issueNum), reaction);
+                        var countEl = this.querySelector('.count');
+                        if (countEl) { countEl.textContent = (parseInt(countEl.textContent)||0)+1; }
+                        else { this.insertAdjacentHTML('beforeend','<span class="count">1</span>'); }
+                    } catch(e) {}
+                });
+            });
+            document.querySelectorAll('.msg-delete-btn').forEach(function(btn) {
+                var li = btn.closest('.msg-item');
+                li.addEventListener('mouseenter', function() { btn.style.opacity='1'; });
+                li.addEventListener('mouseleave', function() { btn.style.opacity='0'; });
+                btn.addEventListener('click', async function() {
+                    if (!confirm('确定删除这条留言？')) return;
+                    try { await SiteAPI.closeIssue(parseInt(this.dataset.issue)); li.classList.add('shattering'); setTimeout(function(){li.remove();},850); } catch(e) { alert('删除失败'); }
+                });
+            });
+        }
+
+        function esc(s) { if(!s)return''; var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+        // Submit message
+        document.getElementById('msg-submit').addEventListener('click', async function() {
+            var nickname = document.getElementById('msg-nickname').value.trim();
+            var content = document.getElementById('msg-content').value.trim();
+            if (!nickname) { document.getElementById('msg-nickname').focus(); return; }
+            if (!content) { document.getElementById('msg-content').focus(); return; }
+            localStorage.setItem('david_msg_nickname', nickname);
+            var now = new Date();
+            var pad = function(n){return String(n).padStart(2,'0');};
+            var date = now.getFullYear()+'/'+pad(now.getMonth()+1)+'/'+pad(now.getDate())+' '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+            var body = JSON.stringify({nickname:nickname, content:content, date:date});
+            try {
+                await SiteAPI.createIssue(nickname+': '+content.substring(0,30), body, ['message']);
+                document.getElementById('msg-content').value = '';
+                await loadMessages();
+            } catch(e) { alert('发送失败: '+e.message); }
+        });
+
+        // Restore nickname
+        var saved = localStorage.getItem('david_msg_nickname');
+        if (saved) document.getElementById('msg-nickname').value = saved;
+
+        // Hook into about admin login to enable delete
+        var origLoginBtn = document.getElementById('about-admin-login-btn');
+        if (origLoginBtn) {
+            var origClick = origLoginBtn.onclick;
+            origLoginBtn.addEventListener('click', function() {
+                setTimeout(function() {
+                    if (document.getElementById('about-admin-form').style.display !== 'none') {
+                        aboutAdmin = true;
+                        loadMessages();
+                    }
+                }, 500);
+            });
+        }
+
+        loadMessages();
+    })();
+
+    // About 管理员编辑逻辑
+    (function() {
+        const ABOUT_KEY = 'david_about_data';
+        const PWD_HASH = 'da3fb9830dbd1b3ee2e799a06b3d8b486e5285fc508264f87777905827510551';
+
+        async function hashStr(str) {
+            const buf = new TextEncoder().encode(str);
+            const hash = await crypto.subtle.digest('SHA-256', buf);
+            return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function getAboutData() {
+            try { return JSON.parse(localStorage.getItem(ABOUT_KEY)); } catch(e) { return null; }
+        }
+
+        function saveAboutData(data) {
+            localStorage.setItem(ABOUT_KEY, JSON.stringify(data));
+        }
+
+        function applyAboutData(data) {
+            if (!data) return;
+            // Apply last edit date
+            if (data.lastEdit) {
+                var dateEl = document.getElementById('about-date-text');
+                if (dateEl) dateEl.textContent = data.lastEdit;
+            }
+            // Apply intro
+            if (data.intro) {
+                const introBox = document.querySelector('.intro-box');
+                if (introBox) introBox.innerHTML = data.intro.replace(/\n/g, '<br>');
+            }
+            // Apply skills title
+            if (data.skillsTitle) {
+                const titleEl = document.querySelectorAll('.section-title')[0];
+                if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-lightbulb"></i> ' + data.skillsTitle;
+            }
+            // Apply skills list
+            if (data.skills && data.skills.length) {
+                const list = document.querySelector('.skills-list');
+                if (list) {
+                    list.innerHTML = '';
+                    data.skills.forEach(function(s) {
+                        const li = document.createElement('li');
+                        li.innerHTML = '<i class="' + s.icon + '" style="color:' + s.color + ';"></i> ' + s.name;
+                        list.appendChild(li);
+                    });
+                }
+            }
+            // Apply accounts
+            if (data.accounts && data.accounts.length) {
+                const tbody = document.querySelector('.contact-table tbody');
+                if (tbody) {
+                    tbody.innerHTML = '';
+                    data.accounts.forEach(function(a) {
+                        const tr = document.createElement('tr');
+                        const td1 = document.createElement('td');
+                        td1.textContent = a.site;
+                        const td2 = document.createElement('td');
+                        if (a.url) {
+                            td2.innerHTML = '<a href="' + a.url + '" target="_blank">' + a.value + '</a>';
+                        } else {
+                            td2.textContent = a.value;
+                        }
+                        tr.appendChild(td1);
+                        tr.appendChild(td2);
+                        tbody.appendChild(tr);
+                    });
+                }
+            }
+        }
+
+        // Load saved data on page load
+        var savedData = getAboutData();
+        if (savedData) applyAboutData(savedData);
+
+        // Admin toggle
+        var toggle = document.getElementById('about-admin-toggle');
+        var login = document.getElementById('about-admin-login');
+        var form = document.getElementById('about-admin-form');
+        var pwdInput = document.getElementById('about-admin-pwd');
+        var loginBtn = document.getElementById('about-admin-login-btn');
+        var saveBtn = document.getElementById('about-admin-save');
+
+        if (toggle) toggle.addEventListener('click', function() {
+            login.style.display = login.style.display === 'none' ? 'block' : 'none';
+        });
+
+        if (loginBtn) loginBtn.addEventListener('click', async function() {
+            var h = await hashStr(pwdInput.value);
+            if (h === PWD_HASH) {
+                login.style.display = 'none';
+                toggle.style.display = 'none';
+                form.style.display = 'block';
+                // Populate form with current data
+                var cur = getAboutData() || {};
+                document.getElementById('about-edit-intro').value = cur.intro || "I'm David~\n\nSUStech Third-year undergraduate\nDepartment of Statistics, Major in Data Science and Big Data";
+                document.getElementById('about-edit-skills-title').value = cur.skillsTitle || '语言';
+                var skillsText = (cur.skills || [
+                    {icon:'fa-solid fa-code',color:'#9b59b6',name:'C/C++'},
+                    {icon:'fa-brands fa-python',color:'#3776ab',name:'Python'},
+                    {icon:'fa-brands fa-node-js',color:'#68a063',name:'Node.js'},
+                    {icon:'fa-solid fa-terminal',color:'#4eaa25',name:'Bash'}
+                ]).map(function(s) { return s.icon + '|' + s.color + '|' + s.name; }).join('\n');
+                document.getElementById('about-edit-skills').value = skillsText;
+                var accountsText = (cur.accounts || [
+                    {site:'QQ',value:'2811459442',url:''},
+                    {site:'GitHub',value:'CrystalDavid',url:'https://github.com/CrystalDavid'}
+                ]).map(function(a) { return a.site + '|' + a.value + (a.url ? '|' + a.url : ''); }).join('\n');
+                document.getElementById('about-edit-accounts').value = accountsText;
+            } else {
+                pwdInput.style.borderColor = '#ff4444';
+                setTimeout(function() { pwdInput.style.borderColor = ''; }, 1500);
+            }
+        });
+
+        if (pwdInput) pwdInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') loginBtn.click();
+        });
+
+        if (saveBtn) saveBtn.addEventListener('click', function() {
+            var data = {};
+            data.intro = document.getElementById('about-edit-intro').value;
+            data.skillsTitle = document.getElementById('about-edit-skills-title').value;
+            data.skills = document.getElementById('about-edit-skills').value.split('\n').filter(Boolean).map(function(line) {
+                var parts = line.split('|');
+                return { icon: parts[0].trim(), color: parts[1] ? parts[1].trim() : '#666', name: parts[2] ? parts[2].trim() : '' };
+            });
+            data.accounts = document.getElementById('about-edit-accounts').value.split('\n').filter(Boolean).map(function(line) {
+                var parts = line.split('|');
+                return { site: parts[0].trim(), value: parts[1] ? parts[1].trim() : '', url: parts[2] ? parts[2].trim() : '' };
+            });
+            // Add last edit timestamp
+            var now = new Date();
+            var pad = function(n){return String(n).padStart(2,'0');};
+            data.lastEdit = now.getFullYear()+'/'+pad(now.getMonth()+1)+'/'+pad(now.getDate())+' '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+            saveAboutData(data);
+            applyAboutData(data);
+            alert('保存成功！');
+        });
+    })();
+    </script>
+</body>
+</html>
