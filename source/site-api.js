@@ -5,24 +5,10 @@
     const REPO_NAME = 'CrystalDavid.github.io';
     const PWD_HASH = 'da3fb9830dbd1b3ee2e799a06b3d8b486e5285fc508264f87777905827510551';
 
-    // Token protection: split + reverse + base64
-    const _k = [
-        'ZjhaZ0FlRW5fcGhn',
-        'am5YTEVMTURQMDE=',
-        'UndsaU85eGFrV0o=',
-        'elhqZ3Ex'
-    ];
-
-    function _d(s) { return atob(s); }
-    function _r(s) { return s.split('').reverse().join(''); }
-
-    function _getToken() {
-        // Decode and reverse each part, then join
-        return _r(_d(_k[0])) + _r(_d(_k[1])) + _r(_d(_k[2])) + _r(_d(_k[3]));
-    }
-
     function _token(explicitToken) {
-        return (explicitToken || '').trim() || _getToken();
+        const token = (explicitToken || '').trim();
+        if (!token) throw new Error('需要 GitHub token');
+        return token;
     }
 
     function _headers(explicitToken) {
@@ -51,8 +37,8 @@
         return res.json();
     }
 
-    async function createIssue(title, body, labels) {
-        const token = _getToken();
+    async function createIssue(title, body, labels, explicitToken) {
+        const token = _token(explicitToken);
         const url = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/issues';
         const res = await fetch(url, {
             method: 'POST',
@@ -75,8 +61,8 @@
         return res.json();
     }
 
-    async function addReaction(issueNumber, reaction) {
-        const token = _getToken();
+    async function addReaction(issueNumber, reaction, explicitToken) {
+        const token = _token(explicitToken);
         const url = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/issues/' + issueNumber + '/reactions';
         const res = await fetch(url, {
             method: 'POST',
@@ -90,8 +76,8 @@
         return res.json();
     }
 
-    async function closeIssue(issueNumber) {
-        const token = _getToken();
+    async function closeIssue(issueNumber, explicitToken) {
+        const token = _token(explicitToken);
         const url = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/issues/' + issueNumber;
         const res = await fetch(url, {
             method: 'PATCH',
@@ -105,8 +91,8 @@
         return res.json();
     }
 
-    async function uploadFile(file) {
-        const token = _getToken();
+    async function uploadFile(file, explicitToken) {
+        const token = _token(explicitToken);
         const reader = new FileReader();
         const base64 = await new Promise(function(resolve) {
             reader.onload = function() { resolve(reader.result.split(',')[1]); };
@@ -182,6 +168,26 @@
         return res.json();
     }
 
+    async function deleteRepositoryFile(path, message, token) {
+        const sha = await getContentSha(path, token);
+        if (!sha) return { deleted: false };
+        const url = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + encodeURI(path);
+        const res = await fetch(url, {
+            method: 'DELETE',
+            headers: Object.assign(_headers(token), { 'Content-Type': 'application/json' }),
+            body: JSON.stringify({
+                message: message || ('Delete file: ' + path),
+                sha: sha,
+                branch: 'main'
+            })
+        });
+        if (!res.ok) {
+            const detail = await res.text().catch(function() { return ''; });
+            throw new Error('删除仓库文件失败: ' + res.status + ' ' + detail);
+        }
+        return res.json();
+    }
+
     async function uploadRepositoryFile(file, path, message, token) {
         const base64 = await fileToBase64(file);
         const data = await putContent(path, base64, message || ('Upload file: ' + file.name), token);
@@ -220,6 +226,7 @@
         uploadFile: uploadFile,
         uploadRepositoryFile: uploadRepositoryFile,
         publishMarkdownPost: publishMarkdownPost,
+        deleteRepositoryFile: deleteRepositoryFile,
         dispatchPagesWorkflow: dispatchPagesWorkflow,
         REACTIONS_MAP: {
             '👍': '+1',

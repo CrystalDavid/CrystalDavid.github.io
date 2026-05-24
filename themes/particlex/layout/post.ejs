@@ -61,27 +61,22 @@
     </div>
     <% } %>
     <% if (page.comments) { %>
-    <div id="article-comment-wall" class="article-comment-wall" data-page="<%- page.path %>">
+    <div id="article-comment-wall" class="article-comment-wall">
         <div class="section-title">
             <i class="fa-solid fa-comments"></i> 评论
         </div>
-        <div class="article-comment-input">
-            <input type="text" id="article-comment-nickname" placeholder="你的昵称" maxlength="20">
-            <textarea id="article-comment-content" placeholder="写下你的想法..." maxlength="500"></textarea>
-            <button id="article-comment-submit">发布评论</button>
+        <p class="article-comment-note">使用 GitHub 登录后即可公开评论。</p>
+        <div id="comment">
+            <script src="https://utteranc.es/client.js"
+                repo="CrystalDavid/CrystalDavid.github.io"
+                issue-term="pathname"
+                label="article-comment"
+                theme="preferred-color-scheme"
+                crossorigin="anonymous"
+                async>
+            </script>
         </div>
-        <ul id="article-comment-list" class="article-comment-list"></ul>
     </div>
-    <% if (theme.gitalk.enable) { %>
-    <div id="comment">
-        <div id="gitalk-container"></div>
-    </div>
-    <% } %>
-    <% if (theme.giscus.enable) { %>
-    <div id="comment">
-        <div id="giscus-container" class="giscus"></div>
-    </div>
-    <% } %>
     <% if (theme.waline.enable) { %>
     <div id="comment">
         <div id="waline-container"></div>

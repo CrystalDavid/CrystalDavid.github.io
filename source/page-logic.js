@@ -44,7 +44,9 @@
                     created_at: post.date || new Date().toISOString(),
                     reactions: {},
                     _hexo: true,
-                    _hexoIndex: index
+                    _hexoIndex: index,
+                    _postPath: post.postPath || '',
+                    _sourceFile: post.sourceFile || ''
                 };
             });
         } catch (e) {
@@ -99,8 +101,8 @@
         html += '</div>';
 
         // Admin delete button
-        if (isAdmin && !issue._hexo && issue.number) {
-            html += '<button class="admin-delete-btn" data-issue="' + issue.number + '" title="删除" style="position:absolute;top:15px;right:15px;background:#ff4444;color:#fff;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;"><i class="fa-solid fa-trash"></i></button>';
+        if (isAdmin && ((issue._hexo && issue._postPath) || (!issue._hexo && issue.number))) {
+            html += '<button class="admin-delete-btn" data-kind="' + (issue._hexo ? 'hexo' : 'issue') + '" data-issue="' + (issue.number || '') + '" title="删除" style="position:absolute;top:15px;right:15px;background:#ff4444;color:#fff;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;"><i class="fa-solid fa-trash"></i></button>';
         }
 
         el.innerHTML = html;
@@ -130,12 +132,16 @@
             el.addEventListener('mouseenter', function() { delBtn.style.opacity = '1'; });
             el.addEventListener('mouseleave', function() { delBtn.style.opacity = '0'; });
             delBtn.addEventListener('click', async function() {
-                if (!confirm('确定删除这条内容？')) return;
+                if (!confirm('确定删除这篇内容吗？')) return;
                 try {
-                    await SiteAPI.closeIssue(parseInt(this.dataset.issue));
+                    if (this.dataset.kind === 'hexo') {
+                        await deleteHexoArticle(issue, data);
+                    } else {
+                        await SiteAPI.closeIssue(parseInt(this.dataset.issue), getAdminToken());
+                    }
                     el.classList.add('shattering');
                     setTimeout(function() { el.remove(); }, 850);
-                } catch(e) { alert('删除失败'); }
+                } catch(e) { alert('删除失败: ' + e.message); }
             });
         }
 
@@ -165,6 +171,40 @@
     function getItemDate(item) {
         const data = parseBody(item.body);
         return data.date || item.created_at || '';
+    }
+
+    function getAdminToken() {
+        const tokenEl = document.getElementById('post-token');
+        let token = tokenEl ? tokenEl.value.trim() : '';
+        if (!token) token = prompt('请输入 GitHub token，用于提交这次管理操作') || '';
+        token = token.trim();
+        if (!token) throw new Error('缺少 GitHub token');
+        return token;
+    }
+
+    function repoPathFromSourceUrl(url) {
+        const clean = String(url || '').split('?')[0].split('#')[0];
+        if (!clean) return '';
+        if (clean.indexOf('/assets/') === 0) return 'source' + clean;
+        if (clean.indexOf('assets/') === 0) return 'source/' + clean;
+        if (clean.indexOf('source/') === 0) return clean;
+        return '';
+    }
+
+    async function deleteHexoArticle(issue, data) {
+        const token = getAdminToken();
+        const postPath = issue._postPath || data.postPath || '';
+        const sourcePath = repoPathFromSourceUrl(issue._sourceFile || data.sourceFile || '');
+        if (sourcePath) {
+            await SiteAPI.deleteRepositoryFile(sourcePath, 'Delete article source: ' + (data.title || issue.title), token);
+        }
+        if (!postPath) throw new Error('找不到文章 Markdown 路径');
+        await SiteAPI.deleteRepositoryFile(postPath, 'Delete article: ' + (data.title || issue.title), token);
+        try {
+            await SiteAPI.dispatchPagesWorkflow(token);
+        } catch (e) {
+            console.warn(e);
+        }
     }
 
     function escapeHtml(str) {
@@ -253,6 +293,7 @@
                 // Musings specific fields - auto date
                 const dateEl = document.getElementById('post-date');
                 const mediaFileEl = document.getElementById('post-media-file');
+                const adminToken = getAdminToken();
 
                 // Auto-generate date for all post types
                 const now = new Date();
@@ -262,11 +303,11 @@
                 // Handle file upload for musings
                 if (mediaFileEl && mediaFileEl.files && mediaFileEl.files[0]) {
                     adminPush.textContent = '上传文件中...';
-                    const mediaUrl = await SiteAPI.uploadFile(mediaFileEl.files[0]);
+                    const mediaUrl = await SiteAPI.uploadFile(mediaFileEl.files[0], adminToken);
                     bodyData.media = mediaUrl;
                 }
 
-                await SiteAPI.createIssue(title, JSON.stringify(bodyData), [LABEL]);
+                await SiteAPI.createIssue(title, JSON.stringify(bodyData), [LABEL], adminToken);
 
                 // Clear form
                 document.getElementById('post-title').value = '';
@@ -296,7 +337,6 @@
         if (!token) throw new Error('请输入 GitHub token');
 
         adminPush.textContent = '解析文件中...';
-        const isMarkdown = /\.(md|markdown)$/i.test(file.name);
         const extracted = await extractDocumentText(file);
         const now = new Date();
         const pad = n => String(n).padStart(2, '0');
@@ -304,7 +344,7 @@
         const slug = normalizeSlug(title || file.name);
         const datePrefix = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
         let sourceFile = file;
-        if (isMarkdown) {
+        if (!/\.pdf$/i.test(file.name)) {
             adminPush.textContent = '生成 PDF 中...';
             sourceFile = await markdownToPdfFile(extracted, title, slug);
         }
@@ -314,7 +354,7 @@
         const postPath = 'source/_posts/' + datePrefix + '-' + slug + '.md';
         const tags = tagsEl ? tagsEl.value.split(',').map(function(t) { return t.trim(); }).filter(Boolean) : [];
 
-        adminPush.textContent = '上传原文件中...';
+        adminPush.textContent = '上传原 PDF 中...';
         const uploaded = await SiteAPI.uploadRepositoryFile(sourceFile, filePath, 'Upload article source: ' + title, token);
         const markdown = buildMarkdownPost({
             title: title,
@@ -366,9 +406,10 @@
         }
         const wrap = document.createElement('div');
         wrap.style.position = 'fixed';
-        wrap.style.left = '-10000px';
+        wrap.style.left = '0';
         wrap.style.top = '0';
         wrap.style.width = '794px';
+        wrap.style.minHeight = '1123px';
         wrap.style.padding = '56px';
         wrap.style.boxSizing = 'border-box';
         wrap.style.background = '#ffffff';
@@ -376,15 +417,25 @@
         wrap.style.fontFamily = '"Noto Sans SC", "Microsoft YaHei", Arial, sans-serif';
         wrap.style.fontSize = '15px';
         wrap.style.lineHeight = '1.8';
+        wrap.style.opacity = '0.01';
+        wrap.style.pointerEvents = 'none';
+        wrap.style.zIndex = '0';
         wrap.innerHTML = '<h1 style="font-size:28px;margin:0 0 24px;color:#1e3e3f;">' + escapeHtml(title) + '</h1>' + markdownToHtml(markdown);
         document.body.appendChild(wrap);
         try {
+            if (document.fonts && document.fonts.ready) await document.fonts.ready;
+            await new Promise(function(resolve) { requestAnimationFrame(function() { requestAnimationFrame(resolve); }); });
             const blob = await window.html2pdf()
                 .set({
                     margin: 0,
                     filename: slug + '.pdf',
                     image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true },
+                    html2canvas: {
+                        scale: 2,
+                        useCORS: true,
+                        backgroundColor: '#ffffff',
+                        windowWidth: 794
+                    },
                     jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
                 })
                 .from(wrap)
@@ -396,19 +447,55 @@
     }
 
     function markdownToHtml(markdown) {
-        return String(markdown || '')
-            .split(/\n{2,}/)
-            .map(function(block) {
-                const text = block.trim();
-                if (!text) return '';
-                const heading = text.match(/^(#{1,6})\s+(.+)$/);
-                if (heading) {
-                    const level = Math.min(heading[1].length + 1, 4);
-                    return '<h' + level + ' style="margin:24px 0 10px;color:#3e76b7;">' + escapeHtml(heading[2]) + '</h' + level + '>';
+        const lines = String(markdown || '').replace(/\r\n/g, '\n').split('\n');
+        const out = [];
+        let paragraph = [];
+        let inCode = false;
+        let codeLines = [];
+
+        function flushParagraph() {
+            if (!paragraph.length) return;
+            out.push('<p style="margin:0 0 14px;">' + escapeHtml(paragraph.join('\n')).replace(/\n/g, '<br>') + '</p>');
+            paragraph = [];
+        }
+
+        function flushCode() {
+            if (!codeLines.length) return;
+            out.push('<pre style="background:#f7f8fb;border-radius:12px;padding:14px 16px;overflow:auto;margin:18px 0;"><code>' + escapeHtml(codeLines.join('\n')) + '</code></pre>');
+            codeLines = [];
+        }
+
+        lines.forEach(function(line) {
+            if (/^```/.test(line.trim())) {
+                if (inCode) {
+                    flushCode();
+                    inCode = false;
+                } else {
+                    flushParagraph();
+                    inCode = true;
                 }
-                return '<p style="margin:0 0 14px;">' + escapeHtml(text).replace(/\n/g, '<br>') + '</p>';
-            })
-            .join('');
+                return;
+            }
+            if (inCode) {
+                codeLines.push(line);
+                return;
+            }
+            const heading = line.match(/^(#{1,6})\s+(.+)$/);
+            if (heading) {
+                flushParagraph();
+                const level = Math.min(heading[1].length + 1, 4);
+                out.push('<h' + level + ' style="margin:24px 0 10px;color:#3e76b7;">' + escapeHtml(heading[2]) + '</h' + level + '>');
+                return;
+            }
+            if (!line.trim()) {
+                flushParagraph();
+                return;
+            }
+            paragraph.push(line);
+        });
+        flushParagraph();
+        flushCode();
+        return out.join('');
     }
 
     async function extractPdfText(file) {
@@ -448,7 +535,6 @@
     function buildMarkdownPost(options) {
         const tagLines = options.tags.length ? options.tags.map(function(tag) { return '  - ' + yamlEscape(tag); }).join('\n') : '  - Article';
         const body = (options.body || '').trim() || '正文解析为空，请打开原文件查看完整内容。';
-        const sourceLabel = /\.pdf($|\?)/i.test(options.sourceUrl || '') ? '查看原 PDF' : '查看原文件';
         return [
             '---',
             'title: ' + yamlEscape(options.title),
@@ -464,7 +550,7 @@
             '',
             options.description ? '> ' + options.description : '',
             '',
-            '<a class="source-file-btn" href="' + escapeAttr(options.sourceUrl) + '" target="_blank" rel="noopener">' + sourceLabel + '</a>',
+            '<a class="source-file-btn" href="' + escapeAttr(options.sourceUrl) + '" target="_blank" rel="noopener">查看原 PDF</a>',
             '',
             body
         ].filter(function(line, index, arr) {

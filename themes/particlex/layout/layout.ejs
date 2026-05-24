@@ -102,9 +102,7 @@
     <canvas id="fireworks-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     <script src="<%- url_for("/script.js?v=5") %>"></script>
-    <script src="<%- url_for("/site-api.js") %>"></script>
     <% if (page.comments) { %>
-    <script src="<%- url_for("/article-comments.js") %>"></script>
     <%- partial("comment") %>
     <% } %>
 </body>

@@ -13,12 +13,17 @@ hexo.extend.generator.register('article_data', function(locals) {
       const tags = post.tags ? post.tags.toArray().map(function(tag) { return tag.name; }) : [];
       const summary = post.description || stripHtml(post.excerpt || '').trim();
       const path = this.config.root + post.path;
+      const sourcePath = post.source
+        ? 'source/' + String(post.source).replace(/^source[\\/]/, '').replace(/\\/g, '/')
+        : '';
       return {
         title: post.title,
         date: formatPostDate(post.date),
         content: summary,
         tags: tags.join(','),
         link: path.replace(/\/{2,}/g, '/'),
+        postPath: sourcePath,
+        sourceFile: post.source_file || '',
         source: 'hexo'
       };
     }, this);
