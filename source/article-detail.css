@@ -137,6 +137,104 @@
     border-top: 1px solid rgba(154, 187, 247, 0.25);
 }
 
+.article-comment-wall {
+    margin-top: 44px;
+    padding-top: 28px;
+    border-top: 1px solid rgba(154, 187, 247, 0.25);
+}
+
+.article-comment-wall .section-title {
+    color: #1e3e3f;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.article-comment-wall .section-title i {
+    color: #66afef;
+}
+
+.article-comment-input input,
+.article-comment-input textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    margin-bottom: 12px;
+}
+
+.article-comment-input textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+.article-comment-input input:focus,
+.article-comment-input textarea:focus {
+    border-color: #667eea;
+}
+
+.article-comment-input button {
+    width: 100%;
+    border: none;
+    border-radius: 50px;
+    padding: 13px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    background: linear-gradient(120deg, #667eea 0%, #764ba2 100%);
+}
+
+.article-comment-input button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.article-comment-list {
+    list-style: none;
+    padding: 0;
+    margin: 24px 0 0;
+}
+
+.article-comment-item {
+    background: #f8f9fa;
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+}
+
+.article-comment-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    color: #999;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.article-comment-meta strong {
+    color: #66afef;
+    font-size: 15px;
+}
+
+.article-comment-content {
+    color: #333;
+    line-height: 1.7;
+}
+
+.article-comment-empty {
+    color: #999;
+    text-align: center;
+    padding: 24px;
+}
+
 body.dark-mode .article-detail-card {
     background: rgba(26, 26, 46, 0.75);
     backdrop-filter: blur(15px);
@@ -177,6 +275,35 @@ body.dark-mode .article-detail-card .content code {
 
 body.dark-mode .article-detail-card .content pre {
     background: rgba(17, 17, 35, 0.78);
+}
+
+body.dark-mode .article-comment-wall .section-title {
+    color: #9abbf7;
+}
+
+body.dark-mode .article-comment-input input,
+body.dark-mode .article-comment-input textarea {
+    background: rgba(40, 40, 70, 0.6);
+    border-color: rgba(154, 187, 247, 0.3);
+    color: #e0e0e0;
+}
+
+body.dark-mode .article-comment-input input:focus,
+body.dark-mode .article-comment-input textarea:focus {
+    border-color: #9abbf7;
+}
+
+body.dark-mode .article-comment-item {
+    background: rgba(40, 40, 70, 0.6);
+    border: 1px solid rgba(154, 187, 247, 0.15);
+}
+
+body.dark-mode .article-comment-content {
+    color: #d0d0d0;
+}
+
+body.dark-mode .article-comment-meta {
+    color: #a0a0b0;
 }
 
 @media (max-width: 768px) {

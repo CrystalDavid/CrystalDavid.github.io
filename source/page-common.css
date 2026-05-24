@@ -262,6 +262,18 @@
     transition: border-color 0.3s;
 }
 
+.admin-form input[type="file"] {
+    background: #fff;
+    cursor: pointer;
+}
+
+.admin-help {
+    color: #77838f;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 0 0 14px;
+}
+
 .admin-form input:focus,
 .admin-form textarea:focus {
     border-color: #667eea;
@@ -390,6 +402,10 @@ body.dark-mode .admin-login input {
     background: rgba(40, 40, 70, 0.6);
     border-color: rgba(154, 187, 247, 0.3);
     color: #e0e0e0;
+}
+
+body.dark-mode .admin-help {
+    color: #a0a0b0;
 }
 
 body.dark-mode .admin-form input:focus,

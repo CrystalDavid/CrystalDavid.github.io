@@ -73,9 +73,12 @@
                 <h3><i class="fa-solid fa-book"></i> 发布新文章</h3>
                 <input type="text" id="post-title" placeholder="文章标题">
                 <textarea id="post-desc" placeholder="文章简介"></textarea>
-                <input type="text" id="post-link" placeholder="文章链接 (URL)">
+                <input type="file" id="post-file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                <input type="text" id="post-slug" placeholder="文章路径，可选，如 ai-usage-notes">
                 <input type="text" id="post-tags" placeholder="标签 (逗号分隔，如: React,Node.js)">
-                <button class="admin-push-btn" id="admin-push">Push 发布</button>
+                <input type="password" id="post-token" placeholder="GitHub token，仅本次发布使用">
+                <p class="admin-help">会生成 source/_posts/*.md 并上传原文件到 source/assets/articles/，push 后自动触发 GitHub Pages 构建。</p>
+                <button class="admin-push-btn" id="admin-push">生成 Hexo 文章并发布</button>
             </div>
         </div>
     </div>
@@ -94,6 +97,8 @@
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     <script src="script.js?v=5"></script>
     <script src="site-api.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js"></script>
     <script src="page-logic.js" data-label="article"></script>
 </body>
 </html>
