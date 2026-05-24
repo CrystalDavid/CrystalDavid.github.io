@@ -14,7 +14,7 @@ source_file: "/assets/articles/2026-05-25-ai-usage-notes/AI使用心得.pdf"
 
 > 这周在优化 AI 工作流，记录一下实际使用不同 AI 工具的体验。
 
-[查看原 PDF](/assets/articles/2026-05-25-ai-usage-notes/AI使用心得.pdf)
+<a class="source-file-btn" href="/assets/articles/2026-05-25-ai-usage-notes/AI使用心得.pdf" target="_blank" rel="noopener">查看原 PDF</a>
 
 这周在优化ai工作流，还是有一些心得的：夯爆了>还行>一般>拉完了
 

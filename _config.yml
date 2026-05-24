@@ -24,10 +24,6 @@ i18n_dir: :lang
 skip_render:
   - assets/**
   - index.html
-  - about.html
-  - article.html
-  - agent.html
-  - musings.html
   - about/**
   - article/**
   - agent/**

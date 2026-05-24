@@ -296,27 +296,33 @@
         if (!token) throw new Error('请输入 GitHub token');
 
         adminPush.textContent = '解析文件中...';
+        const isMarkdown = /\.(md|markdown)$/i.test(file.name);
         const extracted = await extractDocumentText(file);
         const now = new Date();
         const pad = n => String(n).padStart(2, '0');
         const dateText = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
         const slug = normalizeSlug(title || file.name);
         const datePrefix = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
-        const safeFileName = file.name.replace(/[^a-zA-Z0-9._\-\u4e00-\u9fa5]/g, '_');
+        let sourceFile = file;
+        if (isMarkdown) {
+            adminPush.textContent = '生成 PDF 中...';
+            sourceFile = await markdownToPdfFile(extracted, title, slug);
+        }
+        const safeFileName = sourceFile.name.replace(/[^a-zA-Z0-9._\-\u4e00-\u9fa5]/g, '_');
         const assetDir = 'source/assets/articles/' + datePrefix + '-' + slug;
         const filePath = assetDir + '/' + safeFileName;
         const postPath = 'source/_posts/' + datePrefix + '-' + slug + '.md';
         const tags = tagsEl ? tagsEl.value.split(',').map(function(t) { return t.trim(); }).filter(Boolean) : [];
 
         adminPush.textContent = '上传原文件中...';
-        const uploaded = await SiteAPI.uploadRepositoryFile(file, filePath, 'Upload article source: ' + title, token);
+        const uploaded = await SiteAPI.uploadRepositoryFile(sourceFile, filePath, 'Upload article source: ' + title, token);
         const markdown = buildMarkdownPost({
             title: title,
             description: desc,
             date: dateText,
             tags: tags,
             sourceUrl: uploaded.url,
-            sourceFileName: file.name,
+            sourceFileName: sourceFile.name,
             body: extracted
         });
 
@@ -352,6 +358,57 @@
 
     async function extractMarkdownText(file) {
         return file.text();
+    }
+
+    async function markdownToPdfFile(markdown, title, slug) {
+        if (!window.html2pdf) {
+            throw new Error('PDF 生成库加载失败，请刷新后重试');
+        }
+        const wrap = document.createElement('div');
+        wrap.style.position = 'fixed';
+        wrap.style.left = '-10000px';
+        wrap.style.top = '0';
+        wrap.style.width = '794px';
+        wrap.style.padding = '56px';
+        wrap.style.boxSizing = 'border-box';
+        wrap.style.background = '#ffffff';
+        wrap.style.color = '#222222';
+        wrap.style.fontFamily = '"Noto Sans SC", "Microsoft YaHei", Arial, sans-serif';
+        wrap.style.fontSize = '15px';
+        wrap.style.lineHeight = '1.8';
+        wrap.innerHTML = '<h1 style="font-size:28px;margin:0 0 24px;color:#1e3e3f;">' + escapeHtml(title) + '</h1>' + markdownToHtml(markdown);
+        document.body.appendChild(wrap);
+        try {
+            const blob = await window.html2pdf()
+                .set({
+                    margin: 0,
+                    filename: slug + '.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
+                })
+                .from(wrap)
+                .outputPdf('blob');
+            return new File([blob], slug + '.pdf', { type: 'application/pdf' });
+        } finally {
+            wrap.remove();
+        }
+    }
+
+    function markdownToHtml(markdown) {
+        return String(markdown || '')
+            .split(/\n{2,}/)
+            .map(function(block) {
+                const text = block.trim();
+                if (!text) return '';
+                const heading = text.match(/^(#{1,6})\s+(.+)$/);
+                if (heading) {
+                    const level = Math.min(heading[1].length + 1, 4);
+                    return '<h' + level + ' style="margin:24px 0 10px;color:#3e76b7;">' + escapeHtml(heading[2]) + '</h' + level + '>';
+                }
+                return '<p style="margin:0 0 14px;">' + escapeHtml(text).replace(/\n/g, '<br>') + '</p>';
+            })
+            .join('');
     }
 
     async function extractPdfText(file) {
@@ -391,6 +448,7 @@
     function buildMarkdownPost(options) {
         const tagLines = options.tags.length ? options.tags.map(function(tag) { return '  - ' + yamlEscape(tag); }).join('\n') : '  - Article';
         const body = (options.body || '').trim() || '正文解析为空，请打开原文件查看完整内容。';
+        const sourceLabel = /\.pdf($|\?)/i.test(options.sourceUrl || '') ? '查看原 PDF' : '查看原文件';
         return [
             '---',
             'title: ' + yamlEscape(options.title),
@@ -406,7 +464,7 @@
             '',
             options.description ? '> ' + options.description : '',
             '',
-            '[查看原文件](' + options.sourceUrl + ')',
+            '<a class="source-file-btn" href="' + escapeAttr(options.sourceUrl) + '" target="_blank" rel="noopener">' + sourceLabel + '</a>',
             '',
             body
         ].filter(function(line, index, arr) {
@@ -416,6 +474,10 @@
 
     function yamlEscape(value) {
         return '"' + String(value || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
+    }
+
+    function escapeAttr(value) {
+        return String(value || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
     // Load on page ready

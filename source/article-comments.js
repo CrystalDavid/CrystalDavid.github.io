@@ -26,15 +26,30 @@
         try { return JSON.parse(issue.body); } catch(e) { return null; }
     }
 
+    function localKey() {
+        return 'david_article_comments_' + encodeURIComponent(pageKey);
+    }
+
+    function getLocalComments() {
+        try { return JSON.parse(localStorage.getItem(localKey())) || []; } catch(e) { return []; }
+    }
+
+    function saveLocalComment(comment) {
+        const comments = getLocalComments();
+        comments.unshift(comment);
+        localStorage.setItem(localKey(), JSON.stringify(comments));
+    }
+
     async function loadComments() {
         try {
             const issues = await SiteAPI.fetchIssues('article-comment');
-            const comments = (issues || []).map(function(issue) {
+            const remoteComments = (issues || []).map(function(issue) {
                 const data = parseIssue(issue);
                 if (!data || data.page !== pageKey) return null;
                 data.issue = issue;
                 return data;
             }).filter(Boolean);
+            const comments = getLocalComments().concat(remoteComments);
 
             if (!comments.length) {
                 list.innerHTML = '<li class="article-comment-empty">暂无评论，来写第一条吧。</li>';
@@ -43,7 +58,7 @@
 
             list.innerHTML = comments.map(function(item) {
                 return '<li class="article-comment-item">' +
-                    '<div class="article-comment-meta"><strong>' + esc(item.nickname || '匿名') + '</strong><span>' + esc(item.date || '') + '</span></div>' +
+                    '<div class="article-comment-meta"><strong>' + esc(item.nickname || '匿名') + '</strong><span>' + esc(item.date || '') + (item.local ? ' · 本地暂存' : '') + '</span></div>' +
                     '<div class="article-comment-content">' + esc(item.content || '') + '</div>' +
                     '</li>';
             }).join('');
@@ -63,17 +78,27 @@
             submitBtn.textContent = '发布中...';
             try {
                 localStorage.setItem('david_article_comment_nickname', nickname);
-                const body = JSON.stringify({
+                const comment = {
                     page: pageKey,
                     nickname: nickname,
                     content: content,
                     date: formatDate()
-                });
+                };
+                const body = JSON.stringify(comment);
                 await SiteAPI.createIssue('Comment: ' + nickname + ' @ ' + pageKey, body, ['article-comment']);
                 contentInput.value = '';
                 await loadComments();
             } catch(e) {
-                alert('评论发布失败: ' + e.message);
+                saveLocalComment({
+                    page: pageKey,
+                    nickname: nickname,
+                    content: content,
+                    date: formatDate(),
+                    local: true
+                });
+                contentInput.value = '';
+                await loadComments();
+                alert('评论已保存到本机。公开同步评论需要配置 Giscus 或后端 GitHub token。当前 GitHub Issues 发布失败：' + e.message);
             }
             submitBtn.disabled = false;
             submitBtn.textContent = '发布评论';

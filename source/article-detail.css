@@ -82,6 +82,36 @@
     opacity: 0.8;
 }
 
+.article-detail-card .content .source-file-btn,
+.article-detail-card .content a[href$=".pdf"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: fit-content;
+    background: linear-gradient(120deg, #9abbf7 0%, #ffbbf4 100%);
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 10px 22px;
+    border-radius: 50px;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(154, 187, 247, 0.35);
+    transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+
+.article-detail-card .content .source-file-btn::after,
+.article-detail-card .content a[href$=".pdf"]::after {
+    content: "→";
+}
+
+.article-detail-card .content .source-file-btn:hover,
+.article-detail-card .content a[href$=".pdf"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(154, 187, 247, 0.5);
+    opacity: 1;
+}
+
 .article-detail-card .content ul,
 .article-detail-card .content ol {
     padding-left: 1.4em;
