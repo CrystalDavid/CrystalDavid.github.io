@@ -23,6 +23,11 @@ code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
   - assets/**
+  - index.html
+  - about.html
+  - article.html
+  - agent.html
+  - musings.html
 
 new_post_name: :year-:month-:day-:title.md
 default_layout: post

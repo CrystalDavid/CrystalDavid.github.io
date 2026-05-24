@@ -12,6 +12,102 @@
     if (is_tag()) title = "Tags: " + page.tag + " | " + config.title;
     if (is_archive()) title = "Archives | " + config.title;
 %>
+<% if (is_post()) { %>
+<!DOCTYPE html>
+<html lang="<%- config.language %>">
+<head>
+    <meta charset="utf-8">
+    <title><%= title %></title>
+    <meta name="author" content="<%- config.author %>">
+    <meta name="description" content="<%- page.description || config.description %>">
+    <meta name="keywords" content="<%- config.keywords %>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="icon" href="<%- url_for(theme.avatar) %>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <% if (theme.highlight.enable) { %>
+    <link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/<%- theme.highlight.style %>.min.css">
+    <script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+    <script src="<%- url_for("/js/lib/highlight.js") %>"></script>
+    <% } %>
+    <% if (theme.gitalk.enable && page.comments) { %>
+    <script src="https://s4.zstatic.net/ajax/libs/gitalk/1.8.0/gitalk.min.js"></script>
+    <link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/gitalk/1.8.0/gitalk.min.css">
+    <% } %>
+    <% if (theme.waline.enable && page.comments) { %>
+    <script src="https://s4.zstatic.net/ajax/libs/waline/2.15.8/waline.min.js"></script>
+    <link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/waline/2.15.8/waline.min.css">
+    <link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/waline/2.15.8/waline-meta.min.css">
+    <% } %>
+    <% if (theme.twikoo.enable && page.comments) { %>
+    <script src="https://s4.zstatic.net/ajax/libs/twikoo/1.6.31/twikoo.all.min.js"></script>
+    <% } %>
+    <link rel="stylesheet" href="<%- url_for("/styles.css") %>">
+    <link rel="stylesheet" href="<%- url_for("/page-common.css") %>">
+    <link rel="stylesheet" href="<%- url_for("/article-detail.css") %>">
+</head>
+<body>
+    <div id="menu">
+        <nav id="desktop-menu">
+            <a class="title" href="/">
+                <span>Davidの小窝</span>
+            </a>
+            <div class="nav-links">
+                <a href="/"><i class="fa-solid fa-house fa-fw"></i><span>Home</span></a>
+                <a href="/about.html"><i class="fa-solid fa-id-card fa-fw"></i><span>About</span></a>
+                <a href="/article.html"><i class="fa-solid fa-book fa-fw"></i><span>Article</span></a>
+                <a href="/agent.html"><i class="fa-solid fa-robot fa-fw"></i><span>Agent</span></a>
+                <a href="/musings.html"><i class="fa-solid fa-feather fa-fw"></i><span>Musings</span></a>
+            </div>
+            <div class="menu-icons">
+                <a href="#" id="theme-toggle" title="切换主题"><i class="fa-solid fa-moon fa-fw"></i></a>
+                <a href="#" id="search-toggle" title="搜索"><i class="fa-solid fa-search fa-fw"></i></a>
+            </div>
+        </nav>
+        <nav id="mobile-menu">
+            <div class="title" id="mobile-menu-toggle"><i class="fa-solid fa-bars fa-fw"></i><span>&emsp;Davidの小窝</span></div>
+            <div class="items" id="mobile-menu-items" style="display:none;">
+                <a href="/"><div class="item"><div class="item-icon"><i class="fa-solid fa-house fa-fw"></i></div><div class="item-text">Home</div></div></a>
+                <a href="/about.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-id-card fa-fw"></i></div><div class="item-text">About</div></div></a>
+                <a href="/article.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-book fa-fw"></i></div><div class="item-text">Article</div></div></a>
+                <a href="/agent.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-robot fa-fw"></i></div><div class="item-text">Agent</div></div></a>
+                <a href="/musings.html"><div class="item"><div class="item-icon"><i class="fa-solid fa-feather fa-fw"></i></div><div class="item-text">Musings</div></div></a>
+            </div>
+        </nav>
+        <div id="theme-toast" class="theme-toast">
+            <i class="fa-solid fa-moon"></i>
+            <span>已切换到深色模式</span>
+        </div>
+    </div>
+
+    <canvas id="stars-canvas"></canvas>
+
+    <main class="article-detail-container">
+        <article class="article-detail-card">
+            <%- partial("post") %>
+        </article>
+    </main>
+
+    <footer id="footer">
+        <div id="footer-wrap">
+            <div>&copy; 2025 Davidの小窝 <span id="footer-icon"><i class="fa-solid fa-heart fa-fw"></i></span> @David</div>
+            <div id="site-runtime"></div>
+            <div id="site-visitors">本站访问人数：<span id="busuanzi_value_site_uv">loading</span> 人</div>
+            <div>Powered by <a href="https://github.com/CrystalDavid">CrystalDavid</a> &amp; Inspired by <a href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX</a></div>
+        </div>
+    </footer>
+
+    <canvas id="fireworks-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <script src="<%- url_for("/script.js?v=5") %>"></script>
+    <% if (page.comments) { %>
+    <%- partial("comment") %>
+    <% } %>
+</body>
+</html>
+<% } else { %>
 <!DOCTYPE html>
 <html lang="<%- config.language %>">
 <head>
@@ -57,3 +153,4 @@
     <% } %>
 </body>
 </html>
+<% } %>

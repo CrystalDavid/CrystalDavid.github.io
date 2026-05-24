@@ -1,0 +1,201 @@
+.article-detail-container {
+    max-width: 900px;
+    margin: 90px auto 50px;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.article-detail-card {
+    background: #fff;
+    border-radius: 30px;
+    padding: 50px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.25s, transform 0.25s;
+}
+
+.article-detail-card:hover {
+    box-shadow: 0 0 5px #d9d9d9;
+    transform: translate(-5px, -5px);
+}
+
+.article-detail-card .article > div:first-child {
+    text-align: center;
+}
+
+.article-detail-card h1 {
+    margin: 0 0 22px;
+    color: #66afef;
+    font-size: 34px;
+    line-height: 1.35;
+}
+
+.article-detail-card .info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px 20px;
+    color: #999;
+    font-size: 14px;
+    margin-bottom: 36px;
+}
+
+.article-detail-card .info a {
+    color: inherit;
+}
+
+.article-detail-card .icon {
+    margin-right: 4px;
+    color: #9abbf7;
+}
+
+.article-detail-card .tag {
+    margin-left: 8px;
+    font-weight: bold;
+}
+
+.article-detail-card .content {
+    color: #333;
+    font-size: 16px;
+    line-height: 1.9;
+}
+
+.article-detail-card .content h2,
+.article-detail-card .content h3,
+.article-detail-card .content h4 {
+    color: #1e3e3f;
+    margin: 34px 0 14px;
+    line-height: 1.4;
+}
+
+.article-detail-card .content p {
+    margin: 0 0 18px;
+}
+
+.article-detail-card .content a {
+    color: #66afef;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.article-detail-card .content a:hover {
+    opacity: 0.8;
+}
+
+.article-detail-card .content ul,
+.article-detail-card .content ol {
+    padding-left: 1.4em;
+    margin: 0 0 20px;
+}
+
+.article-detail-card .content li {
+    margin: 8px 0;
+}
+
+.article-detail-card .content blockquote {
+    margin: 24px 0;
+    padding: 14px 18px;
+    border-left: 4px solid #9abbf7;
+    background: #f5f8ff;
+    border-radius: 0 12px 12px 0;
+    color: #5c6b72;
+}
+
+.article-detail-card .content code {
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: #f0f7ff;
+    color: #3e76b7;
+    font-family: "Fira Code", Consolas, Monaco, monospace;
+    font-size: 0.92em;
+}
+
+.article-detail-card .content pre {
+    overflow: auto;
+    padding: 18px;
+    border-radius: 14px;
+    background: #f7f8fb;
+    margin: 24px 0;
+}
+
+.article-detail-card .content pre code {
+    padding: 0;
+    background: transparent;
+    color: inherit;
+}
+
+.article-detail-card .content img,
+.article-detail-card .content video {
+    max-width: 100%;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+#comment {
+    margin-top: 42px;
+    padding-top: 26px;
+    border-top: 1px solid rgba(154, 187, 247, 0.25);
+}
+
+body.dark-mode .article-detail-card {
+    background: rgba(26, 26, 46, 0.75);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    color: #e0e0e0;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(154, 187, 247, 0.2);
+}
+
+body.dark-mode .article-detail-card:hover {
+    box-shadow: 0 0 18px rgba(154, 187, 247, 0.25);
+}
+
+body.dark-mode .article-detail-card h1,
+body.dark-mode .article-detail-card .content h2,
+body.dark-mode .article-detail-card .content h3,
+body.dark-mode .article-detail-card .content h4 {
+    color: #9abbf7;
+}
+
+body.dark-mode .article-detail-card .content {
+    color: #d0d0d0;
+}
+
+body.dark-mode .article-detail-card .info {
+    color: #a0a0b0;
+}
+
+body.dark-mode .article-detail-card .content blockquote {
+    background: rgba(40, 40, 70, 0.55);
+    color: #d0d0d0;
+}
+
+body.dark-mode .article-detail-card .content code {
+    background: rgba(154, 187, 247, 0.16);
+    color: #c7dbff;
+}
+
+body.dark-mode .article-detail-card .content pre {
+    background: rgba(17, 17, 35, 0.78);
+}
+
+@media (max-width: 768px) {
+    .article-detail-container {
+        margin-top: 70px;
+        padding: 10px;
+    }
+
+    .article-detail-card {
+        padding: 25px 15px;
+        border-radius: 20px;
+    }
+
+    .article-detail-card h1 {
+        font-size: 26px;
+    }
+
+    .article-detail-card .info {
+        justify-content: flex-start;
+        gap: 10px;
+    }
+}
