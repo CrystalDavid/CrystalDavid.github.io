@@ -1,7 +1,7 @@
-(function() {
+﻿(function() {
     'use strict';
 
-    const API_BASE = 'https://david-comment-api.g2811459442.workers.dev';
+    const API_BASE = 'https://david-comment-api.crystaldavid.deno.net';
     const NICKNAME_KEY = 'david_comment_nickname';
 
     function escapeHtml(value) {
@@ -68,7 +68,7 @@
                 els.list.appendChild(item);
             });
         } catch (error) {
-            els.list.innerHTML = '<li class="article-comment-empty">评论加载失败，请确认当前网络可以访问 workers.dev。</li>';
+            els.list.innerHTML = '<li class="article-comment-empty">留言服务暂时连接失败，请稍后重试。</li>';
         }
     }
 
@@ -110,7 +110,7 @@
                 els.content.value = '';
                 await loadComments(wall);
             } catch (error) {
-                alert('发布失败：无法连接评论服务，请确认当前网络可以访问 workers.dev。');
+                alert('发布失败：留言服务暂时连接失败，请稍后重试。');
             } finally {
                 els.submit.disabled = false;
                 els.submit.textContent = oldText;
@@ -125,3 +125,4 @@
         document.querySelectorAll('[data-comment-wall]').forEach(bindWall);
     });
 })();
+
