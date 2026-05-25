@@ -396,6 +396,24 @@
     transition: border-color 0.3s;
 }
 
+.article-admin-field {
+    display: block;
+    margin-bottom: 14px;
+}
+
+.article-admin-field span {
+    display: block;
+    color: #1e3e3f;
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 0 8px 4px;
+}
+
+.article-admin-field input,
+.article-admin-field textarea {
+    margin-bottom: 0;
+}
+
 .article-admin-form textarea {
     min-height: 96px;
     resize: vertical;
@@ -566,6 +584,10 @@ body.dark-mode .article-admin-panel {
 
 body.dark-mode .article-admin-form h3 {
     color: #9abbf7;
+}
+
+body.dark-mode .article-admin-field span {
+    color: #dce7ff;
 }
 
 body.dark-mode .article-admin-form input,

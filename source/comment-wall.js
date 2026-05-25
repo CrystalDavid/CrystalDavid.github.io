@@ -187,6 +187,7 @@
         if (wall.dataset.commentAdminReady === 'true') return;
         wall.dataset.commentAdminReady = 'true';
         if (document.getElementById('about-admin-panel')) return;
+        if (document.querySelector('[data-article-admin]')) return;
 
         const tools = document.createElement('div');
         tools.className = 'comment-admin-tools';

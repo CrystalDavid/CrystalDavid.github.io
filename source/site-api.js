@@ -280,27 +280,30 @@
 
     async function deleteRepositoryFileAdmin(path, message, adminPassword) {
         const repoPath = normalizeRepoPath(path);
-        let current;
-        try {
-            current = await getRepositoryFile(repoPath);
-        } catch (e) {
-            return { deleted: false, path: repoPath };
-        }
-        const res = await fetch(contentUrl(repoPath), {
-            method: 'DELETE',
-            headers: Object.assign(_adminHeaders(adminPassword), { 'Content-Type': 'application/json' }),
-            body: JSON.stringify({
-                message: message || ('Delete file: ' + repoPath),
-                sha: current.sha,
-                branch: 'main'
-            })
-        });
-        if (res.status === 404) return { deleted: false, path: repoPath };
-        if (!res.ok) {
+        for (let attempt = 0; attempt < 3; attempt++) {
+            let current;
+            try {
+                current = await getRepositoryFile(repoPath);
+            } catch (e) {
+                return { deleted: false, path: repoPath };
+            }
+            const res = await fetch(contentUrl(repoPath) + '&_=' + Date.now(), {
+                method: 'DELETE',
+                headers: Object.assign(_adminHeaders(adminPassword), { 'Content-Type': 'application/json' }),
+                body: JSON.stringify({
+                    message: message || ('Delete file: ' + repoPath),
+                    sha: current.sha,
+                    branch: 'main'
+                })
+            });
+            if (res.status === 404) return { deleted: false, path: repoPath };
+            if (res.ok) return res.json();
             const detail = await res.text().catch(function() { return ''; });
-            throw new Error('删除仓库文件失败: ' + res.status + ' ' + detail);
+            if (res.status !== 409 || attempt === 2) {
+                throw new Error('删除仓库文件失败: ' + res.status + ' ' + detail);
+            }
+            await new Promise(function(resolve) { setTimeout(resolve, 450 + attempt * 450); });
         }
-        return res.json();
     }
 
     async function uploadRepositoryFile(file, path, message, token) {

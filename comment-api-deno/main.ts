@@ -228,7 +228,47 @@ async function handleGithub(req: Request, url: URL): Promise<Response> {
     if (req.method === "GET") {
       return githubJson(`${target}?ref=${encodeURIComponent(ref)}`, { headers: await githubHeaders(req, false) });
     }
-    if (req.method === "PUT" || req.method === "DELETE") {
+    if (req.method === "DELETE") {
+      const headers = await githubHeaders(req, true, true);
+      let body: Record<string, unknown> = {};
+      try {
+        body = await req.json();
+      } catch {
+        body = {};
+      }
+      const branch = String(body.branch || "main");
+      const message = String(body.message || `Delete file: ${repoPath}`);
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const current = await fetch(`${target}?ref=${encodeURIComponent(branch)}&t=${Date.now()}`, {
+          headers: await githubHeaders(req, false, true),
+          cache: "no-store",
+        });
+        if (current.status === 404) return json({ deleted: false, path: repoPath }, 200);
+        if (!current.ok) return githubJson(`${target}?ref=${encodeURIComponent(branch)}`, { headers: await githubHeaders(req, false, true) });
+        const currentData = await current.json();
+        const sha = currentData.sha;
+        const deleted = await fetch(target, {
+          method: "DELETE",
+          headers,
+          body: JSON.stringify({ message, sha, branch }),
+          cache: "no-store",
+        });
+        if (deleted.status === 404) return json({ deleted: false, path: repoPath }, 200);
+        if (deleted.ok || deleted.status !== 409 || attempt === 2) {
+          if (deleted.status === 204) return new Response(null, { status: 204, headers: corsHeaders() });
+          const text = await deleted.text();
+          return new Response(text || "{}", {
+            status: deleted.status,
+            headers: {
+              "content-type": deleted.headers.get("content-type") || "application/json; charset=utf-8",
+              ...corsHeaders(),
+            },
+          });
+        }
+        await new Promise((resolve) => setTimeout(resolve, 450 + attempt * 450));
+      }
+    }
+    if (req.method === "PUT") {
       return githubJson(target, {
         method: req.method,
         headers: await githubHeaders(req, true, true),

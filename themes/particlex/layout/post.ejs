@@ -107,9 +107,18 @@
         <div class="article-admin-form" style="display:none;">
             <div class="article-admin-status" data-type="info">管理员模式已开启。</div>
             <h3><i class="fa-solid fa-pen-to-square"></i> 编辑这篇文章</h3>
-            <input class="article-edit-title" type="text" placeholder="文章标题">
-            <textarea class="article-edit-desc" placeholder="文章简介"></textarea>
-            <input class="article-edit-tags" type="text" placeholder="标签，逗号分隔，如 AI,Notes,Workflow">
+            <label class="article-admin-field">
+                <span>文章标题</span>
+                <input class="article-edit-title" type="text" placeholder="文章标题">
+            </label>
+            <label class="article-admin-field">
+                <span>文章简介</span>
+                <textarea class="article-edit-desc" placeholder="文章简介"></textarea>
+            </label>
+            <label class="article-admin-field">
+                <span>文章标签</span>
+                <input class="article-edit-tags" type="text" placeholder="标签，逗号分隔，如 AI,Notes,Workflow">
+            </label>
             <button class="admin-push-btn article-admin-save" type="button">保存文章信息</button>
         </div>
     </div>
