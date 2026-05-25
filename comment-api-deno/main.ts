@@ -20,6 +20,12 @@ type CommentRecord = {
   created_at: string;
 };
 
+type ReactionRecord = {
+  page: string;
+  reaction: string;
+  count: number;
+};
+
 function json(data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), {
     status,
@@ -177,6 +183,41 @@ async function deleteComment(req: Request): Promise<Response> {
   return json({ ok: true });
 }
 
+async function getReactions(page: string): Promise<Record<string, number>> {
+  const reactions: Record<string, number> = {};
+  const iter = kv.list<ReactionRecord>({ prefix: ["reactions", page] });
+  for await (const entry of iter) {
+    const record = entry.value;
+    reactions[record.reaction] = record.count;
+  }
+  return reactions;
+}
+
+async function addReaction(req: Request): Promise<Response> {
+  if (!await checkRateLimit(req)) {
+    return json({ ok: false, error: "操作太频繁，请稍后再试。" }, 429);
+  }
+
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return json({ ok: false, error: "请求格式不正确。" }, 400);
+  }
+
+  const page = normalizePage(String(body.page || "/"));
+  const reaction = cleanText(body.reaction, 20);
+
+  if (!reaction) return json({ ok: false, error: "请指定表情类型。" }, 400);
+
+  const key = ["reactions", page, reaction];
+  const current = await kv.get<ReactionRecord>(key);
+  const count = (current.value?.count || 0) + 1;
+
+  await kv.set(key, { page, reaction, count });
+  return json({ ok: true, count });
+}
+
 async function handleGithub(req: Request, url: URL): Promise<Response> {
   const path = url.pathname.replace(/^\/github/, "");
 
@@ -312,6 +353,16 @@ Deno.serve(async (req: Request) => {
 
   if (url.pathname === "/comments" && req.method === "DELETE") {
     return deleteComment(req);
+  }
+
+  if (url.pathname === "/reactions" && req.method === "GET") {
+    const page = normalizePage(url.searchParams.get("page"));
+    const reactions = await getReactions(page);
+    return json({ ok: true, reactions });
+  }
+
+  if (url.pathname === "/reactions" && req.method === "POST") {
+    return addReaction(req);
   }
 
   if (url.pathname.startsWith("/github/")) {
