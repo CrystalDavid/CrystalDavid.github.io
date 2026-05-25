@@ -253,6 +253,7 @@
 }
 
 .article-comment-wall .msg-item {
+    position: relative;
     background: #f8f9fa;
     border-radius: 16px;
     padding: 18px 20px;

@@ -3,6 +3,7 @@
     'use strict';
     const REPO_OWNER = 'CrystalDavid';
     const REPO_NAME = 'CrystalDavid.github.io';
+    const API_PROXY = 'https://david-comment-api.crystaldavid.deno.net';
     const PWD_HASH = 'da3fb9830dbd1b3ee2e799a06b3d8b486e5285fc508264f87777905827510551';
 
     function _token(explicitToken) {
@@ -31,19 +32,19 @@
     }
 
     async function fetchIssues(label) {
-        const url = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/issues?labels=' + encodeURIComponent(label) + '&state=open&per_page=50&_=' + Date.now();
-        const res = await fetch(url, { cache: 'no-store' });
+        const url = API_PROXY + '/github/issues?label=' + encodeURIComponent(label) + '&state=open&per_page=50&_=' + Date.now();
+        const res = await fetch(url, { cache: 'no-store', mode: 'cors', credentials: 'omit' });
         if (!res.ok) return [];
         return res.json();
     }
 
     async function createIssue(title, body, labels, explicitToken) {
         const token = _token(explicitToken);
-        const url = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/issues';
+        const url = API_PROXY + '/github/issues';
         const res = await fetch(url, {
             method: 'POST',
             headers: {
-                'Authorization': 'token ' + token,
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ title: title, body: body, labels: labels })
@@ -53,7 +54,7 @@
     }
 
     async function getReactions(issueNumber) {
-        const url = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/issues/' + issueNumber + '/reactions';
+        const url = API_PROXY + '/github/issues/' + issueNumber + '/reactions';
         const res = await fetch(url, {
             headers: { 'Accept': 'application/vnd.github+json' }
         });
@@ -63,11 +64,11 @@
 
     async function addReaction(issueNumber, reaction, explicitToken) {
         const token = _token(explicitToken);
-        const url = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/issues/' + issueNumber + '/reactions';
+        const url = API_PROXY + '/github/issues/' + issueNumber + '/reactions';
         const res = await fetch(url, {
             method: 'POST',
             headers: {
-                'Authorization': 'token ' + token,
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json',
                 'Accept': 'application/vnd.github+json'
             },
@@ -78,11 +79,11 @@
 
     async function closeIssue(issueNumber, explicitToken) {
         const token = _token(explicitToken);
-        const url = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/issues/' + issueNumber;
+        const url = API_PROXY + '/github/issues/' + issueNumber;
         const res = await fetch(url, {
             method: 'PATCH',
             headers: {
-                'Authorization': 'token ' + token,
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ state: 'closed' })
@@ -99,11 +100,11 @@
             reader.readAsDataURL(file);
         });
         const filename = 'uploads/' + Date.now() + '-' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-        const url = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + filename;
+        const url = API_PROXY + '/github/content?path=' + encodeURIComponent(filename);
         const res = await fetch(url, {
             method: 'PUT',
             headers: {
-                'Authorization': 'token ' + token,
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -147,13 +148,13 @@
     }
 
     function contentUrl(path) {
-        return 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + normalizeRepoPath(path).split('/').map(encodeURIComponent).join('/');
+        return API_PROXY + '/github/content?path=' + encodeURIComponent(normalizeRepoPath(path));
     }
 
     async function getContentSha(path, token) {
         const repoPath = normalizeRepoPath(path);
         if (!repoPath) return null;
-        const url = contentUrl(repoPath) + '?ref=main&_=' + Date.now();
+        const url = contentUrl(repoPath) + '&ref=main&_=' + Date.now();
         const res = await fetch(url, { headers: _headers(token) });
         if (res.status === 404) return null;
         if (!res.ok) throw new Error('读取仓库文件失败: ' + res.status);
@@ -220,7 +221,7 @@
     }
 
     async function dispatchPagesWorkflow(token) {
-        const url = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/actions/workflows/pages.yml/dispatches';
+        const url = API_PROXY + '/github/dispatch-pages';
         const res = await fetch(url, {
             method: 'POST',
             headers: Object.assign(_headers(token), { 'Content-Type': 'application/json' }),

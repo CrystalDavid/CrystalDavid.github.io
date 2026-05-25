@@ -1,6 +1,10 @@
 const kv = await Deno.openKv();
 
 const ALLOWED_ORIGIN = Deno.env.get("ALLOWED_ORIGIN") || "https://crystaldavid.github.io";
+const GITHUB_OWNER = Deno.env.get("GITHUB_OWNER") || "CrystalDavid";
+const GITHUB_REPO = Deno.env.get("GITHUB_REPO") || "CrystalDavid.github.io";
+const ADMIN_PASSWORD_HASH = Deno.env.get("ADMIN_PASSWORD_HASH") ||
+  "da3fb9830dbd1b3ee2e799a06b3d8b486e5285fc508264f87777905827510551";
 const MAX_NICKNAME_LENGTH = 24;
 const MAX_CONTENT_LENGTH = 600;
 const PAGE_SIZE = 80;
@@ -28,8 +32,8 @@ function json(data: unknown, status = 200): Response {
 function corsHeaders(): Record<string, string> {
   return {
     "access-control-allow-origin": ALLOWED_ORIGIN,
-    "access-control-allow-methods": "GET, POST, OPTIONS",
-    "access-control-allow-headers": "content-type",
+    "access-control-allow-methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
+    "access-control-allow-headers": "authorization, content-type, x-admin-password",
     "access-control-max-age": "86400",
   };
 }
@@ -63,6 +67,51 @@ async function checkRateLimit(req: Request): Promise<boolean> {
   const next = (current.value || 0) + 1;
   await kv.set(key, next, { expireIn: RATE_LIMIT_WINDOW_MS * 2 });
   return next <= RATE_LIMIT_MAX;
+}
+
+async function sha256(value: string): Promise<string> {
+  const data = new TextEncoder().encode(value);
+  const digest = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+async function isAdminRequest(req: Request): Promise<boolean> {
+  const password = req.headers.get("x-admin-password") || "";
+  if (!password) return false;
+  return await sha256(password) === ADMIN_PASSWORD_HASH;
+}
+
+function githubHeaders(req: Request, contentType = true): HeadersInit {
+  const headers: Record<string, string> = {
+    "Accept": "application/vnd.github+json",
+    "X-GitHub-Api-Version": "2022-11-28",
+  };
+  const auth = req.headers.get("authorization");
+  if (auth) headers.authorization = auth;
+  if (contentType) headers["content-type"] = "application/json";
+  return headers;
+}
+
+async function githubJson(url: string, init: RequestInit = {}): Promise<Response> {
+  const res = await fetch(url, init);
+  if (res.status === 204) {
+    return new Response(null, {
+      status: 204,
+      headers: corsHeaders(),
+    });
+  }
+  const text = await res.text();
+  return new Response(text || "{}", {
+    status: res.status,
+    headers: {
+      "content-type": res.headers.get("content-type") || "application/json; charset=utf-8",
+      ...corsHeaders(),
+    },
+  });
+}
+
+function githubApi(path: string): string {
+  return `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}${path}`;
 }
 
 async function listComments(page: string): Promise<CommentRecord[]> {
@@ -105,6 +154,96 @@ async function createComment(req: Request): Promise<Response> {
   return json({ ok: true, comment });
 }
 
+async function deleteComment(req: Request): Promise<Response> {
+  if (!await isAdminRequest(req)) {
+    return json({ ok: false, error: "Unauthorized" }, 401);
+  }
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return json({ ok: false, error: "Bad Request" }, 400);
+  }
+  const page = normalizePage(String(body.page || "/"));
+  const createdAt = cleanText(body.created_at, 80);
+  const id = cleanText(body.id, 80);
+  if (!createdAt || !id) return json({ ok: false, error: "Missing comment id" }, 400);
+  await kv.delete(["comments", page, createdAt, id]);
+  return json({ ok: true });
+}
+
+async function handleGithub(req: Request, url: URL): Promise<Response> {
+  const path = url.pathname.replace(/^\/github/, "");
+
+  if (path === "/issues" && req.method === "GET") {
+    const label = url.searchParams.get("label") || "";
+    const state = url.searchParams.get("state") || "open";
+    const perPage = url.searchParams.get("per_page") || "50";
+    const target = githubApi(`/issues?labels=${encodeURIComponent(label)}&state=${encodeURIComponent(state)}&per_page=${encodeURIComponent(perPage)}`);
+    return githubJson(target, { headers: githubHeaders(req, false) });
+  }
+
+  if (path === "/issues" && req.method === "POST") {
+    return githubJson(githubApi("/issues"), {
+      method: "POST",
+      headers: githubHeaders(req),
+      body: await req.text(),
+    });
+  }
+
+  const issueMatch = path.match(/^\/issues\/(\d+)$/);
+  if (issueMatch && req.method === "PATCH") {
+    return githubJson(githubApi(`/issues/${issueMatch[1]}`), {
+      method: "PATCH",
+      headers: githubHeaders(req),
+      body: await req.text(),
+    });
+  }
+
+  const reactionMatch = path.match(/^\/issues\/(\d+)\/reactions$/);
+  if (reactionMatch && req.method === "GET") {
+    return githubJson(githubApi(`/issues/${reactionMatch[1]}/reactions`), {
+      headers: githubHeaders(req, false),
+    });
+  }
+
+  if (reactionMatch && req.method === "POST") {
+    return githubJson(githubApi(`/issues/${reactionMatch[1]}/reactions`), {
+      method: "POST",
+      headers: githubHeaders(req),
+      body: await req.text(),
+    });
+  }
+
+  if (path === "/content") {
+    const repoPath = url.searchParams.get("path") || "";
+    if (!repoPath) return json({ ok: false, error: "Missing path" }, 400);
+    const encodedPath = repoPath.split("/").map(encodeURIComponent).join("/");
+    const ref = url.searchParams.get("ref") || "main";
+    const target = githubApi(`/contents/${encodedPath}`);
+    if (req.method === "GET") {
+      return githubJson(`${target}?ref=${encodeURIComponent(ref)}`, { headers: githubHeaders(req, false) });
+    }
+    if (req.method === "PUT" || req.method === "DELETE") {
+      return githubJson(target, {
+        method: req.method,
+        headers: githubHeaders(req),
+        body: await req.text(),
+      });
+    }
+  }
+
+  if (path === "/dispatch-pages" && req.method === "POST") {
+    return githubJson(githubApi("/actions/workflows/pages.yml/dispatches"), {
+      method: "POST",
+      headers: githubHeaders(req),
+      body: await req.text(),
+    });
+  }
+
+  return json({ ok: false, error: "GitHub proxy route not found" }, 404);
+}
+
 Deno.serve(async (req: Request) => {
   const url = new URL(req.url);
 
@@ -124,6 +263,14 @@ Deno.serve(async (req: Request) => {
 
   if (url.pathname === "/comments" && req.method === "POST") {
     return createComment(req);
+  }
+
+  if (url.pathname === "/comments" && req.method === "DELETE") {
+    return deleteComment(req);
+  }
+
+  if (url.pathname.startsWith("/github/")) {
+    return handleGithub(req, url);
   }
 
   return json({ ok: false, error: "Not Found" }, 404);
