@@ -386,37 +386,6 @@
         deleteRepositoryFileAdmin: deleteRepositoryFileAdmin,
         dispatchPagesWorkflow: dispatchPagesWorkflow,
         dispatchPagesWorkflowAdmin: dispatchPagesWorkflowAdmin,
-        fetchComments: async function(page) {
-            const res = await fetch(API_PROXY + '/comments?page=' + encodeURIComponent(page), {
-                cache: 'no-store',
-                mode: 'cors',
-                credentials: 'omit'
-            });
-            if (!res.ok) throw new Error('评论加载失败: ' + res.status);
-            return res.json();
-        },
-        createComment: async function(page, nickname, content) {
-            const res = await fetch(API_PROXY + '/comments', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                mode: 'cors',
-                credentials: 'omit',
-                body: JSON.stringify({ page: page, nickname: nickname, content: content })
-            });
-            if (!res.ok) throw new Error('评论发布失败: ' + res.status);
-            return res.json();
-        },
-        reactComment: async function(page, id, createdAt, reaction) {
-            const res = await fetch(API_PROXY + '/comments/reaction', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                mode: 'cors',
-                credentials: 'omit',
-                body: JSON.stringify({ page: page, id: id, created_at: createdAt, reaction: reaction })
-            });
-            if (!res.ok) throw new Error('表情发送失败: ' + res.status);
-            return res.json();
-        },
         REACTIONS_MAP: {
             '👍': '+1',
             '❤️': 'heart',

@@ -154,7 +154,7 @@ const ctx = canvas ? canvas.getContext('2d') : null;
 function initCanvas() {
     if (!canvas) return;
     canvas.width = window.innerWidth;
-    canvas.height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
+    canvas.height = window.innerHeight;
 }
 
 // 星星类

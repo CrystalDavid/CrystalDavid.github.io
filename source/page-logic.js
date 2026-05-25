@@ -99,21 +99,7 @@
             const keyAttr = issue._hexo ? ' data-local-key="' + escapeHtml(data.link || issue.title) + '"' : ' data-issue="' + issue.number + '"';
             html += '<button class="reaction-btn" ' + keyAttr + ' data-reaction="' + apiName + '">' + emoji + '<span class="r-count">' + (count > 0 ? count : '') + '</span></button>';
         });
-        if (LABEL === 'musings' && !issue._hexo) {
-            html += '<button class="musing-comment-toggle" type="button"><i class="fa-solid fa-comment-dots"></i><span>评论</span></button>';
-        }
         html += '</div>';
-
-        if (LABEL === 'musings' && !issue._hexo) {
-            html += '<div class="musing-thread" data-musing-thread data-comment-page="' + escapeHtml(getMusingCommentKey(issue, data)) + '" hidden>';
-            html += '<div class="musing-comment-form">';
-            html += '<input type="text" class="musing-comment-nickname" placeholder="昵称" maxlength="20">';
-            html += '<textarea class="musing-comment-content" placeholder="写下你的评论..." maxlength="500"></textarea>';
-            html += '<button class="musing-comment-submit" type="button">发布评论</button>';
-            html += '</div>';
-            html += '<ul class="musing-comment-list"></ul>';
-            html += '</div>';
-        }
 
         // Admin delete button
         if (isAdmin && ((issue._hexo && issue._postPath) || (!issue._hexo && issue.number))) {
@@ -162,10 +148,6 @@
             });
         }
 
-        if (LABEL === 'musings' && !issue._hexo) {
-            bindMusingThread(el);
-        }
-
         return el;
     }
 
@@ -187,100 +169,6 @@
         const next = (parseInt(localStorage.getItem(storageKey)) || 0) + 1;
         localStorage.setItem(storageKey, String(next));
         return next;
-    }
-
-    function getMusingCommentKey(issue, data) {
-        return 'musing:' + String(issue.number || data.date || data.title || issue.title || '');
-    }
-
-    async function bindMusingThread(card) {
-        const toggle = card.querySelector('.musing-comment-toggle');
-        const thread = card.querySelector('[data-musing-thread]');
-        if (!toggle || !thread) return;
-        const nickname = thread.querySelector('.musing-comment-nickname');
-        const content = thread.querySelector('.musing-comment-content');
-        const submit = thread.querySelector('.musing-comment-submit');
-        const saved = localStorage.getItem('david_comment_nickname');
-        if (saved) nickname.value = saved;
-
-        toggle.addEventListener('click', async function() {
-            thread.hidden = !thread.hidden;
-            if (!thread.hidden) await loadMusingComments(thread);
-        });
-
-        submit.addEventListener('click', async function() {
-            const name = nickname.value.trim();
-            const text = content.value.trim();
-            if (!name) { nickname.focus(); return; }
-            if (!text) { content.focus(); return; }
-            submit.disabled = true;
-            const oldText = submit.textContent;
-            submit.textContent = '发布中...';
-            try {
-                localStorage.setItem('david_comment_nickname', name);
-                const data = await SiteAPI.createComment(thread.dataset.commentPage, name, text);
-                if (!data.ok) throw new Error(data.error || '发布失败');
-                content.value = '';
-                await loadMusingComments(thread);
-            } catch (e) {
-                alert('评论发布失败：' + e.message);
-            } finally {
-                submit.disabled = false;
-                submit.textContent = oldText;
-            }
-        });
-    }
-
-    async function loadMusingComments(thread) {
-        const list = thread.querySelector('.musing-comment-list');
-        if (!list) return;
-        list.innerHTML = '<li class="musing-comment-empty">加载中...</li>';
-        try {
-            const data = await SiteAPI.fetchComments(thread.dataset.commentPage);
-            if (!data.ok) throw new Error(data.error || '加载失败');
-            const comments = (data.comments || []).sort(function(a, b) {
-                return new Date(a.created_at) - new Date(b.created_at);
-            });
-            if (!comments.length) {
-                list.innerHTML = '<li class="musing-comment-empty">暂无评论，来写第一条吧。</li>';
-                return;
-            }
-            list.innerHTML = '';
-            comments.forEach(function(comment) {
-                const li = document.createElement('li');
-                li.className = 'musing-comment-item';
-                const reactions = comment.reactions || {};
-                let html = '<div class="musing-comment-meta"><strong>' + escapeHtml(comment.nickname || '匿名') + '</strong><span>' + escapeHtml(formatDate(comment.created_at)) + '</span></div>';
-                html += '<div class="musing-comment-text">' + escapeHtml(comment.content || '') + '</div>';
-                html += '<div class="musing-comment-reactions">';
-                EMOJIS.forEach(function(emoji) {
-                    const apiName = EMOJI_MAP[emoji];
-                    const count = reactions[apiName] || 0;
-                    html += '<button class="musing-comment-reaction" type="button" data-id="' + escapeHtml(comment.id || '') + '" data-created="' + escapeHtml(comment.created_at || '') + '" data-reaction="' + apiName + '">' + emoji + '<span class="r-count">' + (count > 0 ? count : '') + '</span></button>';
-                });
-                html += '</div>';
-                li.innerHTML = html;
-                list.appendChild(li);
-            });
-            bindMusingCommentReactions(thread);
-        } catch (e) {
-            list.innerHTML = '<li class="musing-comment-empty">评论暂时加载失败，请稍后重试。</li>';
-        }
-    }
-
-    function bindMusingCommentReactions(thread) {
-        thread.querySelectorAll('.musing-comment-reaction').forEach(function(btn) {
-            btn.addEventListener('click', async function() {
-                const countEl = btn.querySelector('.r-count');
-                try {
-                    const data = await SiteAPI.reactComment(thread.dataset.commentPage, btn.dataset.id, btn.dataset.created, btn.dataset.reaction);
-                    const next = data.reactions && data.reactions[btn.dataset.reaction] ? data.reactions[btn.dataset.reaction] : ((parseInt(countEl.textContent) || 0) + 1);
-                    countEl.textContent = next > 0 ? next : '';
-                } catch (e) {
-                    alert('表情发送失败：' + e.message);
-                }
-            });
-        });
     }
 
     function deletedArticlesKey() {
@@ -314,15 +202,6 @@
     function getItemDate(item) {
         const data = parseBody(item.body);
         return data.date || item.created_at || '';
-    }
-
-    function getAdminToken() {
-        const tokenEl = document.getElementById('post-token');
-        let token = tokenEl ? tokenEl.value.trim() : '';
-        if (!token) token = prompt('请输入 GitHub token，用于提交这次管理操作') || '';
-        token = token.trim();
-        if (!token) throw new Error('缺少 GitHub token');
-        return token;
     }
 
     function repoPathFromSourceUrl(url) {
@@ -492,36 +371,25 @@
         const fileEl = document.getElementById('post-file');
         const tagsEl = document.getElementById('post-tags');
         const file = fileEl && fileEl.files ? fileEl.files[0] : null;
-        if (!file) throw new Error('请选择 Markdown、PDF 或 Word 文件');
+        if (!file) throw new Error('请选择 Markdown 文件');
+        if (!/\.(md|markdown)$/i.test(file.name)) throw new Error('只支持上传 Markdown (.md) 文件');
         if (!adminPassword) throw new Error('请先通过管理员验证');
 
-        adminPush.textContent = '解析文件中...';
-        const extracted = await extractDocumentText(file);
+        adminPush.textContent = '读取 Markdown 中...';
+        const extracted = stripMarkdownFrontMatter(await extractMarkdownText(file));
         const now = new Date();
         const pad = n => String(n).padStart(2, '0');
         const dateText = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
         const slug = normalizeSlug(title || file.name);
         const datePrefix = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
-        let sourceFile = file;
-        if (!/\.pdf$/i.test(file.name)) {
-            adminPush.textContent = '生成 PDF 中...';
-            sourceFile = await markdownToPdfFile(extracted, title, slug);
-        }
-        const safeFileName = sourceFile.name.replace(/[^a-zA-Z0-9._\-\u4e00-\u9fa5]/g, '_');
-        const assetDir = 'source/assets/articles/' + datePrefix + '-' + slug;
-        const filePath = assetDir + '/' + safeFileName;
         const postPath = 'source/_posts/' + datePrefix + '-' + slug + '.md';
         const tags = tagsEl ? tagsEl.value.split(',').map(function(t) { return t.trim(); }).filter(Boolean) : [];
 
-        adminPush.textContent = '上传原 PDF 中...';
-        const uploaded = await SiteAPI.uploadRepositoryFileAdmin(sourceFile, filePath, 'Upload article source: ' + title, adminPassword);
         const markdown = buildMarkdownPost({
             title: title,
             description: desc,
             date: dateText,
             tags: tags,
-            sourceUrl: uploaded.url,
-            sourceFileName: sourceFile.name,
             body: extracted
         });
 
@@ -544,139 +412,14 @@
         alert('文章已提交到 GitHub。GitHub Pages 构建完成后会出现在 Article 页面。');
     }
 
-    async function extractDocumentText(file) {
-        const lower = file.name.toLowerCase();
-        if (lower.endsWith('.md') || lower.endsWith('.markdown')) return extractMarkdownText(file);
-        if (lower.endsWith('.pdf')) return extractPdfText(file);
-        if (lower.endsWith('.docx')) return extractDocxText(file);
-        if (lower.endsWith('.doc')) {
-            return '暂不支持在浏览器内解析旧版 .doc 正文，请另存为 .docx 后上传。\n\n原文件已随文章上传。';
-        }
-        throw new Error('仅支持 Markdown、PDF、DOCX 或 DOC 文件');
-    }
-
     async function extractMarkdownText(file) {
         return file.text();
     }
 
-    async function markdownToPdfFile(markdown, title, slug) {
-        if (!window.html2pdf) {
-            throw new Error('PDF 生成库加载失败，请刷新后重试');
-        }
-        const wrap = document.createElement('div');
-        wrap.style.position = 'fixed';
-        wrap.style.left = '0';
-        wrap.style.top = '0';
-        wrap.style.width = '794px';
-        wrap.style.minHeight = '1123px';
-        wrap.style.padding = '56px';
-        wrap.style.boxSizing = 'border-box';
-        wrap.style.background = '#ffffff';
-        wrap.style.color = '#222222';
-        wrap.style.fontFamily = '"Noto Sans SC", "Microsoft YaHei", Arial, sans-serif';
-        wrap.style.fontSize = '15px';
-        wrap.style.lineHeight = '1.8';
-        wrap.style.opacity = '0.01';
-        wrap.style.pointerEvents = 'none';
-        wrap.style.zIndex = '0';
-        wrap.innerHTML = '<h1 style="font-size:28px;margin:0 0 24px;color:#1e3e3f;">' + escapeHtml(title) + '</h1>' + markdownToHtml(markdown);
-        document.body.appendChild(wrap);
-        try {
-            if (document.fonts && document.fonts.ready) await document.fonts.ready;
-            await new Promise(function(resolve) { requestAnimationFrame(function() { requestAnimationFrame(resolve); }); });
-            const blob = await window.html2pdf()
-                .set({
-                    margin: 0,
-                    filename: slug + '.pdf',
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: {
-                        scale: 2,
-                        useCORS: true,
-                        backgroundColor: '#ffffff',
-                        windowWidth: 794
-                    },
-                    jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
-                })
-                .from(wrap)
-                .outputPdf('blob');
-            return new File([blob], slug + '.pdf', { type: 'application/pdf' });
-        } finally {
-            wrap.remove();
-        }
-    }
-
-    function markdownToHtml(markdown) {
-        const lines = String(markdown || '').replace(/\r\n/g, '\n').split('\n');
-        const out = [];
-        let paragraph = [];
-        let inCode = false;
-        let codeLines = [];
-
-        function flushParagraph() {
-            if (!paragraph.length) return;
-            out.push('<p style="margin:0 0 14px;">' + escapeHtml(paragraph.join('\n')).replace(/\n/g, '<br>') + '</p>');
-            paragraph = [];
-        }
-
-        function flushCode() {
-            if (!codeLines.length) return;
-            out.push('<pre style="background:#f7f8fb;border-radius:12px;padding:14px 16px;overflow:auto;margin:18px 0;"><code>' + escapeHtml(codeLines.join('\n')) + '</code></pre>');
-            codeLines = [];
-        }
-
-        lines.forEach(function(line) {
-            if (/^```/.test(line.trim())) {
-                if (inCode) {
-                    flushCode();
-                    inCode = false;
-                } else {
-                    flushParagraph();
-                    inCode = true;
-                }
-                return;
-            }
-            if (inCode) {
-                codeLines.push(line);
-                return;
-            }
-            const heading = line.match(/^(#{1,6})\s+(.+)$/);
-            if (heading) {
-                flushParagraph();
-                const level = Math.min(heading[1].length + 1, 4);
-                out.push('<h' + level + ' style="margin:24px 0 10px;color:#3e76b7;">' + escapeHtml(heading[2]) + '</h' + level + '>');
-                return;
-            }
-            if (!line.trim()) {
-                flushParagraph();
-                return;
-            }
-            paragraph.push(line);
-        });
-        flushParagraph();
-        flushCode();
-        return out.join('');
-    }
-
-    async function extractPdfText(file) {
-        if (!window.pdfjsLib) throw new Error('PDF 解析库加载失败，请刷新后重试');
-        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        const buffer = await file.arrayBuffer();
-        const pdf = await window.pdfjsLib.getDocument({ data: buffer }).promise;
-        const pages = [];
-        for (let i = 1; i <= pdf.numPages; i++) {
-            const page = await pdf.getPage(i);
-            const content = await page.getTextContent();
-            const text = content.items.map(function(item) { return item.str; }).join(' ').replace(/\s+/g, ' ').trim();
-            if (text) pages.push('## 第 ' + i + ' 页\n\n' + text);
-        }
-        return pages.join('\n\n');
-    }
-
-    async function extractDocxText(file) {
-        if (!window.mammoth) throw new Error('Word 解析库加载失败，请刷新后重试');
-        const buffer = await file.arrayBuffer();
-        const result = await window.mammoth.convertToMarkdown({ arrayBuffer: buffer });
-        return (result.value || '').trim();
+    function stripMarkdownFrontMatter(markdown) {
+        const text = String(markdown || '').replace(/\r\n/g, '\n');
+        if (!text.startsWith('---\n')) return text.trim();
+        return text.replace(/^---\n[\s\S]*?\n---\n?/, '').trim();
     }
 
     function normalizeSlug(value) {
@@ -693,7 +436,7 @@
 
     function buildMarkdownPost(options) {
         const tagLines = options.tags.length ? options.tags.map(function(tag) { return '  - ' + yamlEscape(tag); }).join('\n') : '  - Article';
-        const body = (options.body || '').trim() || '正文解析为空，请打开原文件查看完整内容。';
+        const body = (options.body || '').trim() || '正文为空。';
         return [
             '---',
             'title: ' + yamlEscape(options.title),
@@ -704,12 +447,9 @@
             '  - Article',
             'description: ' + yamlEscape(options.description || ''),
             'comments: true',
-            'source_file: ' + yamlEscape(options.sourceUrl),
             '---',
             '',
             options.description ? '> ' + options.description : '',
-            '',
-            '<a class="source-file-btn" href="' + escapeAttr(options.sourceUrl) + '" target="_blank" rel="noopener">查看原 PDF</a>',
             '',
             body
         ].filter(function(line, index, arr) {
