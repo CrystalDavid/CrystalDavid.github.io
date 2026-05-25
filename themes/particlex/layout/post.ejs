@@ -61,21 +61,16 @@
     </div>
     <% } %>
     <% if (page.comments) { %>
-    <div id="article-comment-wall" class="article-comment-wall">
+    <div id="article-comment-wall" class="article-comment-wall" data-comment-wall>
         <div class="section-title">
             <i class="fa-solid fa-comments"></i> 评论
         </div>
-        <p class="article-comment-note">使用 GitHub 登录后即可公开评论。</p>
-        <div id="comment">
-            <script src="https://utteranc.es/client.js"
-                repo="CrystalDavid/CrystalDavid.github.io"
-                issue-term="pathname"
-                label="article-comment"
-                theme="preferred-color-scheme"
-                crossorigin="anonymous"
-                async>
-            </script>
+        <div class="msg-input-area">
+            <input type="text" data-comment-nickname placeholder="你的昵称" maxlength="20">
+            <textarea data-comment-content placeholder="写下你想说的话..." maxlength="500"></textarea>
+            <button class="msg-submit-btn" data-comment-submit>发布评论</button>
         </div>
+        <ul class="msg-list" data-comment-list></ul>
     </div>
     <% if (theme.waline.enable) { %>
     <div id="comment">
