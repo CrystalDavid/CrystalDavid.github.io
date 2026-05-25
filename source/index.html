@@ -144,10 +144,16 @@
 
     <!-- QQ弹窗 -->
     <div class="modal-overlay" id="qq-modal">
-        <div class="modal">
+        <div class="modal qq-contact-modal">
             <button class="modal-close" id="qq-close">&times;</button>
-            <h3>QQ联系我</h3>
-            <img src="assets/3.jpg" alt="QQ二维码" class="qr-img">
+            <div class="qq-contact-icon"><i class="fa-brands fa-qq"></i></div>
+            <div class="qq-contact-title">David</div>
+            <div class="qq-contact-subtitle">QQ 联系卡片</div>
+            <div class="qq-contact-number" id="qq-number">2811459442</div>
+            <button class="qq-copy-btn" id="qq-copy-btn" type="button" data-copy="2811459442">
+                <i class="fa-solid fa-copy"></i>
+                <span>复制 QQ 号</span>
+            </button>
         </div>
     </div>
 
@@ -156,28 +162,26 @@
     <script src="script.js?v=5"></script>
     <script src="site-api.js"></script>
     <script>
-    // Home feed: load all issues sorted by date
+    // Home feed: load Article / Agent / Musings updates sorted by date
     (function() {
-        const ICONS = { article: 'fa-solid fa-book', agent: 'fa-solid fa-robot', musings: 'fa-solid fa-feather', message: 'fa-solid fa-comment' };
-        const LABELS = { article: 'Article', agent: 'Agent', musings: 'Musings', message: '留言' };
+        const ICONS = { article: 'fa-solid fa-book', agent: 'fa-solid fa-robot', musings: 'fa-solid fa-feather' };
+        const LABELS = { article: 'Article', agent: 'Agent', musings: 'Musings' };
         const container = document.getElementById('home-posts-dynamic');
         if (!container) return;
 
         async function loadFeed() {
             try {
-                const [articles, hexoArticles, agents, musings, messages] = await Promise.all([
+                const [articles, hexoArticles, agents, musings] = await Promise.all([
                     SiteAPI.fetchIssues('article'),
                     fetchHexoArticles(),
                     SiteAPI.fetchIssues('agent'),
-                    SiteAPI.fetchIssues('musings'),
-                    SiteAPI.fetchIssues('message')
+                    SiteAPI.fetchIssues('musings')
                 ]);
                 const all = [];
-                articles.forEach(function(i) { i._label = 'article'; all.push(i); });
+                articles.filter(function(i) { return !isLocallyDeletedIssue('article', i); }).forEach(function(i) { i._label = 'article'; all.push(i); });
                 hexoArticles.forEach(function(i) { i._label = 'article'; all.push(i); });
-                agents.forEach(function(i) { i._label = 'agent'; all.push(i); });
-                musings.forEach(function(i) { i._label = 'musings'; all.push(i); });
-                messages.forEach(function(i) { i._label = 'message'; all.push(i); });
+                agents.filter(function(i) { return !isLocallyDeletedIssue('agent', i); }).forEach(function(i) { i._label = 'agent'; all.push(i); });
+                musings.filter(function(i) { return !isLocallyDeletedIssue('musings', i); }).forEach(function(i) { i._label = 'musings'; all.push(i); });
 
                 all.sort(function(a, b) { return new Date(b.created_at) - new Date(a.created_at); });
 
@@ -230,10 +234,12 @@
 
         async function fetchHexoArticles() {
             try {
-                var res = await fetch('/article-data.json', { cache: 'no-store' });
+                var res = await fetch('/article-data.json?_=' + Date.now(), { cache: 'no-store' });
                 if (!res.ok) return [];
                 var posts = await res.json();
-                return posts.map(function(post) {
+                return posts.filter(function(post) {
+                    return !isLocallyDeletedArticle(post);
+                }).map(function(post) {
                     return {
                         title: post.title,
                         created_at: post.date || new Date().toISOString(),
@@ -244,6 +250,18 @@
             } catch(e) {
                 return [];
             }
+        }
+
+        function isLocallyDeletedArticle(post) {
+            var deleted = JSON.parse(localStorage.getItem('david_deleted_articles') || '[]');
+            return deleted.indexOf(post.postPath || '') >= 0 ||
+                deleted.indexOf(post.sourceFile || '') >= 0 ||
+                deleted.indexOf(post.link || '') >= 0;
+        }
+
+        function isLocallyDeletedIssue(label, issue) {
+            var deleted = JSON.parse(localStorage.getItem('david_deleted_issues') || '[]');
+            return deleted.indexOf(String(label || '') + ':' + String(issue.number || '')) >= 0;
         }
 
         loadFeed();

@@ -398,6 +398,29 @@ function setupModal(btnIds, modalId, closeId) {
 
 setupModal(['card-qq-btn'], 'qq-modal', 'qq-close');
 
+const qqCopyBtn = document.getElementById('qq-copy-btn');
+if (qqCopyBtn) {
+    qqCopyBtn.addEventListener('click', async () => {
+        const qq = qqCopyBtn.dataset.copy || '';
+        try {
+            await navigator.clipboard.writeText(qq);
+            qqCopyBtn.innerHTML = '<i class="fa-solid fa-check"></i><span>已复制</span>';
+            setTimeout(() => {
+                qqCopyBtn.innerHTML = '<i class="fa-solid fa-copy"></i><span>复制 QQ 号</span>';
+            }, 1600);
+        } catch (e) {
+            const numberEl = document.getElementById('qq-number');
+            if (numberEl) {
+                const range = document.createRange();
+                range.selectNodeContents(numberEl);
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
+        }
+    });
+}
+
 // 烟花效果
 (function() {
     const fwCanvas = document.getElementById('fireworks-canvas');

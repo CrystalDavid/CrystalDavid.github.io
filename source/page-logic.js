@@ -134,13 +134,18 @@
             delBtn.addEventListener('click', async function() {
                 if (!confirm('确定删除这篇内容吗？')) return;
                 try {
+                    const token = getAdminToken();
+                    this.disabled = true;
                     if (this.dataset.kind === 'hexo') {
-                        await deleteHexoArticle(issue, data);
+                        await deleteHexoArticle(issue, data, token);
+                        rememberDeletedArticle(issue, data);
+                        triggerPagesBuild(token);
                     } else {
-                        await SiteAPI.closeIssue(parseInt(this.dataset.issue), getAdminToken());
+                        await SiteAPI.closeIssue(parseInt(this.dataset.issue), token);
+                        rememberDeletedIssue(LABEL, this.dataset.issue);
                     }
                     el.classList.add('shattering');
-                    setTimeout(function() { el.remove(); }, 850);
+                    setTimeout(function() { el.remove(); }, 2000);
                 } catch(e) { alert('删除失败: ' + e.message); }
             });
         }
@@ -168,6 +173,34 @@
         return next;
     }
 
+    function deletedArticlesKey() {
+        return 'david_deleted_articles';
+    }
+
+    function rememberDeletedArticle(issue, data) {
+        const deleted = JSON.parse(localStorage.getItem(deletedArticlesKey()) || '[]');
+        const keys = [
+            issue._postPath || data.postPath || '',
+            issue._sourceFile || data.sourceFile || '',
+            data.link || ''
+        ].filter(Boolean);
+        keys.forEach(function(key) {
+            if (deleted.indexOf(key) === -1) deleted.push(key);
+        });
+        localStorage.setItem(deletedArticlesKey(), JSON.stringify(deleted));
+    }
+
+    function deletedIssuesKey() {
+        return 'david_deleted_issues';
+    }
+
+    function rememberDeletedIssue(label, issueNumber) {
+        const deleted = JSON.parse(localStorage.getItem(deletedIssuesKey()) || '[]');
+        const key = String(label || '') + ':' + String(issueNumber || '');
+        if (deleted.indexOf(key) === -1) deleted.push(key);
+        localStorage.setItem(deletedIssuesKey(), JSON.stringify(deleted));
+    }
+
     function getItemDate(item) {
         const data = parseBody(item.body);
         return data.date || item.created_at || '';
@@ -185,14 +218,15 @@
     function repoPathFromSourceUrl(url) {
         const clean = String(url || '').split('?')[0].split('#')[0];
         if (!clean) return '';
+        const assetIndex = clean.indexOf('/assets/');
+        if (assetIndex >= 0) return 'source' + clean.slice(assetIndex);
         if (clean.indexOf('/assets/') === 0) return 'source' + clean;
         if (clean.indexOf('assets/') === 0) return 'source/' + clean;
         if (clean.indexOf('source/') === 0) return clean;
         return '';
     }
 
-    async function deleteHexoArticle(issue, data) {
-        const token = getAdminToken();
+    async function deleteHexoArticle(issue, data, token) {
         const postPath = issue._postPath || data.postPath || '';
         const sourcePath = repoPathFromSourceUrl(issue._sourceFile || data.sourceFile || '');
         if (sourcePath) {
@@ -200,11 +234,12 @@
         }
         if (!postPath) throw new Error('找不到文章 Markdown 路径');
         await SiteAPI.deleteRepositoryFile(postPath, 'Delete article: ' + (data.title || issue.title), token);
-        try {
-            await SiteAPI.dispatchPagesWorkflow(token);
-        } catch (e) {
+    }
+
+    function triggerPagesBuild(token) {
+        SiteAPI.dispatchPagesWorkflow(token).catch(function(e) {
             console.warn(e);
-        }
+        });
     }
 
     function escapeHtml(str) {

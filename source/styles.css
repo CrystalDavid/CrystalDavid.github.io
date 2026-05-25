@@ -642,6 +642,106 @@ body.dark-mode .description {
     border-radius: 8px;
 }
 
+.qq-contact-modal {
+    max-width: 340px;
+    padding: 34px 28px 28px;
+    overflow: hidden;
+    background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.58)),
+        radial-gradient(circle at 20% 10%, rgba(154, 187, 247, 0.35), transparent 34%),
+        radial-gradient(circle at 90% 20%, rgba(255, 187, 244, 0.32), transparent 36%);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(22px) saturate(1.25);
+    -webkit-backdrop-filter: blur(22px) saturate(1.25);
+    box-shadow:
+        0 22px 70px rgba(18, 30, 60, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.qq-contact-icon {
+    width: 62px;
+    height: 62px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    color: #fff;
+    font-size: 34px;
+    background: linear-gradient(135deg, #66afef 0%, #9abbf7 48%, #ffbbf4 100%);
+    box-shadow: 0 14px 34px rgba(102, 175, 239, 0.35);
+}
+
+.qq-contact-title {
+    color: #1e3e3f;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.qq-contact-subtitle {
+    margin-top: 6px;
+    color: #77838f;
+    font-size: 13px;
+}
+
+.qq-contact-number {
+    margin: 22px auto 18px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    color: #24383f;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0;
+    background: rgba(255, 255, 255, 0.56);
+    border: 1px solid rgba(154, 187, 247, 0.34);
+}
+
+.qq-copy-btn {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 0;
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    background: linear-gradient(120deg, #66afef 0%, #ffbbf4 100%);
+    box-shadow: 0 12px 26px rgba(102, 175, 239, 0.24);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.qq-copy-btn:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+    box-shadow: 0 16px 30px rgba(102, 175, 239, 0.32);
+}
+
+body.dark-mode .qq-contact-modal {
+    background:
+        linear-gradient(145deg, rgba(26, 26, 46, 0.82), rgba(40, 40, 70, 0.62)),
+        radial-gradient(circle at 20% 10%, rgba(154, 187, 247, 0.22), transparent 34%),
+        radial-gradient(circle at 90% 20%, rgba(255, 187, 244, 0.18), transparent 36%);
+    border-color: rgba(154, 187, 247, 0.24);
+}
+
+body.dark-mode .qq-contact-title,
+body.dark-mode .qq-contact-number {
+    color: #f4f7ff;
+}
+
+body.dark-mode .qq-contact-subtitle {
+    color: #a0a0b0;
+}
+
+body.dark-mode .qq-contact-number {
+    background: rgba(255, 255, 255, 0.08);
+}
+
 /* 滚动条 */
 ::-webkit-scrollbar {
     height: 12px;

@@ -31,8 +31,8 @@
     }
 
     async function fetchIssues(label) {
-        const url = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/issues?labels=' + label + '&state=open&per_page=50';
-        const res = await fetch(url);
+        const url = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/issues?labels=' + encodeURIComponent(label) + '&state=open&per_page=50&_=' + Date.now();
+        const res = await fetch(url, { cache: 'no-store' });
         if (!res.ok) return [];
         return res.json();
     }
@@ -138,8 +138,22 @@
         });
     }
 
+    function normalizeRepoPath(path) {
+        return String(path || '')
+            .replace(/^https:\/\/raw\.githubusercontent\.com\/CrystalDavid\/CrystalDavid\.github\.io\/main\//i, '')
+            .replace(/^https:\/\/github\.com\/CrystalDavid\/CrystalDavid\.github\.io\/blob\/main\//i, '')
+            .replace(/^\/+/, '')
+            .replace(/\\/g, '/');
+    }
+
+    function contentUrl(path) {
+        return 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + normalizeRepoPath(path).split('/').map(encodeURIComponent).join('/');
+    }
+
     async function getContentSha(path, token) {
-        const url = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + encodeURI(path) + '?ref=main';
+        const repoPath = normalizeRepoPath(path);
+        if (!repoPath) return null;
+        const url = contentUrl(repoPath) + '?ref=main&_=' + Date.now();
         const res = await fetch(url, { headers: _headers(token) });
         if (res.status === 404) return null;
         if (!res.ok) throw new Error('读取仓库文件失败: ' + res.status);
@@ -148,14 +162,15 @@
     }
 
     async function putContent(path, base64Content, message, token) {
-        const sha = await getContentSha(path, token);
+        const repoPath = normalizeRepoPath(path);
+        const sha = await getContentSha(repoPath, token);
         const body = {
             message: message,
             content: base64Content,
             branch: 'main'
         };
         if (sha) body.sha = sha;
-        const url = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + encodeURI(path);
+        const url = contentUrl(repoPath);
         const res = await fetch(url, {
             method: 'PUT',
             headers: Object.assign(_headers(token), { 'Content-Type': 'application/json' }),
@@ -169,18 +184,20 @@
     }
 
     async function deleteRepositoryFile(path, message, token) {
-        const sha = await getContentSha(path, token);
-        if (!sha) return { deleted: false };
-        const url = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + encodeURI(path);
+        const repoPath = normalizeRepoPath(path);
+        const sha = await getContentSha(repoPath, token);
+        if (!sha) return { deleted: false, path: repoPath };
+        const url = contentUrl(repoPath);
         const res = await fetch(url, {
             method: 'DELETE',
             headers: Object.assign(_headers(token), { 'Content-Type': 'application/json' }),
             body: JSON.stringify({
-                message: message || ('Delete file: ' + path),
+                message: message || ('Delete file: ' + repoPath),
                 sha: sha,
                 branch: 'main'
             })
         });
+        if (res.status === 404) return { deleted: false, path: repoPath };
         if (!res.ok) {
             const detail = await res.text().catch(function() { return ''; });
             throw new Error('删除仓库文件失败: ' + res.status + ' ' + detail);
