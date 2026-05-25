@@ -88,7 +88,7 @@
         }
 
         if (data.link) {
-            html += '<a class="post-card-link" href="' + escapeHtml(data.link) + '" target="_blank">进入 →</a>';
+            html += '<a class="post-card-link" href="' + escapeHtml(data.link) + '">进入 -></a>';
         }
 
         html += '<div class="reaction-bar">';

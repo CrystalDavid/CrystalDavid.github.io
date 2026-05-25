@@ -39,7 +39,9 @@
         els.list.innerHTML = '<li class="article-comment-empty">加载中...</li>';
         try {
             const res = await fetch(API_BASE + '/comments?page=' + encodeURIComponent(page), {
-                cache: 'no-store'
+                cache: 'no-store',
+                mode: 'cors',
+                credentials: 'omit'
             });
             const data = await res.json();
             if (!data.ok) throw new Error(data.error || '加载失败');
@@ -66,7 +68,7 @@
                 els.list.appendChild(item);
             });
         } catch (error) {
-            els.list.innerHTML = '<li class="article-comment-empty">评论加载失败，请稍后再试。</li>';
+            els.list.innerHTML = '<li class="article-comment-empty">评论加载失败，请确认当前网络可以访问 workers.dev。</li>';
         }
     }
 
@@ -99,6 +101,8 @@
                 const res = await fetch(API_BASE + '/comments', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    mode: 'cors',
+                    credentials: 'omit',
                     body: JSON.stringify({ page, nickname, content })
                 });
                 const data = await res.json();
@@ -106,7 +110,7 @@
                 els.content.value = '';
                 await loadComments(wall);
             } catch (error) {
-                alert('发布失败：' + error.message);
+                alert('发布失败：无法连接评论服务，请确认当前网络可以访问 workers.dev。');
             } finally {
                 els.submit.disabled = false;
                 els.submit.textContent = oldText;
