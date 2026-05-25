@@ -396,7 +396,6 @@ function setupModal(btnIds, modalId, closeId) {
     }
 }
 
-setupModal(['card-wechat-btn'], 'wechat-modal', 'wechat-close');
 setupModal(['card-qq-btn'], 'qq-modal', 'qq-close');
 
 // 烟花效果
