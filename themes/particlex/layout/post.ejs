@@ -60,8 +60,18 @@
         <%- page.content %>
     </div>
     <% } %>
+    <%
+        const articleSourcePath = page.source
+            ? (String(page.source).startsWith("source/") ? String(page.source) : "source/" + String(page.source))
+            : "";
+        const articleCommentKey = articleSourcePath ? ("article:" + articleSourcePath) : ("/" + page.path);
+        const articleCommentAliases = ["/" + page.path].filter((item) => item && item !== articleCommentKey).join(",");
+        const articleTagText = page.tags && page.tags.data
+            ? page.tags.data.map((tag) => tag.name).join(",")
+            : "";
+    %>
     <% if (page.comments) { %>
-    <div id="article-comment-wall" class="article-comment-wall" data-comment-wall>
+    <div id="article-comment-wall" class="article-comment-wall" data-comment-wall data-comment-page="<%- articleCommentKey %>" data-comment-aliases="<%- articleCommentAliases %>">
         <div class="section-title">
             <i class="fa-solid fa-comments"></i> 评论
         </div>
@@ -83,14 +93,6 @@
     </div>
     <% } %>
     <% } %>
-    <%
-        const articleSourcePath = page.source
-            ? (String(page.source).startsWith("source/") ? String(page.source) : "source/" + String(page.source))
-            : "";
-        const articleTagText = page.tags && page.tags.data
-            ? page.tags.data.map((tag) => tag.name).join(",")
-            : "";
-    %>
     <div class="article-admin-panel"
         data-article-admin
         data-source-path="<%- encodeURIComponent(articleSourcePath) %>"

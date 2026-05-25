@@ -18,6 +18,7 @@ type CommentRecord = {
   nickname: string;
   content: string;
   created_at: string;
+  reactions?: Record<string, number>;
 };
 
 function json(data: unknown, status = 200): Response {
@@ -152,6 +153,7 @@ async function createComment(req: Request): Promise<Response> {
     nickname,
     content,
     created_at: new Date().toISOString(),
+    reactions: {},
   };
 
   await kv.set(["comments", page, comment.created_at, comment.id], comment);
@@ -174,6 +176,34 @@ async function deleteComment(req: Request): Promise<Response> {
   if (!createdAt || !id) return json({ ok: false, error: "Missing comment id" }, 400);
   await kv.delete(["comments", page, createdAt, id]);
   return json({ ok: true });
+}
+
+async function reactComment(req: Request): Promise<Response> {
+  if (!await checkRateLimit(req)) {
+    return json({ ok: false, error: "Too many requests" }, 429);
+  }
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return json({ ok: false, error: "Bad Request" }, 400);
+  }
+  const page = normalizePage(String(body.page || "/"));
+  const createdAt = cleanText(body.created_at, 80);
+  const id = cleanText(body.id, 80);
+  const reaction = cleanText(body.reaction, 24);
+  if (!createdAt || !id || !reaction) return json({ ok: false, error: "Missing reaction target" }, 400);
+
+  const key = ["comments", page, createdAt, id];
+  const current = await kv.get<CommentRecord>(key);
+  if (!current.value) return json({ ok: false, error: "Comment not found" }, 404);
+
+  const comment = current.value;
+  const reactions = comment.reactions || {};
+  reactions[reaction] = (reactions[reaction] || 0) + 1;
+  comment.reactions = reactions;
+  await kv.set(key, comment);
+  return json({ ok: true, reactions });
 }
 
 async function handleGithub(req: Request, url: URL): Promise<Response> {
@@ -311,6 +341,10 @@ Deno.serve(async (req: Request) => {
 
   if (url.pathname === "/comments" && req.method === "DELETE") {
     return deleteComment(req);
+  }
+
+  if (url.pathname === "/comments/reaction" && req.method === "POST") {
+    return reactComment(req);
   }
 
   if (url.pathname.startsWith("/github/")) {

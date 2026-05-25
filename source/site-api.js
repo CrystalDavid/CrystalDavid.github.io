@@ -60,6 +60,17 @@
         return res.json();
     }
 
+    async function createIssueAdmin(title, body, labels, adminPassword) {
+        const url = API_PROXY + '/github/issues';
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: Object.assign(_adminHeaders(adminPassword), { 'Content-Type': 'application/json' }),
+            body: JSON.stringify({ title: title, body: body, labels: labels })
+        });
+        if (!res.ok) throw new Error('Failed to create issue: ' + res.status);
+        return res.json();
+    }
+
     async function getReactions(issueNumber) {
         const url = API_PROXY + '/github/issues/' + issueNumber + '/reactions';
         const res = await fetch(url, {
@@ -274,6 +285,13 @@
         };
     }
 
+    async function uploadFileAdmin(file, adminPassword) {
+        const safeName = file.name.replace(/[^a-zA-Z0-9._\-\u4e00-\u9fa5]/g, '_');
+        const path = 'source/uploads/' + Date.now() + '-' + safeName;
+        const uploaded = await uploadRepositoryFileAdmin(file, path, 'Upload media: ' + file.name, adminPassword);
+        return uploaded.url;
+    }
+
     async function publishMarkdownPostAdmin(path, markdown, message, adminPassword) {
         return putContentAdmin(path, textToBase64(markdown), message || ('Publish article: ' + path), adminPassword);
     }
@@ -351,11 +369,13 @@
         verifyPassword: verifyPassword,
         fetchIssues: fetchIssues,
         createIssue: createIssue,
+        createIssueAdmin: createIssueAdmin,
         closeIssue: closeIssue,
         closeIssueAdmin: closeIssueAdmin,
         getReactions: getReactions,
         addReaction: addReaction,
         uploadFile: uploadFile,
+        uploadFileAdmin: uploadFileAdmin,
         getRepositoryFile: getRepositoryFile,
         uploadRepositoryFile: uploadRepositoryFile,
         uploadRepositoryFileAdmin: uploadRepositoryFileAdmin,
@@ -366,6 +386,37 @@
         deleteRepositoryFileAdmin: deleteRepositoryFileAdmin,
         dispatchPagesWorkflow: dispatchPagesWorkflow,
         dispatchPagesWorkflowAdmin: dispatchPagesWorkflowAdmin,
+        fetchComments: async function(page) {
+            const res = await fetch(API_PROXY + '/comments?page=' + encodeURIComponent(page), {
+                cache: 'no-store',
+                mode: 'cors',
+                credentials: 'omit'
+            });
+            if (!res.ok) throw new Error('评论加载失败: ' + res.status);
+            return res.json();
+        },
+        createComment: async function(page, nickname, content) {
+            const res = await fetch(API_PROXY + '/comments', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                mode: 'cors',
+                credentials: 'omit',
+                body: JSON.stringify({ page: page, nickname: nickname, content: content })
+            });
+            if (!res.ok) throw new Error('评论发布失败: ' + res.status);
+            return res.json();
+        },
+        reactComment: async function(page, id, createdAt, reaction) {
+            const res = await fetch(API_PROXY + '/comments/reaction', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                mode: 'cors',
+                credentials: 'omit',
+                body: JSON.stringify({ page: page, id: id, created_at: createdAt, reaction: reaction })
+            });
+            if (!res.ok) throw new Error('表情发送失败: ' + res.status);
+            return res.json();
+        },
         REACTIONS_MAP: {
             '👍': '+1',
             '❤️': 'heart',

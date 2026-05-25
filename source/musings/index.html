@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css?v=4">
-    <link rel="stylesheet" href="/page-common.css?v=4">
+    <link rel="stylesheet" href="/styles.css?v=5">
+    <link rel="stylesheet" href="/page-common.css?v=5">
 </head>
 <body>
     <div id="menu">
@@ -67,9 +67,13 @@
                 <h3><i class="fa-solid fa-feather"></i> 发布碎碎念</h3>
                 <input type="text" id="post-title" placeholder="标题">
                 <textarea id="post-desc" placeholder="正文内容"></textarea>
-                <div style="margin-bottom:12px;">
-                    <label style="display:block;margin-bottom:6px;font-size:14px;color:#666;">上传图片/视频（可选）</label>
-                    <input type="file" id="post-media-file" accept="image/*,video/*" style="font-size:14px;">
+                <div class="media-upload-block">
+                    <label class="admin-field-label">上传图片/视频（可选）</label>
+                    <div class="file-picker">
+                        <input type="file" id="post-media-file" accept="image/*,video/*">
+                        <label for="post-media-file" class="file-picker-btn"><i class="fa-solid fa-file-arrow-up"></i> 选择文件</label>
+                        <span id="post-media-file-name" class="file-picker-name">未选择文件</span>
+                    </div>
                 </div>
                 <button class="admin-push-btn" id="admin-push">Push 发布</button>
             </div>
@@ -88,7 +92,7 @@
     <canvas id="fireworks-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     <script src="/script.js?v=5"></script>
-    <script src="/site-api.js?v=4"></script>
-    <script src="/page-logic.js?v=2" data-label="musings"></script>
+    <script src="/site-api.js?v=5"></script>
+    <script src="/page-logic.js?v=3" data-label="musings"></script>
 </body>
 </html>

@@ -40,6 +40,20 @@
         };
     }
 
+    function unique(values) {
+        return values.filter(function(value, index, arr) {
+            return value && arr.indexOf(value) === index;
+        });
+    }
+
+    function getCommentPages(wall) {
+        const aliases = (wall.dataset.commentAliases || '')
+            .split(',')
+            .map(function(item) { return item.trim(); })
+            .filter(Boolean);
+        return unique([wall.dataset.commentPage || window.location.pathname].concat(aliases, [window.location.pathname]));
+    }
+
     async function setAdminPassword(password) {
         adminPassword = password || '';
         if (adminPassword) {
@@ -54,21 +68,33 @@
     }
 
     async function loadComments(wall) {
-        const page = wall.dataset.commentPage || window.location.pathname;
+        const pages = getCommentPages(wall);
+        const primaryPage = pages[0] || window.location.pathname;
         const els = getElements(wall);
         if (!els.list) return;
 
         els.list.innerHTML = '<li class="article-comment-empty">加载中...</li>';
         try {
-            const res = await fetch(API_BASE + '/comments?page=' + encodeURIComponent(page), {
-                cache: 'no-store',
-                mode: 'cors',
-                credentials: 'omit'
-            });
-            const data = await res.json();
-            if (!data.ok) throw new Error(data.error || '加载失败');
+            const groups = await Promise.all(pages.map(async function(page) {
+                const res = await fetch(API_BASE + '/comments?page=' + encodeURIComponent(page), {
+                    cache: 'no-store',
+                    mode: 'cors',
+                    credentials: 'omit'
+                });
+                const data = await res.json();
+                if (!data.ok) throw new Error(data.error || '加载失败');
+                return data.comments || [];
+            }));
 
-            const comments = data.comments || [];
+            const seen = {};
+            const comments = groups.flat().filter(function(comment) {
+                const key = (comment.page || primaryPage) + '|' + comment.created_at + '|' + comment.id;
+                if (seen[key]) return false;
+                seen[key] = true;
+                return true;
+            }).sort(function(a, b) {
+                return new Date(b.created_at) - new Date(a.created_at);
+            });
             if (!comments.length) {
                 els.list.innerHTML = '<li class="article-comment-empty">暂无评论，来写第一条吧。</li>';
                 return;
@@ -86,7 +112,7 @@
                     '<span class="msg-time">' + escapeHtml(formatTime(comment.created_at)) + '</span>',
                     '</div>',
                     '<div class="msg-content">' + escapeHtml(comment.content || '') + '</div>',
-                    adminPassword ? '<button class="msg-delete-btn" type="button" data-id="' + escapeHtml(comment.id || '') + '" data-created="' + escapeHtml(comment.created_at || '') + '" title="删除"><i class="fa-solid fa-trash"></i></button>' : ''
+                    adminPassword ? '<button class="msg-delete-btn" type="button" data-page="' + escapeHtml(comment.page || primaryPage) + '" data-id="' + escapeHtml(comment.id || '') + '" data-created="' + escapeHtml(comment.created_at || '') + '" title="删除"><i class="fa-solid fa-trash"></i></button>' : ''
                 ].join('');
                 els.list.appendChild(item);
             });
@@ -106,7 +132,7 @@
                 if (!confirm('确定删除这条留言吗？')) return;
                 btn.disabled = true;
                 try {
-                    const page = wall.dataset.commentPage || window.location.pathname;
+                    const page = btn.dataset.page || getCommentPages(wall)[0] || window.location.pathname;
                     const res = await fetch(API_BASE + '/comments', {
                         method: 'DELETE',
                         headers: {
@@ -142,7 +168,7 @@
         if (saved) els.nickname.value = saved;
 
         els.submit.addEventListener('click', async function() {
-            const page = wall.dataset.commentPage || window.location.pathname;
+            const page = getCommentPages(wall)[0] || window.location.pathname;
             const nickname = els.nickname.value.trim();
             const content = els.content.value.trim();
             if (!nickname) {

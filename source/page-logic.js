@@ -99,7 +99,21 @@
             const keyAttr = issue._hexo ? ' data-local-key="' + escapeHtml(data.link || issue.title) + '"' : ' data-issue="' + issue.number + '"';
             html += '<button class="reaction-btn" ' + keyAttr + ' data-reaction="' + apiName + '">' + emoji + '<span class="r-count">' + (count > 0 ? count : '') + '</span></button>';
         });
+        if (LABEL === 'musings' && !issue._hexo) {
+            html += '<button class="musing-comment-toggle" type="button"><i class="fa-solid fa-comment-dots"></i><span>评论</span></button>';
+        }
         html += '</div>';
+
+        if (LABEL === 'musings' && !issue._hexo) {
+            html += '<div class="musing-thread" data-musing-thread data-comment-page="' + escapeHtml(getMusingCommentKey(issue, data)) + '" hidden>';
+            html += '<div class="musing-comment-form">';
+            html += '<input type="text" class="musing-comment-nickname" placeholder="昵称" maxlength="20">';
+            html += '<textarea class="musing-comment-content" placeholder="写下你的评论..." maxlength="500"></textarea>';
+            html += '<button class="musing-comment-submit" type="button">发布评论</button>';
+            html += '</div>';
+            html += '<ul class="musing-comment-list"></ul>';
+            html += '</div>';
+        }
 
         // Admin delete button
         if (isAdmin && ((issue._hexo && issue._postPath) || (!issue._hexo && issue.number))) {
@@ -148,6 +162,10 @@
             });
         }
 
+        if (LABEL === 'musings' && !issue._hexo) {
+            bindMusingThread(el);
+        }
+
         return el;
     }
 
@@ -169,6 +187,100 @@
         const next = (parseInt(localStorage.getItem(storageKey)) || 0) + 1;
         localStorage.setItem(storageKey, String(next));
         return next;
+    }
+
+    function getMusingCommentKey(issue, data) {
+        return 'musing:' + String(issue.number || data.date || data.title || issue.title || '');
+    }
+
+    async function bindMusingThread(card) {
+        const toggle = card.querySelector('.musing-comment-toggle');
+        const thread = card.querySelector('[data-musing-thread]');
+        if (!toggle || !thread) return;
+        const nickname = thread.querySelector('.musing-comment-nickname');
+        const content = thread.querySelector('.musing-comment-content');
+        const submit = thread.querySelector('.musing-comment-submit');
+        const saved = localStorage.getItem('david_comment_nickname');
+        if (saved) nickname.value = saved;
+
+        toggle.addEventListener('click', async function() {
+            thread.hidden = !thread.hidden;
+            if (!thread.hidden) await loadMusingComments(thread);
+        });
+
+        submit.addEventListener('click', async function() {
+            const name = nickname.value.trim();
+            const text = content.value.trim();
+            if (!name) { nickname.focus(); return; }
+            if (!text) { content.focus(); return; }
+            submit.disabled = true;
+            const oldText = submit.textContent;
+            submit.textContent = '发布中...';
+            try {
+                localStorage.setItem('david_comment_nickname', name);
+                const data = await SiteAPI.createComment(thread.dataset.commentPage, name, text);
+                if (!data.ok) throw new Error(data.error || '发布失败');
+                content.value = '';
+                await loadMusingComments(thread);
+            } catch (e) {
+                alert('评论发布失败：' + e.message);
+            } finally {
+                submit.disabled = false;
+                submit.textContent = oldText;
+            }
+        });
+    }
+
+    async function loadMusingComments(thread) {
+        const list = thread.querySelector('.musing-comment-list');
+        if (!list) return;
+        list.innerHTML = '<li class="musing-comment-empty">加载中...</li>';
+        try {
+            const data = await SiteAPI.fetchComments(thread.dataset.commentPage);
+            if (!data.ok) throw new Error(data.error || '加载失败');
+            const comments = (data.comments || []).sort(function(a, b) {
+                return new Date(a.created_at) - new Date(b.created_at);
+            });
+            if (!comments.length) {
+                list.innerHTML = '<li class="musing-comment-empty">暂无评论，来写第一条吧。</li>';
+                return;
+            }
+            list.innerHTML = '';
+            comments.forEach(function(comment) {
+                const li = document.createElement('li');
+                li.className = 'musing-comment-item';
+                const reactions = comment.reactions || {};
+                let html = '<div class="musing-comment-meta"><strong>' + escapeHtml(comment.nickname || '匿名') + '</strong><span>' + escapeHtml(formatDate(comment.created_at)) + '</span></div>';
+                html += '<div class="musing-comment-text">' + escapeHtml(comment.content || '') + '</div>';
+                html += '<div class="musing-comment-reactions">';
+                EMOJIS.forEach(function(emoji) {
+                    const apiName = EMOJI_MAP[emoji];
+                    const count = reactions[apiName] || 0;
+                    html += '<button class="musing-comment-reaction" type="button" data-id="' + escapeHtml(comment.id || '') + '" data-created="' + escapeHtml(comment.created_at || '') + '" data-reaction="' + apiName + '">' + emoji + '<span class="r-count">' + (count > 0 ? count : '') + '</span></button>';
+                });
+                html += '</div>';
+                li.innerHTML = html;
+                list.appendChild(li);
+            });
+            bindMusingCommentReactions(thread);
+        } catch (e) {
+            list.innerHTML = '<li class="musing-comment-empty">评论暂时加载失败，请稍后重试。</li>';
+        }
+    }
+
+    function bindMusingCommentReactions(thread) {
+        thread.querySelectorAll('.musing-comment-reaction').forEach(function(btn) {
+            btn.addEventListener('click', async function() {
+                const countEl = btn.querySelector('.r-count');
+                try {
+                    const data = await SiteAPI.reactComment(thread.dataset.commentPage, btn.dataset.id, btn.dataset.created, btn.dataset.reaction);
+                    const next = data.reactions && data.reactions[btn.dataset.reaction] ? data.reactions[btn.dataset.reaction] : ((parseInt(countEl.textContent) || 0) + 1);
+                    countEl.textContent = next > 0 ? next : '';
+                } catch (e) {
+                    alert('表情发送失败：' + e.message);
+                }
+            });
+        });
     }
 
     function deletedArticlesKey() {
@@ -268,10 +380,18 @@
     const adminPush = document.getElementById('admin-push');
     const postFile = document.getElementById('post-file');
     const postFileName = document.getElementById('post-file-name');
+    const postMediaFile = document.getElementById('post-media-file');
+    const postMediaFileName = document.getElementById('post-media-file-name');
 
     if (postFile && postFileName) {
         postFile.addEventListener('change', function() {
             postFileName.textContent = this.files && this.files[0] ? this.files[0].name : '未选择文件';
+        });
+    }
+
+    if (postMediaFile && postMediaFileName) {
+        postMediaFile.addEventListener('change', function() {
+            postMediaFileName.textContent = this.files && this.files[0] ? this.files[0].name : '未选择文件';
         });
     }
 
@@ -333,7 +453,7 @@
                 // Musings specific fields - auto date
                 const dateEl = document.getElementById('post-date');
                 const mediaFileEl = document.getElementById('post-media-file');
-                const adminToken = getAdminToken();
+                if (!adminPassword) throw new Error('请先通过管理员验证');
 
                 // Auto-generate date for all post types
                 const now = new Date();
@@ -343,11 +463,11 @@
                 // Handle file upload for musings
                 if (mediaFileEl && mediaFileEl.files && mediaFileEl.files[0]) {
                     adminPush.textContent = '上传文件中...';
-                    const mediaUrl = await SiteAPI.uploadFile(mediaFileEl.files[0], adminToken);
+                    const mediaUrl = await SiteAPI.uploadFileAdmin(mediaFileEl.files[0], adminPassword);
                     bodyData.media = mediaUrl;
                 }
 
-                await SiteAPI.createIssue(title, JSON.stringify(bodyData), [LABEL], adminToken);
+                await SiteAPI.createIssueAdmin(title, JSON.stringify(bodyData), [LABEL], adminPassword);
 
                 // Clear form
                 document.getElementById('post-title').value = '';
@@ -355,6 +475,7 @@
                 if (linkEl) linkEl.value = '';
                 if (tagsEl) tagsEl.value = '';
                 if (mediaFileEl) mediaFileEl.value = '';
+                if (postMediaFileName) postMediaFileName.textContent = '未选择文件';
 
                 // Reload posts
                 await loadPosts();
