@@ -7,6 +7,7 @@
     const EMOJI_MAP = { '👍': '+1', '❤️': 'heart', '😂': 'laugh', '🎉': 'hooray', '🚀': 'rocket' };
     const EMOJIS = Object.keys(EMOJI_MAP);
     let isAdmin = false;
+    let adminPassword = '';
 
     async function loadPosts() {
         try {
@@ -102,7 +103,7 @@
 
         // Admin delete button
         if (isAdmin && ((issue._hexo && issue._postPath) || (!issue._hexo && issue.number))) {
-            html += '<button class="admin-delete-btn" data-kind="' + (issue._hexo ? 'hexo' : 'issue') + '" data-issue="' + (issue.number || '') + '" title="删除" style="position:absolute;top:15px;right:15px;background:#ff4444;color:#fff;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;"><i class="fa-solid fa-trash"></i></button>';
+            html += '<button class="admin-delete-btn" data-kind="' + (issue._hexo ? 'hexo' : 'issue') + '" data-issue="' + (issue.number || '') + '" title="删除"><i class="fa-solid fa-trash"></i></button>';
         }
 
         el.innerHTML = html;
@@ -129,23 +130,20 @@
         // Admin delete
         const delBtn = el.querySelector('.admin-delete-btn');
         if (delBtn) {
-            el.addEventListener('mouseenter', function() { delBtn.style.opacity = '1'; });
-            el.addEventListener('mouseleave', function() { delBtn.style.opacity = '0'; });
             delBtn.addEventListener('click', async function() {
                 if (!confirm('确定删除这篇内容吗？')) return;
                 try {
-                    const token = getAdminToken();
                     this.disabled = true;
                     if (this.dataset.kind === 'hexo') {
-                        await deleteHexoArticle(issue, data, token);
+                        await deleteHexoArticle(issue, data, adminPassword);
                         rememberDeletedArticle(issue, data);
-                        triggerPagesBuild(token);
+                        triggerPagesBuildAdmin(adminPassword);
                     } else {
-                        await SiteAPI.closeIssue(parseInt(this.dataset.issue), token);
+                        await SiteAPI.closeIssueAdmin(parseInt(this.dataset.issue), adminPassword);
                         rememberDeletedIssue(LABEL, this.dataset.issue);
                     }
                     el.classList.add('shattering');
-                    setTimeout(function() { el.remove(); }, 2000);
+                    setTimeout(function() { el.remove(); }, 1100);
                 } catch(e) { alert('删除失败: ' + e.message); }
             });
         }
@@ -226,18 +224,24 @@
         return '';
     }
 
-    async function deleteHexoArticle(issue, data, token) {
+    async function deleteHexoArticle(issue, data, password) {
         const postPath = issue._postPath || data.postPath || '';
         const sourcePath = repoPathFromSourceUrl(issue._sourceFile || data.sourceFile || '');
         if (sourcePath) {
-            await SiteAPI.deleteRepositoryFile(sourcePath, 'Delete article source: ' + (data.title || issue.title), token);
+            await SiteAPI.deleteRepositoryFileAdmin(sourcePath, 'Delete article source: ' + (data.title || issue.title), password);
         }
         if (!postPath) throw new Error('找不到文章 Markdown 路径');
-        await SiteAPI.deleteRepositoryFile(postPath, 'Delete article: ' + (data.title || issue.title), token);
+        await SiteAPI.deleteRepositoryFileAdmin(postPath, 'Delete article: ' + (data.title || issue.title), password);
     }
 
     function triggerPagesBuild(token) {
         SiteAPI.dispatchPagesWorkflow(token).catch(function(e) {
+            console.warn(e);
+        });
+    }
+
+    function triggerPagesBuildAdmin(password) {
+        SiteAPI.dispatchPagesWorkflowAdmin(password).catch(function(e) {
             console.warn(e);
         });
     }
@@ -283,6 +287,7 @@
             const ok = await SiteAPI.verifyPassword(pwd);
             if (ok) {
                 isAdmin = true;
+                adminPassword = pwd;
                 adminLogin.style.display = 'none';
                 adminToggle.style.display = 'none';
                 adminForm.style.display = 'block';
@@ -365,11 +370,9 @@
     async function publishHexoArticle(title, desc) {
         const fileEl = document.getElementById('post-file');
         const tagsEl = document.getElementById('post-tags');
-        const tokenEl = document.getElementById('post-token');
         const file = fileEl && fileEl.files ? fileEl.files[0] : null;
-        const token = tokenEl ? tokenEl.value.trim() : '';
         if (!file) throw new Error('请选择 Markdown、PDF 或 Word 文件');
-        if (!token) throw new Error('请输入 GitHub token');
+        if (!adminPassword) throw new Error('请先通过管理员验证');
 
         adminPush.textContent = '解析文件中...';
         const extracted = await extractDocumentText(file);
@@ -390,7 +393,7 @@
         const tags = tagsEl ? tagsEl.value.split(',').map(function(t) { return t.trim(); }).filter(Boolean) : [];
 
         adminPush.textContent = '上传原 PDF 中...';
-        const uploaded = await SiteAPI.uploadRepositoryFile(sourceFile, filePath, 'Upload article source: ' + title, token);
+        const uploaded = await SiteAPI.uploadRepositoryFileAdmin(sourceFile, filePath, 'Upload article source: ' + title, adminPassword);
         const markdown = buildMarkdownPost({
             title: title,
             description: desc,
@@ -402,11 +405,11 @@
         });
 
         adminPush.textContent = '提交 Markdown 中...';
-        await SiteAPI.publishMarkdownPost(postPath, markdown, 'Publish article: ' + title, token);
+        await SiteAPI.publishMarkdownPostAdmin(postPath, markdown, 'Publish article: ' + title, adminPassword);
 
         adminPush.textContent = '触发构建中...';
         try {
-            await SiteAPI.dispatchPagesWorkflow(token);
+            await SiteAPI.dispatchPagesWorkflowAdmin(adminPassword);
         } catch (e) {
             console.warn(e);
         }

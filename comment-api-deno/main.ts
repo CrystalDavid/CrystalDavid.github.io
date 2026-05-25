@@ -3,6 +3,7 @@ const kv = await Deno.openKv();
 const ALLOWED_ORIGIN = Deno.env.get("ALLOWED_ORIGIN") || "https://crystaldavid.github.io";
 const GITHUB_OWNER = Deno.env.get("GITHUB_OWNER") || "CrystalDavid";
 const GITHUB_REPO = Deno.env.get("GITHUB_REPO") || "CrystalDavid.github.io";
+const GITHUB_TOKEN = Deno.env.get("GITHUB_TOKEN") || "";
 const ADMIN_PASSWORD_HASH = Deno.env.get("ADMIN_PASSWORD_HASH") ||
   "da3fb9830dbd1b3ee2e799a06b3d8b486e5285fc508264f87777905827510551";
 const MAX_NICKNAME_LENGTH = 24;
@@ -81,13 +82,16 @@ async function isAdminRequest(req: Request): Promise<boolean> {
   return await sha256(password) === ADMIN_PASSWORD_HASH;
 }
 
-function githubHeaders(req: Request, contentType = true): HeadersInit {
+async function githubHeaders(req: Request, contentType = true, allowAdminToken = false): Promise<HeadersInit> {
   const headers: Record<string, string> = {
     "Accept": "application/vnd.github+json",
     "X-GitHub-Api-Version": "2022-11-28",
   };
   const auth = req.headers.get("authorization");
   if (auth) headers.authorization = auth;
+  else if (allowAdminToken && await isAdminRequest(req) && GITHUB_TOKEN) {
+    headers.authorization = `Bearer ${GITHUB_TOKEN}`;
+  }
   if (contentType) headers["content-type"] = "application/json";
   return headers;
 }
@@ -180,13 +184,13 @@ async function handleGithub(req: Request, url: URL): Promise<Response> {
     const state = url.searchParams.get("state") || "open";
     const perPage = url.searchParams.get("per_page") || "50";
     const target = githubApi(`/issues?labels=${encodeURIComponent(label)}&state=${encodeURIComponent(state)}&per_page=${encodeURIComponent(perPage)}`);
-    return githubJson(target, { headers: githubHeaders(req, false) });
+    return githubJson(target, { headers: await githubHeaders(req, false) });
   }
 
   if (path === "/issues" && req.method === "POST") {
     return githubJson(githubApi("/issues"), {
       method: "POST",
-      headers: githubHeaders(req),
+      headers: await githubHeaders(req, true, true),
       body: await req.text(),
     });
   }
@@ -195,7 +199,7 @@ async function handleGithub(req: Request, url: URL): Promise<Response> {
   if (issueMatch && req.method === "PATCH") {
     return githubJson(githubApi(`/issues/${issueMatch[1]}`), {
       method: "PATCH",
-      headers: githubHeaders(req),
+      headers: await githubHeaders(req, true, true),
       body: await req.text(),
     });
   }
@@ -203,14 +207,14 @@ async function handleGithub(req: Request, url: URL): Promise<Response> {
   const reactionMatch = path.match(/^\/issues\/(\d+)\/reactions$/);
   if (reactionMatch && req.method === "GET") {
     return githubJson(githubApi(`/issues/${reactionMatch[1]}/reactions`), {
-      headers: githubHeaders(req, false),
+      headers: await githubHeaders(req, false),
     });
   }
 
   if (reactionMatch && req.method === "POST") {
     return githubJson(githubApi(`/issues/${reactionMatch[1]}/reactions`), {
       method: "POST",
-      headers: githubHeaders(req),
+      headers: await githubHeaders(req, true, true),
       body: await req.text(),
     });
   }
@@ -222,12 +226,12 @@ async function handleGithub(req: Request, url: URL): Promise<Response> {
     const ref = url.searchParams.get("ref") || "main";
     const target = githubApi(`/contents/${encodedPath}`);
     if (req.method === "GET") {
-      return githubJson(`${target}?ref=${encodeURIComponent(ref)}`, { headers: githubHeaders(req, false) });
+      return githubJson(`${target}?ref=${encodeURIComponent(ref)}`, { headers: await githubHeaders(req, false) });
     }
     if (req.method === "PUT" || req.method === "DELETE") {
       return githubJson(target, {
         method: req.method,
-        headers: githubHeaders(req),
+        headers: await githubHeaders(req, true, true),
         body: await req.text(),
       });
     }
@@ -236,7 +240,7 @@ async function handleGithub(req: Request, url: URL): Promise<Response> {
   if (path === "/dispatch-pages" && req.method === "POST") {
     return githubJson(githubApi("/actions/workflows/pages.yml/dispatches"), {
       method: "POST",
-      headers: githubHeaders(req),
+      headers: await githubHeaders(req, true, true),
       body: await req.text(),
     });
   }

@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css">
-    <link rel="stylesheet" href="/page-common.css">
+    <link rel="stylesheet" href="/styles.css?v=3">
+    <link rel="stylesheet" href="/page-common.css?v=3">
 </head>
 <body>
     <!-- 顶部导航栏 -->
@@ -79,8 +79,7 @@
                     <span id="post-file-name" class="file-picker-name">未选择文件</span>
                 </div>
                 <input type="text" id="post-tags" placeholder="标签 (逗号分隔，如: React,Node.js)">
-                <input type="password" id="post-token" placeholder="GitHub token，仅本次发布使用">
-                <p class="admin-help">会自动按文章标题生成路径，生成 source/_posts/*.md 并上传原文件到 source/assets/articles/，push 后自动触发 GitHub Pages 构建。</p>
+                <p class="admin-help">会自动按文章标题生成路径，生成 source/_posts/*.md 并上传原文件到 source/assets/articles/，由 Deno 后端提交并触发 GitHub Pages 构建。</p>
                 <button class="admin-push-btn" id="admin-push">生成 Hexo 文章并发布</button>
             </div>
         </div>
@@ -99,10 +98,10 @@
     <canvas id="fireworks-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     <script src="/script.js?v=5"></script>
-    <script src="/site-api.js?v=2"></script>
+    <script src="/site-api.js?v=3"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="/page-logic.js" data-label="article"></script>
+    <script src="/page-logic.js?v=2" data-label="article"></script>
 </body>
 </html>

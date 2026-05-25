@@ -20,6 +20,13 @@
         };
     }
 
+    function _adminHeaders(adminPassword) {
+        return {
+            'X-Admin-Password': (adminPassword || '').trim(),
+            'Accept': 'application/vnd.github+json'
+        };
+    }
+
     async function hashStr(str) {
         const buf = new TextEncoder().encode(str);
         const hash = await crypto.subtle.digest('SHA-256', buf);
@@ -86,6 +93,17 @@
                 'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             },
+            body: JSON.stringify({ state: 'closed' })
+        });
+        if (!res.ok) throw new Error('Failed to close issue: ' + res.status);
+        return res.json();
+    }
+
+    async function closeIssueAdmin(issueNumber, adminPassword) {
+        const url = API_PROXY + '/github/issues/' + issueNumber;
+        const res = await fetch(url, {
+            method: 'PATCH',
+            headers: Object.assign(_adminHeaders(adminPassword), { 'Content-Type': 'application/json' }),
             body: JSON.stringify({ state: 'closed' })
         });
         if (!res.ok) throw new Error('Failed to close issue: ' + res.status);
@@ -162,6 +180,18 @@
         return data.sha || null;
     }
 
+    async function getRepositoryFile(path) {
+        const repoPath = normalizeRepoPath(path);
+        if (!repoPath) throw new Error('缺少仓库文件路径');
+        const res = await fetch(contentUrl(repoPath) + '&ref=main&_=' + Date.now(), {
+            cache: 'no-store',
+            mode: 'cors',
+            credentials: 'omit'
+        });
+        if (!res.ok) throw new Error('读取仓库文件失败: ' + res.status);
+        return res.json();
+    }
+
     async function putContent(path, base64Content, message, token) {
         const repoPath = normalizeRepoPath(path);
         const sha = await getContentSha(repoPath, token);
@@ -206,6 +236,73 @@
         return res.json();
     }
 
+    async function saveRepositoryTextAdmin(path, text, message, adminPassword) {
+        return putContentAdmin(path, textToBase64(text), message, adminPassword);
+    }
+
+    async function putContentAdmin(path, base64Content, message, adminPassword) {
+        const repoPath = normalizeRepoPath(path);
+        let current = null;
+        try {
+            current = await getRepositoryFile(repoPath);
+        } catch (e) {}
+        const body = {
+            message: message || ('Update file: ' + repoPath),
+            content: base64Content,
+            branch: 'main'
+        };
+        if (current && current.sha) body.sha = current.sha;
+        const res = await fetch(contentUrl(repoPath), {
+            method: 'PUT',
+            headers: Object.assign(_adminHeaders(adminPassword), { 'Content-Type': 'application/json' }),
+            body: JSON.stringify(body)
+        });
+        if (!res.ok) {
+            const detail = await res.text().catch(function() { return ''; });
+            throw new Error('提交仓库文件失败: ' + res.status + ' ' + detail);
+        }
+        return res.json();
+    }
+
+    async function uploadRepositoryFileAdmin(file, path, message, adminPassword) {
+        const base64 = await fileToBase64(file);
+        const data = await putContentAdmin(path, base64, message || ('Upload file: ' + file.name), adminPassword);
+        return {
+            path: path,
+            url: '/' + path.replace(/^source\//, ''),
+            html_url: data.content && data.content.html_url
+        };
+    }
+
+    async function publishMarkdownPostAdmin(path, markdown, message, adminPassword) {
+        return putContentAdmin(path, textToBase64(markdown), message || ('Publish article: ' + path), adminPassword);
+    }
+
+    async function deleteRepositoryFileAdmin(path, message, adminPassword) {
+        const repoPath = normalizeRepoPath(path);
+        let current;
+        try {
+            current = await getRepositoryFile(repoPath);
+        } catch (e) {
+            return { deleted: false, path: repoPath };
+        }
+        const res = await fetch(contentUrl(repoPath), {
+            method: 'DELETE',
+            headers: Object.assign(_adminHeaders(adminPassword), { 'Content-Type': 'application/json' }),
+            body: JSON.stringify({
+                message: message || ('Delete file: ' + repoPath),
+                sha: current.sha,
+                branch: 'main'
+            })
+        });
+        if (res.status === 404) return { deleted: false, path: repoPath };
+        if (!res.ok) {
+            const detail = await res.text().catch(function() { return ''; });
+            throw new Error('删除仓库文件失败: ' + res.status + ' ' + detail);
+        }
+        return res.json();
+    }
+
     async function uploadRepositoryFile(file, path, message, token) {
         const base64 = await fileToBase64(file);
         const data = await putContent(path, base64, message || ('Upload file: ' + file.name), token);
@@ -233,19 +330,39 @@
         return true;
     }
 
+    async function dispatchPagesWorkflowAdmin(adminPassword) {
+        const url = API_PROXY + '/github/dispatch-pages';
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: Object.assign(_adminHeaders(adminPassword), { 'Content-Type': 'application/json' }),
+            body: JSON.stringify({ ref: 'main' })
+        });
+        if (res.status === 204) return true;
+        if (res.status === 404 || res.status === 403) return false;
+        if (!res.ok) throw new Error('触发 GitHub Actions 失败: ' + res.status);
+        return true;
+    }
+
     // Expose API
     window.SiteAPI = {
         verifyPassword: verifyPassword,
         fetchIssues: fetchIssues,
         createIssue: createIssue,
         closeIssue: closeIssue,
+        closeIssueAdmin: closeIssueAdmin,
         getReactions: getReactions,
         addReaction: addReaction,
         uploadFile: uploadFile,
+        getRepositoryFile: getRepositoryFile,
         uploadRepositoryFile: uploadRepositoryFile,
+        uploadRepositoryFileAdmin: uploadRepositoryFileAdmin,
         publishMarkdownPost: publishMarkdownPost,
+        publishMarkdownPostAdmin: publishMarkdownPostAdmin,
         deleteRepositoryFile: deleteRepositoryFile,
+        saveRepositoryTextAdmin: saveRepositoryTextAdmin,
+        deleteRepositoryFileAdmin: deleteRepositoryFileAdmin,
         dispatchPagesWorkflow: dispatchPagesWorkflow,
+        dispatchPagesWorkflowAdmin: dispatchPagesWorkflowAdmin,
         REACTIONS_MAP: {
             '👍': '+1',
             '❤️': 'heart',

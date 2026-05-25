@@ -3,8 +3,9 @@
 
     const API_BASE = 'https://david-comment-api.crystaldavid.deno.net';
     const NICKNAME_KEY = 'david_comment_nickname';
+    const ADMIN_SESSION_KEY = 'david_admin_password_session';
     const PWD_HASH = 'da3fb9830dbd1b3ee2e799a06b3d8b486e5285fc508264f87777905827510551';
-    let adminPassword = '';
+    let adminPassword = sessionStorage.getItem(ADMIN_SESSION_KEY) || '';
 
     async function hashStr(str) {
         const buf = new TextEncoder().encode(str);
@@ -37,6 +38,19 @@
             submit: wall.querySelector('[data-comment-submit], #msg-submit'),
             list: wall.querySelector('[data-comment-list], #msg-list')
         };
+    }
+
+    async function setAdminPassword(password) {
+        adminPassword = password || '';
+        if (adminPassword) {
+            sessionStorage.setItem(ADMIN_SESSION_KEY, adminPassword);
+            document.body.classList.add('comment-admin-mode');
+        } else {
+            sessionStorage.removeItem(ADMIN_SESSION_KEY);
+            document.body.classList.remove('comment-admin-mode');
+        }
+        const walls = Array.from(document.querySelectorAll('[data-comment-wall]'));
+        await Promise.all(walls.map(loadComments));
     }
 
     async function loadComments(wall) {
@@ -88,8 +102,6 @@
         els.list.querySelectorAll('.msg-delete-btn').forEach(function(btn) {
             const item = btn.closest('.msg-item');
             if (!item) return;
-            item.addEventListener('mouseenter', function() { btn.style.opacity = '1'; });
-            item.addEventListener('mouseleave', function() { btn.style.opacity = '0'; });
             btn.addEventListener('click', async function() {
                 if (!confirm('确定删除这条留言吗？')) return;
                 btn.disabled = true;
@@ -112,7 +124,7 @@
                     const data = await res.json();
                     if (!data.ok) throw new Error(data.error || '删除失败');
                     item.classList.add('shattering');
-                    setTimeout(function() { item.remove(); }, 2000);
+                    setTimeout(function() { item.remove(); }, 1100);
                 } catch (e) {
                     btn.disabled = false;
                     alert('删除失败：' + e.message);
@@ -199,9 +211,8 @@
         btn.addEventListener('click', async function() {
             const value = pwd.value;
             if (await hashStr(value) === PWD_HASH) {
-                adminPassword = value;
+                await setAdminPassword(value);
                 tools.style.display = 'none';
-                await loadComments(wall);
             } else {
                 pwd.style.borderColor = '#ff4444';
                 setTimeout(function() { pwd.style.borderColor = ''; }, 1500);
@@ -214,12 +225,19 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+        if (adminPassword) document.body.classList.add('comment-admin-mode');
         document.querySelectorAll('[data-comment-wall]').forEach(bindWall);
     });
 
     document.addEventListener('david-admin-login', function(e) {
-        adminPassword = e.detail && e.detail.password ? e.detail.password : '';
-        document.querySelectorAll('[data-comment-wall]').forEach(loadComments);
+        setAdminPassword(e.detail && e.detail.password ? e.detail.password : '');
     });
+
+    window.DavidCommentWall = {
+        setAdminPassword: setAdminPassword,
+        reload: function() {
+            document.querySelectorAll('[data-comment-wall]').forEach(loadComments);
+        }
+    };
 })();
 

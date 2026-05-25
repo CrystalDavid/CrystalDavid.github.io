@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/styles.css?v=3">
     <style>
         .about-container {
             max-width: 900px;
@@ -534,7 +534,7 @@
             100% { transform: scale(0.5) rotate(2deg); opacity: 0; filter: blur(8px); height: 0; padding: 0; margin: 0; overflow: hidden; }
         }
         .msg-item.shattering {
-            animation: commentShatter 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important;
+            animation: powderBurst 1.05s cubic-bezier(0.16, 0.84, 0.22, 1) forwards !important;
             pointer-events: none;
         }
     </style>
@@ -715,7 +715,7 @@
     <canvas id="fireworks-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     <script src="/script.js?v=5"></script>
-    <script src="/comment-wall.js?v=2"></script>
+    <script src="/comment-wall.js?v=3"></script>
     <script>
     // 留言墙逻辑 (GitHub Issues backend)
     if (false) (function() {
@@ -917,6 +917,7 @@
             var h = await hashStr(pwdInput.value);
             if (h === PWD_HASH) {
                 document.dispatchEvent(new CustomEvent('david-admin-login', { detail: { password: pwdInput.value } }));
+                if (window.DavidCommentWall) window.DavidCommentWall.setAdminPassword(pwdInput.value);
                 login.style.display = 'none';
                 toggle.style.display = 'none';
                 form.style.display = 'block';

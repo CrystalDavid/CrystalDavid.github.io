@@ -83,4 +83,34 @@
     </div>
     <% } %>
     <% } %>
+    <%
+        const articleSourcePath = page.source
+            ? (String(page.source).startsWith("source/") ? String(page.source) : "source/" + String(page.source))
+            : "";
+        const articleTagText = page.tags && page.tags.data
+            ? page.tags.data.map((tag) => tag.name).join(",")
+            : "";
+    %>
+    <div class="article-admin-panel"
+        data-article-admin
+        data-source-path="<%- encodeURIComponent(articleSourcePath) %>"
+        data-current-title="<%- encodeURIComponent(page.title || "") %>"
+        data-current-description="<%- encodeURIComponent(page.description || "") %>"
+        data-current-tags="<%- encodeURIComponent(articleTagText) %>">
+        <button class="admin-toggle-btn article-admin-toggle" type="button">
+            <i class="fa-solid fa-lock"></i> 管理员
+        </button>
+        <div class="admin-login article-admin-login" style="display:none;">
+            <input class="article-admin-pwd" type="password" placeholder="输入管理员密码">
+            <button class="admin-login-btn article-admin-login-btn" type="button">验证</button>
+        </div>
+        <div class="article-admin-form" style="display:none;">
+            <div class="article-admin-status" data-type="info">管理员模式已开启。</div>
+            <h3><i class="fa-solid fa-pen-to-square"></i> 编辑这篇文章</h3>
+            <input class="article-edit-title" type="text" placeholder="文章标题">
+            <textarea class="article-edit-desc" placeholder="文章简介"></textarea>
+            <input class="article-edit-tags" type="text" placeholder="标签，逗号分隔，如 AI,Notes,Workflow">
+            <button class="admin-push-btn article-admin-save" type="button">保存文章信息</button>
+        </div>
+    </div>
 </div>
