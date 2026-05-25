@@ -4,6 +4,8 @@
     const API_BASE = 'https://david-comment-api.crystaldavid.deno.net';
     const NICKNAME_KEY = 'david_comment_nickname';
     const PWD_HASH = 'da3fb9830dbd1b3ee2e799a06b3d8b486e5285fc508264f87777905827510551';
+    const EMOJIS = ['👍', '❤️', '😂', '🎉', '🚀'];
+    const EMOJI_MAP = { '👍': '+1', '❤️': 'heart', '😂': 'laugh', '🎉': 'hooray', '🚀': 'rocket' };
     let adminPassword = '';
 
     async function hashStr(str) {
@@ -92,6 +94,27 @@
             }).sort(function(a, b) {
                 return new Date(b.created_at) - new Date(a.created_at);
             });
+
+            // Load reactions for each comment
+            const reactionsPromises = comments.map(async function(comment) {
+                const commentKey = (comment.page || primaryPage) + ':' + comment.id;
+                try {
+                    const res = await fetch(API_BASE + '/reactions?page=' + encodeURIComponent(commentKey), {
+                        cache: 'no-store',
+                        mode: 'cors',
+                        credentials: 'omit'
+                    });
+                    const data = await res.json();
+                    return data.ok ? (data.reactions || {}) : {};
+                } catch (e) {
+                    return {};
+                }
+            });
+            const allReactions = await Promise.all(reactionsPromises);
+            comments.forEach(function(comment, index) {
+                comment.reactions = allReactions[index];
+            });
+
             renderComments(wall, comments, primaryPage);
         } catch (error) {
             els.list.innerHTML = '<li class="article-comment-empty">留言服务暂时连接失败，请稍后重试。</li>';
@@ -111,6 +134,8 @@
             const item = document.createElement('li');
             item.className = 'msg-item';
             const initial = (comment.nickname || '?').charAt(0).toUpperCase();
+            const commentKey = (comment.page || primaryPage) + ':' + comment.id;
+
             item.innerHTML = [
                 '<div class="msg-header">',
                 '<div class="msg-avatar">' + escapeHtml(initial) + '</div>',
@@ -118,11 +143,46 @@
                 '<span class="msg-time">' + escapeHtml(formatTime(comment.created_at)) + '</span>',
                 '</div>',
                 '<div class="msg-content">' + escapeHtml(comment.content || '') + '</div>',
+                '<div class="msg-reactions">',
+                EMOJIS.map(function(emoji) {
+                    const apiName = EMOJI_MAP[emoji];
+                    const count = comment.reactions && comment.reactions[apiName] ? comment.reactions[apiName] : 0;
+                    return '<button class="msg-reaction-btn" data-comment-key="' + escapeHtml(commentKey) + '" data-reaction="' + apiName + '">' + emoji + '<span class="count">' + (count > 0 ? count : '') + '</span></button>';
+                }).join(''),
+                '</div>',
                 adminPassword ? '<button class="msg-delete-btn" type="button" data-page="' + escapeHtml(comment.page || primaryPage) + '" data-id="' + escapeHtml(comment.id || '') + '" data-created="' + escapeHtml(comment.created_at || '') + '" title="删除"><i class="fa-solid fa-trash"></i></button>' : ''
             ].join('');
             els.list.appendChild(item);
         });
+        bindReactionButtons(wall);
         bindDeleteButtons(wall);
+    }
+
+    function bindReactionButtons(wall) {
+        const els = getElements(wall);
+        if (!els.list) return;
+        els.list.querySelectorAll('.msg-reaction-btn').forEach(function(btn) {
+            btn.addEventListener('click', async function() {
+                const commentKey = this.dataset.commentKey;
+                const reaction = this.dataset.reaction;
+                const countEl = this.querySelector('.count');
+                try {
+                    const res = await fetch(API_BASE + '/reactions', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        mode: 'cors',
+                        credentials: 'omit',
+                        body: JSON.stringify({ page: commentKey, reaction: reaction })
+                    });
+                    const data = await res.json();
+                    if (data.ok && data.count) {
+                        countEl.textContent = data.count > 0 ? data.count : '';
+                    }
+                } catch (e) {
+                    console.error('添加表情失败:', e);
+                }
+            });
+        });
     }
 
     function bindDeleteButtons(wall) {

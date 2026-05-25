@@ -364,6 +364,30 @@
         return true;
     }
 
+    // Deno API reactions
+    async function getReactionsFromDeno(page) {
+        const url = API_PROXY + '/reactions?page=' + encodeURIComponent(page);
+        const res = await fetch(url, { cache: 'no-store', mode: 'cors', credentials: 'omit' });
+        if (!res.ok) return {};
+        const data = await res.json();
+        return data.ok ? (data.reactions || {}) : {};
+    }
+
+    async function addReactionToDeno(page, reaction) {
+        const url = API_PROXY + '/reactions';
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            mode: 'cors',
+            credentials: 'omit',
+            body: JSON.stringify({ page: page, reaction: reaction })
+        });
+        if (!res.ok) throw new Error('添加表情失败');
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || '添加表情失败');
+        return data.count || 1;
+    }
+
     // Expose API
     window.SiteAPI = {
         verifyPassword: verifyPassword,
@@ -374,6 +398,8 @@
         closeIssueAdmin: closeIssueAdmin,
         getReactions: getReactions,
         addReaction: addReaction,
+        getReactionsFromDeno: getReactionsFromDeno,
+        addReactionToDeno: addReactionToDeno,
         uploadFile: uploadFile,
         uploadFileAdmin: uploadFileAdmin,
         getRepositoryFile: getRepositoryFile,

@@ -657,12 +657,14 @@
             <div class="section-title">
                 <i class="fa-solid fa-comments"></i> 留言墙
             </div>
-            <div class="msg-input-area">
-                <input type="text" id="msg-nickname" placeholder="你的昵称" maxlength="20">
-                <textarea id="msg-content" placeholder="写下你想说的话..." maxlength="500"></textarea>
-                <button class="msg-submit-btn" id="msg-submit">发布留言</button>
+            <div data-comment-wall data-comment-page="/about">
+                <div class="msg-input-area">
+                    <input type="text" data-comment-nickname placeholder="你的昵称" maxlength="20">
+                    <textarea data-comment-content placeholder="写下你想说的话..." maxlength="500"></textarea>
+                    <button class="msg-submit-btn" data-comment-submit>发布留言</button>
+                </div>
+                <ul class="msg-list" data-comment-list></ul>
             </div>
-            <ul class="msg-list" id="msg-list"></ul>
         </div>
 
         <!-- 管理员编辑 About -->
@@ -716,116 +718,8 @@
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     <script src="script.js?v=5"></script>
     <script src="site-api.js"></script>
+    <script src="comment-wall.js"></script>
     <script>
-    // 留言墙逻辑 (GitHub Issues backend)
-    (function() {
-        const REACTIONS = ['👍', '❤️', '😂', '🎉', '🤔'];
-        const REACTION_MAP = {'👍':'+1','❤️':'heart','😂':'laugh','🎉':'hooray','🤔':'confused'};
-        let aboutAdmin = false;
-
-        async function loadMessages() {
-            const list = document.getElementById('msg-list');
-            try {
-                const issues = await SiteAPI.fetchIssues('message');
-                if (!issues || issues.length === 0) {
-                    list.innerHTML = '<li style="text-align:center;color:#999;padding:30px;">暂无留言，来说点什么吧~</li>';
-                    return;
-                }
-                list.innerHTML = '';
-                issues.forEach(function(issue) {
-                    var data;
-                    try { data = JSON.parse(issue.body); } catch(e) { data = {nickname:'匿名',content:issue.body}; }
-                    var li = document.createElement('li');
-                    li.className = 'msg-item';
-                    var initial = data.nickname ? data.nickname.charAt(0).toUpperCase() : '?';
-                    var time = data.date || new Date(issue.created_at).toLocaleString('zh-CN');
-
-                    var html = '<div class="msg-header"><div class="msg-avatar">' + initial + '</div><span class="msg-nickname">' + esc(data.nickname||'匿名') + '</span><span class="msg-time">' + esc(time) + '</span></div>';
-                    html += '<div class="msg-content">' + esc(data.content||'') + '</div>';
-                    html += '<div class="msg-reactions">';
-                    REACTIONS.forEach(function(emoji) {
-                        var apiName = REACTION_MAP[emoji];
-                        var count = issue.reactions && issue.reactions[apiName] ? issue.reactions[apiName] : 0;
-                        html += '<button class="msg-reaction-btn" data-issue="'+issue.number+'" data-reaction="'+apiName+'">'+emoji+(count>0?'<span class="count">'+count+'</span>':'')+'</button>';
-                    });
-                    html += '</div>';
-                    if (aboutAdmin) {
-                        html += '<button class="msg-delete-btn" data-issue="'+issue.number+'" style="position:absolute;top:10px;right:10px;background:#ff4444;color:#fff;border:none;border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:12px;opacity:0;transition:opacity 0.3s;display:flex;align-items:center;justify-content:center;"><i class="fa-solid fa-trash"></i></button>';
-                    }
-                    li.innerHTML = html;
-                    list.appendChild(li);
-                });
-                bindMsgEvents();
-            } catch(e) {
-                list.innerHTML = '<li style="text-align:center;color:#999;padding:30px;">加载失败</li>';
-            }
-        }
-
-        function bindMsgEvents() {
-            document.querySelectorAll('.msg-reaction-btn').forEach(function(btn) {
-                btn.addEventListener('click', async function() {
-                    var issueNum = this.dataset.issue;
-                    var reaction = this.dataset.reaction;
-                    try {
-                        await SiteAPI.addReaction(parseInt(issueNum), reaction);
-                        var countEl = this.querySelector('.count');
-                        if (countEl) { countEl.textContent = (parseInt(countEl.textContent)||0)+1; }
-                        else { this.insertAdjacentHTML('beforeend','<span class="count">1</span>'); }
-                    } catch(e) {}
-                });
-            });
-            document.querySelectorAll('.msg-delete-btn').forEach(function(btn) {
-                var li = btn.closest('.msg-item');
-                li.addEventListener('mouseenter', function() { btn.style.opacity='1'; });
-                li.addEventListener('mouseleave', function() { btn.style.opacity='0'; });
-                btn.addEventListener('click', async function() {
-                    if (!confirm('确定删除这条留言？')) return;
-                    try { await SiteAPI.closeIssue(parseInt(this.dataset.issue)); li.classList.add('shattering'); setTimeout(function(){li.remove();},850); } catch(e) { alert('删除失败'); }
-                });
-            });
-        }
-
-        function esc(s) { if(!s)return''; var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
-
-        // Submit message
-        document.getElementById('msg-submit').addEventListener('click', async function() {
-            var nickname = document.getElementById('msg-nickname').value.trim();
-            var content = document.getElementById('msg-content').value.trim();
-            if (!nickname) { document.getElementById('msg-nickname').focus(); return; }
-            if (!content) { document.getElementById('msg-content').focus(); return; }
-            localStorage.setItem('david_msg_nickname', nickname);
-            var now = new Date();
-            var pad = function(n){return String(n).padStart(2,'0');};
-            var date = now.getFullYear()+'/'+pad(now.getMonth()+1)+'/'+pad(now.getDate())+' '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
-            var body = JSON.stringify({nickname:nickname, content:content, date:date});
-            try {
-                await SiteAPI.createIssue(nickname+': '+content.substring(0,30), body, ['message']);
-                document.getElementById('msg-content').value = '';
-                await loadMessages();
-            } catch(e) { alert('发送失败: '+e.message); }
-        });
-
-        // Restore nickname
-        var saved = localStorage.getItem('david_msg_nickname');
-        if (saved) document.getElementById('msg-nickname').value = saved;
-
-        // Hook into about admin login to enable delete
-        var origLoginBtn = document.getElementById('about-admin-login-btn');
-        if (origLoginBtn) {
-            var origClick = origLoginBtn.onclick;
-            origLoginBtn.addEventListener('click', function() {
-                setTimeout(function() {
-                    if (document.getElementById('about-admin-form').style.display !== 'none') {
-                        aboutAdmin = true;
-                        loadMessages();
-                    }
-                }, 500);
-            });
-        }
-
-        loadMessages();
-    })();
-
     // About 管理员编辑逻辑
     (function() {
         const ABOUT_KEY = 'david_about_data';

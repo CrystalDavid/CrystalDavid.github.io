@@ -23,8 +23,17 @@
                 return;
             }
             grid.innerHTML = '';
-            for (const item of items) {
-                const card = createCard(item);
+
+            // Load all reactions from Deno API
+            const reactionsPromises = items.map(function(item) {
+                const data = parseBody(item.body);
+                const pageKey = getPageKey(item, data);
+                return SiteAPI.getReactionsFromDeno(pageKey);
+            });
+            const allReactions = await Promise.all(reactionsPromises);
+
+            for (let i = 0; i < items.length; i++) {
+                const card = createCard(items[i], allReactions[i] || {});
                 grid.appendChild(card);
             }
         } catch (e) {
@@ -59,10 +68,19 @@
         try { return JSON.parse(body); } catch(e) { return { content: body }; }
     }
 
-    function createCard(issue) {
+    function getPageKey(issue, data) {
+        // Generate unique page key for reactions
+        if (issue._hexo) {
+            return data.link || issue._postPath || issue.title;
+        }
+        return LABEL + ':' + issue.number;
+    }
+
+    function createCard(issue, reactions) {
         const data = parseBody(issue.body);
         const el = document.createElement('div');
         el.className = 'post-card';
+        const pageKey = getPageKey(issue, data);
 
         let html = '<div class="post-card-title">' + escapeHtml(data.title || issue.title) + '</div>';
         html += '<div class="post-card-date"><i class="fa-solid fa-calendar fa-fw"></i> ' + (data.date || formatDate(issue.created_at)) + '</div>';
@@ -95,9 +113,8 @@
         html += '<div class="reaction-bar">';
         EMOJIS.forEach(function(emoji) {
             const apiName = EMOJI_MAP[emoji];
-            const count = issue._hexo ? getLocalReactionCount(data.link || issue.title, apiName) : countReaction(issue.reactions, apiName);
-            const keyAttr = issue._hexo ? ' data-local-key="' + escapeHtml(data.link || issue.title) + '"' : ' data-issue="' + issue.number + '"';
-            html += '<button class="reaction-btn" ' + keyAttr + ' data-reaction="' + apiName + '">' + emoji + '<span class="r-count">' + (count > 0 ? count : '') + '</span></button>';
+            const count = reactions[apiName] || 0;
+            html += '<button class="reaction-btn" data-page-key="' + escapeHtml(pageKey) + '" data-reaction="' + apiName + '">' + emoji + '<span class="r-count">' + (count > 0 ? count : '') + '</span></button>';
         });
         html += '</div>';
 
@@ -112,18 +129,14 @@
         el.querySelectorAll('.reaction-btn').forEach(function(btn) {
             btn.addEventListener('click', async function() {
                 const reaction = this.dataset.reaction;
+                const pageKey = this.dataset.pageKey;
                 const countEl = this.querySelector('.r-count');
-                if (this.dataset.localKey) {
-                    const cur = addLocalReaction(this.dataset.localKey, reaction);
-                    countEl.textContent = cur > 0 ? cur : '';
-                    return;
-                }
-                const issueNum = this.dataset.issue;
                 try {
-                    await SiteAPI.addReaction(parseInt(issueNum), reaction);
-                    const cur = parseInt(countEl.textContent) || 0;
-                    countEl.textContent = cur + 1;
-                } catch(e) {}
+                    const newCount = await SiteAPI.addReactionToDeno(pageKey, reaction);
+                    countEl.textContent = newCount > 0 ? newCount : '';
+                } catch(e) {
+                    console.error('添加表情失败:', e);
+                }
             });
         });
 
@@ -149,26 +162,6 @@
         }
 
         return el;
-    }
-
-    function countReaction(reactions, name) {
-        if (!reactions) return 0;
-        return reactions[name] || 0;
-    }
-
-    function localReactionStorageKey(key, reaction) {
-        return 'david_article_reaction_' + encodeURIComponent(key || '') + '_' + reaction;
-    }
-
-    function getLocalReactionCount(key, reaction) {
-        return parseInt(localStorage.getItem(localReactionStorageKey(key, reaction))) || 0;
-    }
-
-    function addLocalReaction(key, reaction) {
-        const storageKey = localReactionStorageKey(key, reaction);
-        const next = (parseInt(localStorage.getItem(storageKey)) || 0) + 1;
-        localStorage.setItem(storageKey, String(next));
-        return next;
     }
 
     function deletedArticlesKey() {
