@@ -44,8 +44,8 @@
     <% if (theme.twikoo.enable && page.comments) { %>
     <script src="https://s4.zstatic.net/ajax/libs/twikoo/1.6.31/twikoo.all.min.js"></script>
     <% } %>
-    <link rel="stylesheet" href="<%- url_for("/styles.css?v=5") %>">
-    <link rel="stylesheet" href="<%- url_for("/page-common.css?v=6") %>">
+    <link rel="stylesheet" href="<%- url_for("/styles.css?v=6") %>">
+    <link rel="stylesheet" href="<%- url_for("/page-common.css?v=7") %>">
     <link rel="stylesheet" href="<%- url_for("/article-detail.css?v=6") %>">
 </head>
 <body>
@@ -104,7 +104,7 @@
     <script src="<%- url_for("/script.js?v=6") %>"></script>
     <script src="<%- url_for("/site-api.js?v=5") %>"></script>
     <% if (page.comments) { %>
-    <script src="<%- url_for("/comment-wall.js?v=5") %>"></script>
+    <script src="<%- url_for("/comment-wall.js?v=6") %>"></script>
     <%- partial("comment") %>
     <% } %>
     <script src="<%- url_for("/article-admin.js?v=2") %>"></script>

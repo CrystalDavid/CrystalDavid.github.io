@@ -327,6 +327,15 @@ body.dark-mode #home-card #card-style {
     border: 1px solid rgba(154, 187, 247, 0.2);
 }
 
+body.dark-mode #home-card #card-div .icon-links a {
+    color: #e9eef8;
+    text-shadow: 0 0 14px rgba(233, 238, 248, 0.22);
+}
+
+body.dark-mode #home-card #card-div .icon-links a:hover {
+    color: #ffffff;
+}
+
 body.dark-mode #footer {
     color: #e0e0e0;
 }
@@ -748,7 +757,7 @@ body.dark-mode .qq-contact-number {
     right: 14px;
     width: 38px;
     height: 38px;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     border: 0;
@@ -763,8 +772,12 @@ body.dark-mode .qq-contact-number {
     z-index: 3;
 }
 
-.msg-item:hover .msg-delete-btn,
-.article-comment-wall .msg-item:hover .msg-delete-btn {
+body.comment-admin-mode .msg-delete-btn {
+    display: flex;
+}
+
+body.comment-admin-mode .msg-item:hover .msg-delete-btn,
+body.comment-admin-mode .article-comment-wall .msg-item:hover .msg-delete-btn {
     opacity: 1;
     transform: translateY(0) scale(1);
 }
@@ -773,6 +786,75 @@ body.dark-mode .qq-contact-number {
     opacity: 1;
     transform: translateY(-1px) scale(1.06);
     box-shadow: 0 14px 28px rgba(255, 68, 85, 0.42);
+}
+
+@keyframes powderBurst {
+    0% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+        filter: blur(0);
+    }
+    28% {
+        opacity: 0.9;
+        transform: translate3d(0, -4px, 0) scale(0.96);
+        filter: blur(0.2px);
+    }
+    100% {
+        opacity: 0;
+        transform: translate3d(0, 14px, 0) scale(0.5);
+        filter: blur(6px);
+    }
+}
+
+@keyframes powderDust {
+    0% {
+        opacity: 0;
+        transform: scale(0.78);
+        background-position:
+            50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%,
+            50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%;
+    }
+    12% { opacity: 0.98; }
+    100% {
+        opacity: 0;
+        transform: scale(1.24);
+        background-position:
+            7% 14%, 24% -4%, 45% 9%, 69% -2%, 94% 15%, 104% 48%,
+            83% 91%, 56% 108%, 34% 92%, 5% 78%, -6% 42%, 50% 48%;
+    }
+}
+
+.msg-item.shattering,
+.post.shattering {
+    animation: powderBurst 0.86s cubic-bezier(0.16, 0.84, 0.22, 1) forwards;
+    pointer-events: none;
+    overflow: hidden;
+    will-change: transform, opacity, filter;
+}
+
+.msg-item.shattering::before,
+.post.shattering::before {
+    content: "";
+    position: absolute;
+    inset: -18px;
+    border-radius: inherit;
+    background:
+        radial-gradient(circle, rgba(255,92,108,0.95) 0 3px, transparent 4px),
+        radial-gradient(circle, rgba(102,175,239,0.95) 0 2px, transparent 3px),
+        radial-gradient(circle, rgba(255,187,244,0.95) 0 3px, transparent 4px),
+        radial-gradient(circle, rgba(154,187,247,0.95) 0 2px, transparent 3px),
+        radial-gradient(circle, rgba(255,214,102,0.95) 0 2px, transparent 3px),
+        radial-gradient(circle, rgba(255,92,108,0.82) 0 2px, transparent 3px),
+        radial-gradient(circle, rgba(102,175,239,0.82) 0 3px, transparent 4px),
+        radial-gradient(circle, rgba(255,187,244,0.82) 0 2px, transparent 3px),
+        radial-gradient(circle, rgba(154,187,247,0.82) 0 3px, transparent 4px),
+        radial-gradient(circle, rgba(255,214,102,0.82) 0 2px, transparent 3px),
+        radial-gradient(circle, rgba(255,92,108,0.72) 0 3px, transparent 4px),
+        radial-gradient(circle, rgba(102,175,239,0.72) 0 2px, transparent 3px);
+    background-repeat: no-repeat;
+    animation: powderDust 0.86s ease-out forwards;
+    pointer-events: none;
+    z-index: 6;
 }
 
 .comment-admin-tools {
@@ -823,25 +905,10 @@ body.dark-mode .qq-contact-number {
     box-shadow: 0 0 0 3px rgba(154, 187, 247, 0.12);
 }
 
-@keyframes commentShatter {
-    0% { transform: translate(0, 0) scale(1); opacity: 1; filter: blur(0); clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
-    35% { transform: translate(3px, 5px) scale(0.98) rotate(0.8deg); opacity: 0.85; filter: blur(0.5px); clip-path: polygon(0 0, 28% 4%, 40% 0, 54% 6%, 72% 0, 100% 5%, 96% 34%, 100% 56%, 94% 100%, 64% 94%, 48% 100%, 32% 92%, 0 100%, 5% 62%, 0 42%); }
-    68% { transform: translate(-12px, 18px) scale(0.72) rotate(-2deg); opacity: 0.45; filter: blur(3px); clip-path: polygon(9% 9%, 22% 19%, 35% 9%, 47% 25%, 60% 8%, 81% 22%, 90% 13%, 82% 43%, 96% 58%, 76% 71%, 88% 93%, 58% 82%, 45% 96%, 31% 79%, 9% 90%, 20% 61%, 4% 48%); }
-    100% { transform: translate(34px, 56px) scale(0.24) rotate(7deg); opacity: 0; filter: blur(9px); clip-path: polygon(35% 35%, 43% 41%, 51% 34%, 57% 45%, 66% 37%, 61% 52%, 71% 59%, 58% 62%, 61% 75%, 48% 65%, 39% 73%, 39% 58%, 28% 54%, 39% 48%); }
-}
-
-.msg-item.shattering,
-.article-comment-item.shattering {
-    animation: commentShatter 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important;
-    pointer-events: none;
-    overflow: hidden;
-    will-change: transform, opacity, filter, clip-path;
-}
-
 @keyframes powderBurst {
     0% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); filter: blur(0); }
-    42% { opacity: 0.9; transform: translate3d(0, -6px, 0) scale(0.94); filter: blur(0.2px); }
-    100% { opacity: 0; transform: translate3d(0, 18px, 0) scale(0.58); filter: blur(5px); }
+    28% { opacity: 0.9; transform: translate3d(0, -4px, 0) scale(0.96); filter: blur(0.2px); }
+    100% { opacity: 0; transform: translate3d(0, 14px, 0) scale(0.5); filter: blur(6px); }
 }
 
 @keyframes powderDust {
@@ -852,20 +919,20 @@ body.dark-mode .qq-contact-number {
             50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%,
             50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%;
     }
-    18% { opacity: 0.95; }
+    12% { opacity: 0.98; }
     100% {
         opacity: 0;
-        transform: scale(1.18);
+        transform: scale(1.24);
         background-position:
-            12% 18%, 28% 4%, 46% 16%, 67% 7%, 88% 18%, 94% 48%,
-            78% 82%, 58% 94%, 37% 83%, 14% 72%, 4% 44%, 50% 48%;
+            7% 14%, 24% -4%, 45% 9%, 69% -2%, 94% 15%, 104% 48%,
+            83% 91%, 56% 108%, 34% 92%, 5% 78%, -6% 42%, 50% 48%;
     }
 }
 
 .msg-item.shattering,
 .article-comment-item.shattering,
 .post-card.shattering {
-    animation: powderBurst 1.05s cubic-bezier(0.16, 0.84, 0.22, 1) forwards !important;
+    animation: powderBurst 0.86s cubic-bezier(0.16, 0.84, 0.22, 1) forwards !important;
     pointer-events: none;
     overflow: hidden;
     will-change: transform, opacity, filter;
@@ -892,7 +959,7 @@ body.dark-mode .qq-contact-number {
         radial-gradient(circle, rgba(255,92,108,0.72) 0 3px, transparent 4px),
         radial-gradient(circle, rgba(102,175,239,0.72) 0 2px, transparent 3px);
     background-repeat: no-repeat;
-    animation: powderDust 1.05s ease-out forwards;
+    animation: powderDust 0.86s ease-out forwards;
     pointer-events: none;
     z-index: 6;
 }

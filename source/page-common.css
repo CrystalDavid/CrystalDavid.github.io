@@ -594,15 +594,15 @@ body.dark-mode .admin-form h3 {
         transform: translate3d(0, 0, 0) scale(1);
         filter: blur(0);
     }
-    42% {
+    28% {
         opacity: 0.9;
-        transform: translate3d(0, -6px, 0) scale(0.94);
+        transform: translate3d(0, -4px, 0) scale(0.96);
         filter: blur(0.2px);
     }
     100% {
         opacity: 0;
-        transform: translate3d(0, 18px, 0) scale(0.58);
-        filter: blur(5px);
+        transform: translate3d(0, 14px, 0) scale(0.5);
+        filter: blur(6px);
     }
 }
 
@@ -614,20 +614,20 @@ body.dark-mode .admin-form h3 {
             50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%,
             50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%;
     }
-    18% { opacity: 0.95; }
+    12% { opacity: 0.98; }
     100% {
         opacity: 0;
-        transform: scale(1.18);
+        transform: scale(1.24);
         background-position:
-            12% 18%, 28% 4%, 46% 16%, 67% 7%, 88% 18%, 94% 48%,
-            78% 82%, 58% 94%, 37% 83%, 14% 72%, 4% 44%, 50% 48%;
+            7% 14%, 24% -4%, 45% 9%, 69% -2%, 94% 15%, 104% 48%,
+            83% 91%, 56% 108%, 34% 92%, 5% 78%, -6% 42%, 50% 48%;
     }
 }
 
 .post-card.shattering,
 .msg-item.shattering,
 .article-comment-item.shattering {
-    animation: powderBurst 1.05s cubic-bezier(0.16, 0.84, 0.22, 1) forwards !important;
+    animation: powderBurst 0.86s cubic-bezier(0.16, 0.84, 0.22, 1) forwards !important;
     pointer-events: none;
     overflow: hidden;
     will-change: transform, opacity, filter;
@@ -654,7 +654,7 @@ body.dark-mode .admin-form h3 {
         radial-gradient(circle, rgba(255,92,108,0.72) 0 3px, transparent 4px),
         radial-gradient(circle, rgba(102,175,239,0.72) 0 2px, transparent 3px);
     background-repeat: no-repeat;
-    animation: powderDust 1.05s ease-out forwards;
+    animation: powderDust 0.86s ease-out forwards;
     pointer-events: none;
     z-index: 6;
 }

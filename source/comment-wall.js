@@ -3,9 +3,8 @@
 
     const API_BASE = 'https://david-comment-api.crystaldavid.deno.net';
     const NICKNAME_KEY = 'david_comment_nickname';
-    const ADMIN_SESSION_KEY = 'david_admin_password_session';
     const PWD_HASH = 'da3fb9830dbd1b3ee2e799a06b3d8b486e5285fc508264f87777905827510551';
-    let adminPassword = sessionStorage.getItem(ADMIN_SESSION_KEY) || '';
+    let adminPassword = '';
 
     async function hashStr(str) {
         const buf = new TextEncoder().encode(str);
@@ -57,10 +56,8 @@
     async function setAdminPassword(password) {
         adminPassword = password || '';
         if (adminPassword) {
-            sessionStorage.setItem(ADMIN_SESSION_KEY, adminPassword);
             document.body.classList.add('comment-admin-mode');
         } else {
-            sessionStorage.removeItem(ADMIN_SESSION_KEY);
             document.body.classList.remove('comment-admin-mode');
         }
         const walls = Array.from(document.querySelectorAll('[data-comment-wall]'));
@@ -95,31 +92,37 @@
             }).sort(function(a, b) {
                 return new Date(b.created_at) - new Date(a.created_at);
             });
-            if (!comments.length) {
-                els.list.innerHTML = '<li class="article-comment-empty">暂无评论，来写第一条吧。</li>';
-                return;
-            }
-
-            els.list.innerHTML = '';
-            comments.forEach(function(comment) {
-                const item = document.createElement('li');
-                item.className = 'msg-item';
-                const initial = (comment.nickname || '?').charAt(0).toUpperCase();
-                item.innerHTML = [
-                    '<div class="msg-header">',
-                    '<div class="msg-avatar">' + escapeHtml(initial) + '</div>',
-                    '<span class="msg-nickname">' + escapeHtml(comment.nickname || '匿名') + '</span>',
-                    '<span class="msg-time">' + escapeHtml(formatTime(comment.created_at)) + '</span>',
-                    '</div>',
-                    '<div class="msg-content">' + escapeHtml(comment.content || '') + '</div>',
-                    adminPassword ? '<button class="msg-delete-btn" type="button" data-page="' + escapeHtml(comment.page || primaryPage) + '" data-id="' + escapeHtml(comment.id || '') + '" data-created="' + escapeHtml(comment.created_at || '') + '" title="删除"><i class="fa-solid fa-trash"></i></button>' : ''
-                ].join('');
-                els.list.appendChild(item);
-            });
-            bindDeleteButtons(wall);
+            renderComments(wall, comments, primaryPage);
         } catch (error) {
             els.list.innerHTML = '<li class="article-comment-empty">留言服务暂时连接失败，请稍后重试。</li>';
         }
+    }
+
+    function renderComments(wall, comments, primaryPage) {
+        const els = getElements(wall);
+        if (!els.list) return;
+        if (!comments.length) {
+            els.list.innerHTML = '<li class="article-comment-empty">暂无评论，来写第一条吧。</li>';
+            return;
+        }
+
+        els.list.innerHTML = '';
+        comments.forEach(function(comment) {
+            const item = document.createElement('li');
+            item.className = 'msg-item';
+            const initial = (comment.nickname || '?').charAt(0).toUpperCase();
+            item.innerHTML = [
+                '<div class="msg-header">',
+                '<div class="msg-avatar">' + escapeHtml(initial) + '</div>',
+                '<span class="msg-nickname">' + escapeHtml(comment.nickname || '匿名') + '</span>',
+                '<span class="msg-time">' + escapeHtml(formatTime(comment.created_at)) + '</span>',
+                '</div>',
+                '<div class="msg-content">' + escapeHtml(comment.content || '') + '</div>',
+                adminPassword ? '<button class="msg-delete-btn" type="button" data-page="' + escapeHtml(comment.page || primaryPage) + '" data-id="' + escapeHtml(comment.id || '') + '" data-created="' + escapeHtml(comment.created_at || '') + '" title="删除"><i class="fa-solid fa-trash"></i></button>' : ''
+            ].join('');
+            els.list.appendChild(item);
+        });
+        bindDeleteButtons(wall);
     }
 
     function bindDeleteButtons(wall) {
@@ -150,7 +153,7 @@
                     const data = await res.json();
                     if (!data.ok) throw new Error(data.error || '删除失败');
                     item.classList.add('shattering');
-                    setTimeout(function() { item.remove(); }, 1100);
+                    setTimeout(function() { item.remove(); }, 900);
                 } catch (e) {
                     btn.disabled = false;
                     alert('删除失败：' + e.message);
@@ -196,6 +199,9 @@
                 const data = await res.json();
                 if (!data.ok) throw new Error(data.error || '发布失败');
                 els.content.value = '';
+                if (data.comment) {
+                    renderComments(wall, [data.comment].concat(readCurrentComments(els.list)), page);
+                }
                 await loadComments(wall);
             } catch (error) {
                 alert('发布失败：留言服务暂时连接失败，请稍后重试。');
@@ -207,6 +213,20 @@
 
         loadComments(wall);
         setInterval(function() { loadComments(wall); }, 45000);
+    }
+
+    function readCurrentComments(list) {
+        return Array.from(list.querySelectorAll('.msg-item')).map(function(item) {
+            return {
+                page: item.querySelector('.msg-delete-btn')?.dataset.page || '',
+                id: item.querySelector('.msg-delete-btn')?.dataset.id || '',
+                created_at: item.querySelector('.msg-delete-btn')?.dataset.created || '',
+                nickname: item.querySelector('.msg-nickname')?.textContent || '',
+                content: item.querySelector('.msg-content')?.textContent || ''
+            };
+        }).filter(function(comment) {
+            return comment.created_at && comment.id;
+        });
     }
 
     function setupCommentAdmin(wall) {
@@ -252,7 +272,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        if (adminPassword) document.body.classList.add('comment-admin-mode');
         document.querySelectorAll('[data-comment-wall]').forEach(bindWall);
     });
 

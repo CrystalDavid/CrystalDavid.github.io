@@ -143,7 +143,7 @@
                         rememberDeletedIssue(LABEL, this.dataset.issue);
                     }
                     el.classList.add('shattering');
-                    setTimeout(function() { el.remove(); }, 1100);
+                    setTimeout(function() { el.remove(); }, 900);
                 } catch(e) { alert('删除失败: ' + e.message); }
             });
         }
