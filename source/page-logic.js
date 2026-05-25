@@ -131,11 +131,23 @@
                 const reaction = this.dataset.reaction;
                 const pageKey = this.dataset.pageKey;
                 const countEl = this.querySelector('.r-count');
+
+                // 乐观更新：立即显示+1
+                const currentCount = parseInt(countEl.textContent) || 0;
+                const optimisticCount = currentCount + 1;
+                countEl.textContent = optimisticCount;
+                btn.disabled = true;
+
                 try {
                     const newCount = await SiteAPI.addReactionToDeno(pageKey, reaction);
+                    // 使用服务器返回的真实计数
                     countEl.textContent = newCount > 0 ? newCount : '';
                 } catch(e) {
+                    // 失败时回滚
+                    countEl.textContent = currentCount > 0 ? currentCount : '';
                     console.error('添加表情失败:', e);
+                } finally {
+                    btn.disabled = false;
                 }
             });
         });

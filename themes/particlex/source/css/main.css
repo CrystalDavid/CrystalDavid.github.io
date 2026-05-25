@@ -1070,11 +1070,6 @@ ol li {
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
 
-.msg-item:hover .msg-reactions {
-    opacity: 1;
-    transform: translateY(0);
-}
-
 .msg-header {
     display: flex;
     align-items: center;
@@ -1120,8 +1115,8 @@ ol li {
     gap: 8px;
     margin-top: 10px;
     padding-left: 48px;
-    opacity: 0;
-    transform: translateY(5px);
+    opacity: 1;
+    transform: translateY(0);
     transition: opacity 0.3s, transform 0.3s;
 }
 

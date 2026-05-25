@@ -166,6 +166,13 @@
                 const commentKey = this.dataset.commentKey;
                 const reaction = this.dataset.reaction;
                 const countEl = this.querySelector('.count');
+
+                // 乐观更新：立即显示+1
+                const currentCount = parseInt(countEl.textContent) || 0;
+                const optimisticCount = currentCount + 1;
+                countEl.textContent = optimisticCount;
+                btn.disabled = true;
+
                 try {
                     const res = await fetch(API_BASE + '/reactions', {
                         method: 'POST',
@@ -176,10 +183,15 @@
                     });
                     const data = await res.json();
                     if (data.ok && data.count) {
+                        // 使用服务器返回的真实计数
                         countEl.textContent = data.count > 0 ? data.count : '';
                     }
                 } catch (e) {
+                    // 失败时回滚
+                    countEl.textContent = currentCount > 0 ? currentCount : '';
                     console.error('添加表情失败:', e);
+                } finally {
+                    btn.disabled = false;
                 }
             });
         });
