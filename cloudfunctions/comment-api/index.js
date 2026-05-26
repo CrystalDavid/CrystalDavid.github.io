@@ -13,6 +13,47 @@ const MAX_NICKNAME_LENGTH = 24;
 const MAX_CONTENT_LENGTH = 600;
 const PAGE_SIZE = 80;
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+const ALLOWED_ORIGINS = [
+  'https://crystaldavid.github.io',
+  'http://localhost:4000',
+  'http://127.0.0.1:4000'
+];
+
+function corsHeaders(event) {
+  const origin = event.headers && (event.headers.origin || event.headers.Origin);
+  const allowOrigin = ALLOWED_ORIGINS.indexOf(origin) >= 0 ? origin : ALLOWED_ORIGINS[0];
+  return {
+    'Access-Control-Allow-Origin': allowOrigin,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+    'Access-Control-Max-Age': '86400',
+    'Content-Type': 'application/json; charset=utf-8',
+    'Cache-Control': 'no-store'
+  };
+}
+
+function httpResponse(event, statusCode, data) {
+  return {
+    statusCode,
+    headers: corsHeaders(event),
+    body: JSON.stringify(data)
+  };
+}
+
+function isHttpEvent(event) {
+  return !!(event && (event.httpMethod || event.requestContext || event.headers));
+}
+
+function parseHttpBody(event) {
+  if (!event || !event.body) return {};
+  const raw = event.isBase64Encoded ? Buffer.from(event.body, 'base64').toString('utf8') : event.body;
+  if (!raw) return {};
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    return {};
+  }
+}
 
 function ok(data) {
   return Object.assign({ ok: true }, data || {});
@@ -40,7 +81,9 @@ function cleanText(value, maxLength) {
 
 function getActor(event) {
   const context = cloudbase.getCloudbaseContext ? cloudbase.getCloudbaseContext() : {};
-  return context.OPENID || context.UNIONID || event.openId || event.userInfo && event.userInfo.openId || 'anonymous';
+  const headers = event.headers || {};
+  const ip = headers['x-forwarded-for'] || headers['X-Forwarded-For'] || headers['x-real-ip'] || headers['X-Real-IP'];
+  return context.OPENID || context.UNIONID || event.openId || event.userInfo && event.userInfo.openId || ip || 'anonymous';
 }
 
 async function checkRateLimit(event, bucketName, maxCount) {
@@ -196,7 +239,7 @@ async function addReaction(event) {
   return ok({ count: data.count || 1 });
 }
 
-exports.main = async function(event) {
+async function route(event) {
   try {
     switch (event.action) {
       case 'listComments':
@@ -217,4 +260,16 @@ exports.main = async function(event) {
   } catch (e) {
     return fail(e && e.message ? e.message : 'Server error', 'SERVER_ERROR');
   }
+}
+
+exports.main = async function(event) {
+  if (isHttpEvent(event)) {
+    if (event.httpMethod === 'OPTIONS') {
+      return httpResponse(event, 204, {});
+    }
+    const payload = parseHttpBody(event);
+    const result = await route(Object.assign({}, payload, { headers: event.headers || {} }));
+    return httpResponse(event, result.ok === false ? 400 : 200, result);
+  }
+  return route(event || {});
 };

@@ -4,12 +4,15 @@
     const config = window.DAVID_CLOUDBASE_CONFIG || {};
     const enabled = !!config.enabled && !!config.env && config.env.indexOf('请替换') === -1;
     const functionName = config.functionName || 'comment-api';
+    const functionUrl = String(config.functionUrl || '').trim();
+    const transport = config.transport || (functionUrl ? 'http' : 'sdk');
     let app;
     let authReady;
     let db;
+    const pollers = {};
 
     function available() {
-        return enabled && typeof window.cloudbase !== 'undefined';
+        return enabled && (transport === 'http' ? !!functionUrl : typeof window.cloudbase !== 'undefined');
     }
 
     function normalizeKey(value) {
@@ -38,6 +41,7 @@
     }
 
     async function call(action, data) {
+        if (transport === 'http') return callHttp(action, data);
         const ctx = await init();
         const res = await ctx.app.callFunction({
             name: functionName,
@@ -46,6 +50,28 @@
         const result = res && res.result ? res.result : res;
         if (!result || result.ok === false) {
             throw new Error((result && result.error) || 'CloudBase request failed');
+        }
+        return result;
+    }
+
+    async function callHttp(action, data) {
+        const res = await fetch(functionUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            mode: 'cors',
+            credentials: 'omit',
+            cache: 'no-store',
+            body: JSON.stringify(Object.assign({ action: action }, data || {}))
+        });
+        const text = await res.text();
+        let result;
+        try {
+            result = text ? JSON.parse(text) : {};
+        } catch (e) {
+            throw new Error('CloudBase HTTP response is not JSON: ' + text.slice(0, 120));
+        }
+        if (!res.ok || !result || result.ok === false) {
+            throw new Error((result && result.error) || ('CloudBase HTTP request failed: ' + res.status));
         }
         return result;
     }
@@ -88,6 +114,24 @@
 
     function watchComments(pages, onChange, onError) {
         if (!available()) return null;
+        if (transport === 'http') {
+            const normalized = (Array.isArray(pages) ? pages : [pages]).map(normalizeKey);
+            const key = 'comments:' + normalized.join('|');
+            if (pollers[key]) clearInterval(pollers[key]);
+            const tick = async function() {
+                try {
+                    onChange(await listComments(normalized));
+                } catch (e) {
+                    if (onError) onError(e);
+                }
+            };
+            tick();
+            pollers[key] = setInterval(tick, 5000);
+            return function closePoller() {
+                clearInterval(pollers[key]);
+                delete pollers[key];
+            };
+        }
         const normalized = (Array.isArray(pages) ? pages : [pages]).map(normalizeKey);
         const state = {};
         const stops = [];
@@ -129,6 +173,24 @@
 
     function watchReactions(target, onChange, onError) {
         if (!available()) return null;
+        if (transport === 'http') {
+            const normalized = normalizeKey(target);
+            const key = 'reactions:' + normalized;
+            if (pollers[key]) clearInterval(pollers[key]);
+            const tick = async function() {
+                try {
+                    onChange(await getReactions(normalized));
+                } catch (e) {
+                    if (onError) onError(e);
+                }
+            };
+            tick();
+            pollers[key] = setInterval(tick, 5000);
+            return function closePoller() {
+                clearInterval(pollers[key]);
+                delete pollers[key];
+            };
+        }
         let watcher;
         init().then(function(ctx) {
             watcher = ctx.db.collection('reactions')
