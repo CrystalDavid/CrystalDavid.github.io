@@ -115,15 +115,18 @@
     function renderComments(wall, comments, primaryPage) {
         const els = getElements(wall);
         if (!els.list) return;
-        if (!comments.length) {
+        const threads = buildCommentThreads(comments);
+        if (!threads.length) {
             els.list.innerHTML = '<li class="article-comment-empty">暂无评论，来写第一条吧。</li>';
             return;
         }
 
         els.list.innerHTML = '';
-        comments.forEach(function(comment) {
+        threads.forEach(function(thread) {
+            const comment = thread.root;
             const item = document.createElement('li');
             item.className = 'msg-item';
+            item.dataset.commentId = comment.id || '';
             const initial = (comment.nickname || '?').charAt(0).toUpperCase();
             const commentKey = (comment.page || primaryPage) + ':' + comment.id;
 
@@ -134,6 +137,7 @@
                 '<span class="msg-time">' + escapeHtml(formatTime(comment.created_at)) + '</span>',
                 '</div>',
                 '<div class="msg-content">' + escapeHtml(comment.content || '') + '</div>',
+                '<div class="msg-actions">',
                 '<div class="msg-reactions">',
                 EMOJIS.map(function(emoji) {
                     const apiName = EMOJI_MAP[emoji];
@@ -141,13 +145,71 @@
                     return '<button class="msg-reaction-btn" data-comment-key="' + escapeHtml(commentKey) + '" data-reaction="' + apiName + '">' + emoji + '<span class="count">' + (count > 0 ? count : '') + '</span></button>';
                 }).join(''),
                 '</div>',
+                '<button class="msg-reply-btn" type="button" data-page="' + escapeHtml(comment.page || primaryPage) + '" data-parent-id="' + escapeHtml(comment.id || '') + '" data-reply-to="' + escapeHtml(comment.nickname || '匿名') + '">回复</button>',
+                '</div>',
+                '<div class="msg-reply-form" data-reply-form="' + escapeHtml(comment.id || '') + '" style="display:none;"></div>',
+                renderReplies(thread.replies, comment, primaryPage),
                 adminPassword ? '<button class="msg-delete-btn" type="button" data-page="' + escapeHtml(comment.page || primaryPage) + '" data-id="' + escapeHtml(comment.id || '') + '" data-created="' + escapeHtml(comment.created_at || '') + '" title="删除"><i class="fa-solid fa-trash"></i></button>' : ''
             ].join('');
             els.list.appendChild(item);
         });
         bindReactionButtons(wall);
+        bindReplyButtons(wall);
         bindDeleteButtons(wall);
         startReactionRealtime(wall);
+    }
+
+    function buildCommentThreads(comments) {
+        const byId = {};
+        comments.forEach(function(comment) {
+            if (comment.id) byId[comment.id] = comment;
+        });
+        const roots = [];
+        const repliesByParent = {};
+        comments.forEach(function(comment) {
+            const parentId = comment.parent_id || comment.parentId || '';
+            if (parentId && byId[parentId]) {
+                if (!repliesByParent[parentId]) repliesByParent[parentId] = [];
+                repliesByParent[parentId].push(comment);
+            } else {
+                roots.push(comment);
+            }
+        });
+        roots.sort(function(a, b) {
+            return new Date(b.created_at) - new Date(a.created_at);
+        });
+        return roots.map(function(root) {
+            const replies = repliesByParent[root.id] || [];
+            replies.sort(function(a, b) {
+                return new Date(a.created_at) - new Date(b.created_at);
+            });
+            return { root: root, replies: replies };
+        });
+    }
+
+    function renderReplies(replies, root, primaryPage) {
+        if (!replies.length) return '';
+        return [
+            '<div class="msg-reply-thread">',
+            replies.map(function(reply) {
+                const page = reply.page || root.page || primaryPage;
+                const replyTo = reply.reply_to_nickname || reply.replyToNickname || root.nickname || '匿名';
+                return [
+                    '<div class="msg-reply-item" data-reply-id="' + escapeHtml(reply.id || '') + '">',
+                    '<div class="msg-reply-line">',
+                    '<span class="reply-name">' + escapeHtml(reply.nickname || '匿名') + '</span>',
+                    '<span class="reply-word"> 回复 </span>',
+                    '<span class="reply-target">' + escapeHtml(replyTo) + '</span>',
+                    '<span class="reply-time">' + escapeHtml(formatTime(reply.created_at)) + '</span>',
+                    '<button class="msg-reply-btn msg-reply-inline-btn" type="button" data-page="' + escapeHtml(page) + '" data-parent-id="' + escapeHtml(root.id || '') + '" data-reply-to="' + escapeHtml(reply.nickname || '匿名') + '">回复</button>',
+                    adminPassword ? '<button class="msg-delete-btn msg-reply-delete-btn" type="button" data-page="' + escapeHtml(page) + '" data-id="' + escapeHtml(reply.id || '') + '" data-created="' + escapeHtml(reply.created_at || '') + '" title="删除"><i class="fa-solid fa-trash"></i></button>' : '',
+                    '</div>',
+                    '<div class="msg-reply-content">' + escapeHtml(reply.content || '') + '</div>',
+                    '</div>'
+                ].join('');
+            }).join(''),
+            '</div>'
+        ].join('');
     }
 
     function cssEscape(value) {
@@ -206,7 +268,7 @@
         const els = getElements(wall);
         if (!els.list || !adminPassword) return;
         els.list.querySelectorAll('.msg-delete-btn').forEach(function(btn) {
-            const item = btn.closest('.msg-item');
+            const item = btn.closest('.msg-reply-item') || btn.closest('.msg-item');
             if (!item) return;
             btn.addEventListener('click', async function() {
                 if (!confirm('确定删除这条留言吗？')) return;
@@ -214,14 +276,93 @@
                 try {
                     const page = btn.dataset.page || getCommentPages(wall)[0] || window.location.pathname;
                     await cloudApi().deleteComment({ id: btn.dataset.id, page: page }, adminPassword);
-                    item.classList.add('shattering');
-                    setTimeout(function() { item.remove(); }, 900);
+                    runPowderDelete(item, function() { item.remove(); });
                 } catch (e) {
                     btn.disabled = false;
                     alert('删除失败：' + e.message);
                 }
             });
         });
+    }
+
+    function bindReplyButtons(wall) {
+        const els = getElements(wall);
+        if (!els.list) return;
+        els.list.querySelectorAll('.msg-reply-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                showReplyForm(wall, {
+                    page: btn.dataset.page || getCommentPages(wall)[0] || window.location.pathname,
+                    parentId: btn.dataset.parentId || '',
+                    replyToNickname: btn.dataset.replyTo || '匿名'
+                });
+            });
+        });
+    }
+
+    function showReplyForm(wall, options) {
+        const form = wall.querySelector('[data-reply-form="' + cssEscape(options.parentId) + '"]');
+        if (!form) return;
+        wall.querySelectorAll('.msg-reply-form').forEach(function(item) {
+            if (item !== form) item.style.display = 'none';
+        });
+        const saved = localStorage.getItem(NICKNAME_KEY) || '';
+        form.innerHTML = [
+            '<div class="msg-reply-form-title">回复 ' + escapeHtml(options.replyToNickname) + '</div>',
+            '<input class="msg-reply-nickname" type="text" maxlength="20" placeholder="你的昵称" value="' + escapeHtml(saved) + '">',
+            '<textarea class="msg-reply-content-input" maxlength="500" placeholder="写下你的回复..."></textarea>',
+            '<div class="msg-reply-form-actions">',
+            '<button class="msg-reply-submit" type="button">发布回复</button>',
+            '<button class="msg-reply-cancel" type="button">取消</button>',
+            '</div>'
+        ].join('');
+        form.style.display = 'block';
+
+        const nickname = form.querySelector('.msg-reply-nickname');
+        const content = form.querySelector('.msg-reply-content-input');
+        const submit = form.querySelector('.msg-reply-submit');
+        form.querySelector('.msg-reply-cancel').addEventListener('click', function() {
+            form.style.display = 'none';
+            form.innerHTML = '';
+        });
+        submit.addEventListener('click', async function() {
+            const name = nickname.value.trim();
+            const text = content.value.trim();
+            if (!name) {
+                nickname.focus();
+                return;
+            }
+            if (!text) {
+                content.focus();
+                return;
+            }
+            localStorage.setItem(NICKNAME_KEY, name);
+            submit.disabled = true;
+            submit.textContent = '发布中...';
+            try {
+                await cloudApi().createComment({
+                    page: options.page,
+                    nickname: name,
+                    content: text,
+                    parentId: options.parentId,
+                    replyToNickname: options.replyToNickname
+                });
+                await loadComments(wall);
+            } catch (error) {
+                alert('回复失败：留言服务暂时连接失败，请稍后重试。');
+                submit.disabled = false;
+                submit.textContent = '发布回复';
+            }
+        });
+        content.focus();
+    }
+
+    function runPowderDelete(element, done) {
+        if (window.DavidPowderBurst) {
+            window.DavidPowderBurst(element, done);
+            return;
+        }
+        element.classList.add('shattering');
+        setTimeout(done, 900);
     }
 
     function bindWall(wall) {

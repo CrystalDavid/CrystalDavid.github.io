@@ -274,6 +274,19 @@
     margin-top: 12px;
 }
 
+.article-comment-wall .msg-actions {
+    padding-left: 0;
+}
+
+.article-comment-wall .msg-actions .msg-reactions {
+    margin-top: 0;
+}
+
+.article-comment-wall .msg-reply-thread,
+.article-comment-wall .msg-reply-form {
+    margin-left: 0;
+}
+
 .article-comment-wall .msg-reaction-btn {
     background: rgba(255, 255, 255, 0.92);
     border: 1px solid rgba(102, 175, 239, 0.28);

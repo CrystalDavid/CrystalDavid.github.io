@@ -1,4 +1,58 @@
 // 导航栏滚动效果
+(function() {
+    'use strict';
+
+    window.DavidPowderBurst = function(element, done) {
+        if (!element) {
+            if (typeof done === 'function') done();
+            return;
+        }
+
+        const rect = element.getBoundingClientRect();
+        if (!rect.width || !rect.height) {
+            element.classList.add('shattering');
+            setTimeout(function() {
+                if (typeof done === 'function') done();
+            }, 420);
+            return;
+        }
+
+        const palette = ['#9abbf7', '#66afef', '#ffbbf4', '#ffd666', '#7ee6d8', '#ff7a96'];
+        const count = Math.max(42, Math.min(120, Math.round((rect.width * rect.height) / 4200)));
+        const fragment = document.createDocumentFragment();
+        const particles = [];
+
+        element.classList.add('shattering');
+        element.style.visibility = 'hidden';
+
+        for (let i = 0; i < count; i++) {
+            const particle = document.createElement('span');
+            const x = rect.left + Math.random() * rect.width;
+            const y = rect.top + Math.random() * rect.height;
+            const angle = Math.atan2(y - (rect.top + rect.height / 2), x - (rect.left + rect.width / 2)) + (Math.random() - 0.5) * 1.6;
+            const distance = 42 + Math.random() * 118;
+            const size = 3 + Math.random() * 6;
+
+            particle.className = 'powder-particle';
+            particle.style.setProperty('--particle-x', x + 'px');
+            particle.style.setProperty('--particle-y', y + 'px');
+            particle.style.setProperty('--particle-dx', Math.cos(angle) * distance + 'px');
+            particle.style.setProperty('--particle-dy', Math.sin(angle) * distance + (Math.random() * 36 - 10) + 'px');
+            particle.style.setProperty('--particle-size', size + 'px');
+            particle.style.setProperty('--particle-color', palette[i % palette.length]);
+            particle.style.animationDelay = Math.random() * 90 + 'ms';
+            particles.push(particle);
+            fragment.appendChild(particle);
+        }
+
+        document.body.appendChild(fragment);
+        setTimeout(function() {
+            particles.forEach(function(particle) { particle.remove(); });
+            if (typeof done === 'function') done();
+        }, 860);
+    };
+})();
+
 const menu = document.getElementById('menu');
 let lastScrollY = 0;
 

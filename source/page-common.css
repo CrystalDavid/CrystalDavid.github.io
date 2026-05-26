@@ -621,7 +621,7 @@ body.dark-mode .admin-form h3 {
 
 .post-card.shattering,
 .msg-item.shattering {
-    animation: shatter 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    animation: shatter 0.34s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
     pointer-events: none;
     overflow: hidden;
     will-change: transform, opacity, filter, clip-path;
@@ -636,7 +636,7 @@ body.dark-mode .admin-form h3 {
     background:
         linear-gradient(115deg, transparent 0 18%, rgba(255,255,255,0.72) 18% 19%, transparent 19% 34%, rgba(154,187,247,0.48) 34% 35%, transparent 35% 53%, rgba(255,187,244,0.42) 53% 54%, transparent 54% 100%),
         linear-gradient(35deg, transparent 0 26%, rgba(255,255,255,0.55) 26% 27%, transparent 27% 61%, rgba(255,255,255,0.4) 61% 62%, transparent 62% 100%);
-    animation: shatterFlash 2s ease forwards;
+    animation: shatterFlash 0.34s ease forwards;
     pointer-events: none;
 }
 
@@ -679,7 +679,7 @@ body.dark-mode .admin-form h3 {
 .post-card.shattering,
 .msg-item.shattering,
 .article-comment-item.shattering {
-    animation: powderBurst 0.86s cubic-bezier(0.16, 0.84, 0.22, 1) forwards !important;
+    animation: powderBurst 0.34s cubic-bezier(0.16, 0.84, 0.22, 1) forwards !important;
     pointer-events: none;
     overflow: hidden;
     will-change: transform, opacity, filter;
@@ -706,7 +706,7 @@ body.dark-mode .admin-form h3 {
         radial-gradient(circle, rgba(255,92,108,0.72) 0 3px, transparent 4px),
         radial-gradient(circle, rgba(102,175,239,0.72) 0 2px, transparent 3px);
     background-repeat: no-repeat;
-    animation: powderDust 0.86s ease-out forwards;
+    animation: powderDust 0.34s ease-out forwards;
     pointer-events: none;
     z-index: 6;
 }

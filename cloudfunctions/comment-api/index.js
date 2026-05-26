@@ -11,7 +11,7 @@ const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH ||
   'da3fb9830dbd1b3ee2e799a06b3d8b486e5285fc508264f87777905827510551';
 const MAX_NICKNAME_LENGTH = 24;
 const MAX_CONTENT_LENGTH = 600;
-const PAGE_SIZE = 80;
+const PAGE_SIZE = 200;
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
 const ALLOWED_ORIGINS = [
   'https://crystaldavid.github.io',
@@ -147,6 +147,8 @@ async function listComments(event) {
         page: item.page,
         nickname: item.nickname,
         content: item.content,
+        parent_id: item.parentId || '',
+        reply_to_nickname: item.replyToNickname || '',
         created_at: new Date(item.createdAt || Date.now()).toISOString()
       };
     })
@@ -160,6 +162,8 @@ async function createComment(event) {
   const page = normalizeKey(event.page);
   const nickname = cleanText(event.nickname, MAX_NICKNAME_LENGTH);
   const content = cleanText(event.content, MAX_CONTENT_LENGTH);
+  const parentId = cleanText(event.parentId || event.parent_id, 128);
+  const replyToNickname = cleanText(event.replyToNickname || event.reply_to_nickname, MAX_NICKNAME_LENGTH);
   if (!nickname) return fail('请输入昵称。');
   if (!content) return fail('请输入留言内容。');
 
@@ -168,6 +172,8 @@ async function createComment(event) {
     page,
     nickname,
     content,
+    parentId,
+    replyToNickname,
     status: 'visible',
     createdAt: now,
     updatedAt: now,
@@ -180,6 +186,8 @@ async function createComment(event) {
       page,
       nickname,
       content,
+      parent_id: parentId,
+      reply_to_nickname: replyToNickname,
       created_at: new Date(now).toISOString()
     }
   });

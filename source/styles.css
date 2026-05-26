@@ -788,6 +788,193 @@ body.comment-admin-mode .article-comment-wall .msg-item:hover .msg-delete-btn {
     box-shadow: 0 14px 28px rgba(255, 68, 85, 0.42);
 }
 
+.msg-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+    padding-left: 48px;
+}
+
+.msg-actions .msg-reactions {
+    margin-top: 0;
+    padding-left: 0;
+    opacity: 1;
+    transform: none;
+}
+
+.msg-reply-btn {
+    border: 1px solid rgba(102, 175, 239, 0.28);
+    border-radius: 999px;
+    min-width: 52px;
+    height: 36px;
+    padding: 0 14px;
+    color: #66afef;
+    background: rgba(255, 255, 255, 0.82);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    transition: transform 0.2s, border-color 0.2s, background 0.2s, color 0.2s;
+}
+
+.msg-reply-btn:hover {
+    color: #fff;
+    border-color: #66afef;
+    background: linear-gradient(120deg, #9abbf7 0%, #ffbbf4 100%);
+    transform: translateY(-1px);
+}
+
+.msg-reply-thread {
+    margin: 14px 0 0 48px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: rgba(102, 175, 239, 0.08);
+    border: 1px solid rgba(102, 175, 239, 0.18);
+}
+
+.msg-reply-item {
+    position: relative;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(102, 175, 239, 0.12);
+}
+
+.msg-reply-item:last-child {
+    border-bottom: none;
+}
+
+.msg-reply-line {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    color: #667;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.reply-name,
+.reply-target {
+    color: #28a7a0;
+    font-weight: 800;
+}
+
+.reply-time {
+    margin-left: auto;
+    color: #999;
+    font-size: 12px;
+}
+
+.msg-reply-inline-btn {
+    min-width: auto;
+    height: 28px;
+    padding: 0 10px;
+    font-size: 12px;
+}
+
+.msg-reply-content {
+    margin-top: 4px;
+    color: #333;
+    line-height: 1.75;
+    white-space: pre-wrap;
+}
+
+.msg-reply-form {
+    margin: 12px 0 0 48px;
+    padding: 14px;
+    border-radius: 14px;
+    background: rgba(102, 175, 239, 0.08);
+    border: 1px solid rgba(102, 175, 239, 0.18);
+}
+
+.msg-reply-form-title {
+    margin-bottom: 10px;
+    color: #66afef;
+    font-weight: 800;
+}
+
+.msg-reply-form input,
+.msg-reply-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 2px solid rgba(102, 175, 239, 0.22);
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    font: inherit;
+    outline: none;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.msg-reply-form textarea {
+    min-height: 74px;
+    resize: vertical;
+}
+
+.msg-reply-form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.msg-reply-submit,
+.msg-reply-cancel {
+    border: 0;
+    border-radius: 999px;
+    padding: 9px 18px;
+    cursor: pointer;
+    font-weight: 800;
+}
+
+.msg-reply-submit {
+    color: #fff;
+    background: linear-gradient(120deg, #667eea 0%, #764ba2 100%);
+}
+
+.msg-reply-cancel {
+    color: #667;
+    background: rgba(255, 255, 255, 0.82);
+}
+
+.msg-reply-delete-btn {
+    position: static !important;
+    width: 28px;
+    height: 28px;
+    margin-left: 4px;
+    flex: 0 0 auto;
+    opacity: 1 !important;
+    transform: none !important;
+    box-shadow: none;
+}
+
+.powder-particle {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: var(--particle-size, 6px);
+    height: var(--particle-size, 6px);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    background: var(--particle-color, #9abbf7);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--particle-color, #9abbf7), transparent 35%);
+    animation: powderParticle 760ms cubic-bezier(0.16, 0.84, 0.22, 1) forwards;
+    transform: translate3d(var(--particle-x), var(--particle-y), 0) scale(1);
+}
+
+@keyframes powderParticle {
+    0% {
+        opacity: 1;
+        transform: translate3d(var(--particle-x), var(--particle-y), 0) scale(1);
+        filter: blur(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translate3d(calc(var(--particle-x) + var(--particle-dx)), calc(var(--particle-y) + var(--particle-dy)), 0) scale(0.12);
+        filter: blur(3px);
+    }
+}
+
 @keyframes powderBurst {
     0% {
         opacity: 1;
@@ -826,7 +1013,7 @@ body.comment-admin-mode .article-comment-wall .msg-item:hover .msg-delete-btn {
 
 .msg-item.shattering,
 .post.shattering {
-    animation: powderBurst 0.86s cubic-bezier(0.16, 0.84, 0.22, 1) forwards;
+    animation: powderBurst 0.34s cubic-bezier(0.16, 0.84, 0.22, 1) forwards;
     pointer-events: none;
     overflow: hidden;
     will-change: transform, opacity, filter;
@@ -852,7 +1039,7 @@ body.comment-admin-mode .article-comment-wall .msg-item:hover .msg-delete-btn {
         radial-gradient(circle, rgba(255,92,108,0.72) 0 3px, transparent 4px),
         radial-gradient(circle, rgba(102,175,239,0.72) 0 2px, transparent 3px);
     background-repeat: no-repeat;
-    animation: powderDust 0.86s ease-out forwards;
+    animation: powderDust 0.34s ease-out forwards;
     pointer-events: none;
     z-index: 6;
 }
@@ -932,10 +1119,52 @@ body.comment-admin-mode .article-comment-wall .msg-item:hover .msg-delete-btn {
 .msg-item.shattering,
 .article-comment-item.shattering,
 .post-card.shattering {
-    animation: powderBurst 0.86s cubic-bezier(0.16, 0.84, 0.22, 1) forwards !important;
+    animation: powderBurst 0.34s cubic-bezier(0.16, 0.84, 0.22, 1) forwards !important;
     pointer-events: none;
     overflow: hidden;
     will-change: transform, opacity, filter;
+}
+
+body.dark-mode .msg-reply-btn {
+    color: #dce7ff;
+    background: rgba(40, 40, 70, 0.8);
+    border-color: rgba(154, 187, 247, 0.3);
+}
+
+body.dark-mode .msg-reply-btn:hover {
+    color: #fff;
+    border-color: #9abbf7;
+}
+
+body.dark-mode .msg-reply-thread,
+body.dark-mode .msg-reply-form {
+    background: rgba(30, 30, 50, 0.58);
+    border-color: rgba(154, 187, 247, 0.18);
+}
+
+body.dark-mode .msg-reply-line {
+    color: #b9bed0;
+}
+
+body.dark-mode .reply-name,
+body.dark-mode .reply-target {
+    color: #42cbc4;
+}
+
+body.dark-mode .msg-reply-content {
+    color: #d0d0d0;
+}
+
+body.dark-mode .msg-reply-form input,
+body.dark-mode .msg-reply-form textarea {
+    color: #e0e0e0;
+    background: rgba(40, 40, 70, 0.68);
+    border-color: rgba(154, 187, 247, 0.3);
+}
+
+body.dark-mode .msg-reply-cancel {
+    color: #dce7ff;
+    background: rgba(255, 255, 255, 0.08);
 }
 
 .msg-item.shattering::before,
@@ -959,7 +1188,7 @@ body.comment-admin-mode .article-comment-wall .msg-item:hover .msg-delete-btn {
         radial-gradient(circle, rgba(255,92,108,0.72) 0 3px, transparent 4px),
         radial-gradient(circle, rgba(102,175,239,0.72) 0 2px, transparent 3px);
     background-repeat: no-repeat;
-    animation: powderDust 0.86s ease-out forwards;
+    animation: powderDust 0.34s ease-out forwards;
     pointer-events: none;
     z-index: 6;
 }

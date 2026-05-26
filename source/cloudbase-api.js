@@ -87,7 +87,9 @@
         const result = await call('createComment', {
             page: normalizeKey(payload.page),
             nickname: payload.nickname,
-            content: payload.content
+            content: payload.content,
+            parentId: payload.parentId || payload.parent_id || '',
+            replyToNickname: payload.replyToNickname || payload.reply_to_nickname || ''
         });
         return result.comment;
     }

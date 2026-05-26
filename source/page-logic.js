@@ -172,8 +172,7 @@
                         await SiteAPI.closeIssueAdmin(parseInt(this.dataset.issue), adminPassword);
                         rememberDeletedIssue(LABEL, this.dataset.issue);
                     }
-                    el.classList.add('shattering');
-                    setTimeout(function() { el.remove(); }, 900);
+                    runPowderDelete(el, function() { el.remove(); });
                 } catch(e) { alert('删除失败: ' + e.message); }
             });
         }
@@ -258,6 +257,15 @@
         SiteAPI.dispatchPagesWorkflowAdmin(password).catch(function(e) {
             console.warn(e);
         });
+    }
+
+    function runPowderDelete(element, done) {
+        if (window.DavidPowderBurst) {
+            window.DavidPowderBurst(element, done);
+            return;
+        }
+        element.classList.add('shattering');
+        setTimeout(done, 900);
     }
 
     function escapeHtml(str) {
