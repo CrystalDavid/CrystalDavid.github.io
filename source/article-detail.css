@@ -267,6 +267,55 @@
     white-space: pre-wrap;
 }
 
+.article-comment-wall .msg-reactions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.article-comment-wall .msg-reaction-btn {
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(102, 175, 239, 0.28);
+    border-radius: 999px;
+    min-width: 48px;
+    height: 36px;
+    padding: 0 12px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: transform 0.2s, border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.article-comment-wall .msg-reaction-btn:hover {
+    background: #f0f7ff;
+    border-color: #66afef;
+    transform: translateY(-1px) scale(1.05);
+}
+
+.article-comment-wall .msg-reaction-btn.active {
+    background: linear-gradient(120deg, rgba(154, 187, 247, 0.28), rgba(255, 187, 244, 0.28));
+    border-color: #9abbf7;
+    box-shadow: 0 6px 18px rgba(154, 187, 247, 0.18);
+}
+
+.article-comment-wall .msg-reaction-btn .count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 5px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #31506d;
+    background: rgba(102, 175, 239, 0.14);
+}
+
 .article-comment-wall .comment-admin-tools {
     justify-content: center;
     margin-top: 22px;
@@ -545,6 +594,23 @@ body.dark-mode .article-comment-wall .msg-content {
 
 body.dark-mode .article-comment-wall .msg-time {
     color: #a0a0b0;
+}
+
+body.dark-mode .article-comment-wall .msg-reaction-btn {
+    background: rgba(40, 40, 70, 0.8);
+    border-color: rgba(154, 187, 247, 0.3);
+    color: #fff;
+}
+
+body.dark-mode .article-comment-wall .msg-reaction-btn:hover,
+body.dark-mode .article-comment-wall .msg-reaction-btn.active {
+    background: linear-gradient(120deg, rgba(154, 187, 247, 0.32), rgba(255, 187, 244, 0.24));
+    border-color: #9abbf7;
+}
+
+body.dark-mode .article-comment-wall .msg-reaction-btn .count {
+    color: #eaf2ff;
+    background: rgba(154, 187, 247, 0.22);
 }
 
 body.dark-mode .article-admin-panel {

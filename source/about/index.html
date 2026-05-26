@@ -330,16 +330,19 @@
             transition: opacity 0.3s, transform 0.3s;
         }
         .msg-reaction-btn {
-            background: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 50px;
-            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(102, 175, 239, 0.28);
+            border-radius: 999px;
+            min-width: 48px;
+            height: 36px;
+            padding: 0 12px;
             cursor: pointer;
             font-size: 16px;
             transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 4px;
+            justify-content: center;
+            gap: 6px;
         }
         .msg-reaction-btn:hover {
             background: #f0f7ff;
@@ -347,12 +350,22 @@
             transform: scale(1.1);
         }
         .msg-reaction-btn.active {
-            background: #e8f4fd;
-            border-color: #66afef;
+            background: linear-gradient(120deg, rgba(154, 187, 247, 0.28), rgba(255, 187, 244, 0.28));
+            border-color: #9abbf7;
+            box-shadow: 0 6px 18px rgba(154, 187, 247, 0.18);
         }
         .msg-reaction-btn .count {
-            font-size: 12px;
-            color: #666;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 16px;
+            height: 16px;
+            padding: 0 5px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #31506d;
+            background: rgba(102, 175, 239, 0.14);
         }
 
         /* 回复区域 */
@@ -524,6 +537,15 @@
         body.dark-mode .msg-reaction-btn {
             background: rgba(40, 40, 70, 0.8);
             border-color: rgba(154, 187, 247, 0.3);
+            color: #fff;
+        }
+        body.dark-mode .msg-reaction-btn.active {
+            background: linear-gradient(120deg, rgba(154, 187, 247, 0.32), rgba(255, 187, 244, 0.24));
+            border-color: #9abbf7;
+        }
+        body.dark-mode .msg-reaction-btn .count {
+            color: #eaf2ff;
+            background: rgba(154, 187, 247, 0.22);
         }
 
         @keyframes shatter {
@@ -715,7 +737,10 @@
     <canvas id="fireworks-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     <script src="/script.js?v=6"></script>
-    <script src="/comment-wall.js?v=6"></script>
+    <script src="https://static.cloudbase.net/cloudbase-js-sdk/latest/cloudbase.full.js"></script>
+    <script src="/cloudbase-config.js?v=1"></script>
+    <script src="/cloudbase-api.js?v=1"></script>
+    <script src="/comment-wall.js?v=8"></script>
     <script>
     // About 管理员编辑逻辑
     (function() {

@@ -1,0 +1,220 @@
+const cloudbase = require('@cloudbase/node-sdk');
+const crypto = require('crypto');
+
+const app = cloudbase.init({
+  env: cloudbase.SYMBOL_CURRENT_ENV
+});
+const db = app.database();
+const _ = db.command;
+
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH ||
+  'da3fb9830dbd1b3ee2e799a06b3d8b486e5285fc508264f87777905827510551';
+const MAX_NICKNAME_LENGTH = 24;
+const MAX_CONTENT_LENGTH = 600;
+const PAGE_SIZE = 80;
+const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+
+function ok(data) {
+  return Object.assign({ ok: true }, data || {});
+}
+
+function fail(error, code) {
+  return { ok: false, error: error || '请求失败', code: code || 'BAD_REQUEST' };
+}
+
+function sha256(value) {
+  return crypto.createHash('sha256').update(String(value || '')).digest('hex');
+}
+
+function normalizeKey(value) {
+  return String(value || '/').trim().slice(0, 180) || '/';
+}
+
+function cleanText(value, maxLength) {
+  return String(value || '')
+    .replace(/[\u0000-\u001f\u007f]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, maxLength);
+}
+
+function getActor(event) {
+  const context = cloudbase.getCloudbaseContext ? cloudbase.getCloudbaseContext() : {};
+  return context.OPENID || context.UNIONID || event.openId || event.userInfo && event.userInfo.openId || 'anonymous';
+}
+
+async function checkRateLimit(event, bucketName, maxCount) {
+  const actor = getActor(event);
+  const bucket = Math.floor(Date.now() / RATE_LIMIT_WINDOW_MS);
+  const id = sha256([bucketName, actor, bucket].join('|'));
+  const ref = db.collection('rate_limits').doc(id);
+  try {
+    const updated = await ref.update({
+      count: _.inc(1),
+      updatedAt: Date.now()
+    });
+    if (!updated.updated) {
+      await ref.set({
+        bucketName,
+        actorHash: sha256(actor),
+        bucket,
+        count: 1,
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      });
+      return true;
+    }
+  } catch (e) {
+    try {
+      await ref.set({
+        bucketName,
+        actorHash: sha256(actor),
+        bucket,
+        count: 1,
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      });
+      return true;
+    } catch (ignored) {
+      await ref.update({ count: _.inc(1), updatedAt: Date.now() });
+    }
+  }
+  const current = await ref.get();
+  const count = current.data && current.data[0] ? current.data[0].count || 0 : 1;
+  return count <= maxCount;
+}
+
+async function listComments(event) {
+  const pages = Array.isArray(event.pages) && event.pages.length
+    ? event.pages.map(normalizeKey)
+    : [normalizeKey(event.page)];
+  const query = pages.length === 1 ? { page: pages[0], status: 'visible' } : {
+    page: _.in(pages),
+    status: 'visible'
+  };
+  const res = await db.collection('comments')
+    .where(query)
+    .orderBy('createdAt', 'desc')
+    .limit(PAGE_SIZE)
+    .get();
+  return ok({
+    comments: (res.data || []).map(function(item) {
+      return {
+        id: item._id,
+        page: item.page,
+        nickname: item.nickname,
+        content: item.content,
+        created_at: new Date(item.createdAt || Date.now()).toISOString()
+      };
+    })
+  });
+}
+
+async function createComment(event) {
+  if (!await checkRateLimit(event, 'comment', 6)) {
+    return fail('发布太频繁，请稍后再试。', 'RATE_LIMITED');
+  }
+  const page = normalizeKey(event.page);
+  const nickname = cleanText(event.nickname, MAX_NICKNAME_LENGTH);
+  const content = cleanText(event.content, MAX_CONTENT_LENGTH);
+  if (!nickname) return fail('请输入昵称。');
+  if (!content) return fail('请输入留言内容。');
+
+  const now = Date.now();
+  const record = {
+    page,
+    nickname,
+    content,
+    status: 'visible',
+    createdAt: now,
+    updatedAt: now,
+    actorHash: sha256(getActor(event))
+  };
+  const created = await db.collection('comments').add(record);
+  return ok({
+    comment: {
+      id: created.id,
+      page,
+      nickname,
+      content,
+      created_at: new Date(now).toISOString()
+    }
+  });
+}
+
+async function deleteComment(event) {
+  if (sha256(event.adminPassword || '') !== ADMIN_PASSWORD_HASH) {
+    return fail('Unauthorized', 'UNAUTHORIZED');
+  }
+  const id = cleanText(event.id, 128);
+  if (!id) return fail('Missing comment id');
+  await db.collection('comments').doc(id).update({
+    status: 'deleted',
+    updatedAt: Date.now()
+  });
+  return ok();
+}
+
+async function getReactions(event) {
+  const target = normalizeKey(event.target || event.page);
+  const res = await db.collection('reactions').where({ target }).get();
+  const reactions = {};
+  (res.data || []).forEach(function(item) {
+    reactions[item.reaction] = item.count || 0;
+  });
+  return ok({ reactions });
+}
+
+async function addReaction(event) {
+  if (!await checkRateLimit(event, 'reaction', 60)) {
+    return fail('操作太频繁，请稍后再试。', 'RATE_LIMITED');
+  }
+  const target = normalizeKey(event.target || event.page);
+  const reaction = cleanText(event.reaction, 20);
+  if (!reaction) return fail('请指定表情类型。');
+
+  const id = sha256([target, reaction].join('|'));
+  const ref = db.collection('reactions').doc(id);
+  const now = Date.now();
+  try {
+    const updated = await ref.update({
+      count: _.inc(1),
+      updatedAt: now
+    });
+    if (!updated.updated) {
+      await ref.set({ target, reaction, count: 1, createdAt: now, updatedAt: now });
+    }
+  } catch (e) {
+    try {
+      await ref.set({ target, reaction, count: 1, createdAt: now, updatedAt: now });
+    } catch (duplicate) {
+      await ref.update({ count: _.inc(1), updatedAt: now });
+    }
+  }
+  const current = await ref.get();
+  const data = current.data && current.data[0] ? current.data[0] : {};
+  return ok({ count: data.count || 1 });
+}
+
+exports.main = async function(event) {
+  try {
+    switch (event.action) {
+      case 'listComments':
+        return listComments(event);
+      case 'createComment':
+        return createComment(event);
+      case 'deleteComment':
+        return deleteComment(event);
+      case 'getReactions':
+        return getReactions(event);
+      case 'addReaction':
+        return addReaction(event);
+      case 'health':
+        return ok({ service: 'cloudbase-comment-api', time: new Date().toISOString() });
+      default:
+        return fail('Unknown action');
+    }
+  } catch (e) {
+    return fail(e && e.message ? e.message : 'Server error', 'SERVER_ERROR');
+  }
+};

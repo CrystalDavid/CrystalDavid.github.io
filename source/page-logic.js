@@ -11,8 +11,8 @@
 
     async function loadPosts() {
         try {
-            const issues = await SiteAPI.fetchIssues(LABEL);
             const hexoPosts = LABEL === 'article' ? await fetchHexoPosts() : [];
+            const issues = await SiteAPI.fetchIssues(LABEL);
             const items = hexoPosts.concat(issues || []);
             items.sort(function(a, b) {
                 return new Date(getItemDate(b)) - new Date(getItemDate(a));
@@ -24,11 +24,14 @@
             }
             grid.innerHTML = '';
 
-            // Load all reactions from Deno API
+            // Load all reactions from CloudBase
             const reactionsPromises = items.map(function(item) {
                 const data = parseBody(item.body);
                 const pageKey = getPageKey(item, data);
-                return SiteAPI.getReactionsFromDeno(pageKey);
+                return SiteAPI.getReactionsFromCloudBase(pageKey).catch(function(e) {
+                    console.warn('表情计数加载失败:', e);
+                    return {};
+                });
             });
             const allReactions = await Promise.all(reactionsPromises);
 
@@ -139,9 +142,10 @@
                 btn.disabled = true;
 
                 try {
-                    const newCount = await SiteAPI.addReactionToDeno(pageKey, reaction);
+                    const newCount = await SiteAPI.addReactionToCloudBase(pageKey, reaction);
                     // 使用服务器返回的真实计数
                     countEl.textContent = newCount > 0 ? newCount : '';
+                    btn.classList.add('active');
                 } catch(e) {
                     // 失败时回滚
                     countEl.textContent = currentCount > 0 ? currentCount : '';
@@ -151,6 +155,7 @@
                 }
             });
         });
+        startReactionRealtime(el, pageKey);
 
         // Admin delete
         const delBtn = el.querySelector('.admin-delete-btn');
@@ -174,6 +179,19 @@
         }
 
         return el;
+    }
+
+    function startReactionRealtime(card, pageKey) {
+        if (!window.DavidCloudBaseAPI || !window.DavidCloudBaseAPI.enabled()) return;
+        window.DavidCloudBaseAPI.watchReactions(pageKey, function(reactions) {
+            card.querySelectorAll('.reaction-btn').forEach(function(btn) {
+                const countEl = btn.querySelector('.r-count');
+                const count = reactions[btn.dataset.reaction] || 0;
+                countEl.textContent = count > 0 ? count : '';
+            });
+        }, function(error) {
+            console.warn('CloudBase 表情实时监听失败:', error);
+        });
     }
 
     function deletedArticlesKey() {

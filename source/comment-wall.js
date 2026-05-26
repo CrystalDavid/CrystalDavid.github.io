@@ -1,12 +1,17 @@
 ﻿(function() {
     'use strict';
 
-    const API_BASE = 'https://david-comment-api.crystaldavid.deno.net';
     const NICKNAME_KEY = 'david_comment_nickname';
     const PWD_HASH = 'da3fb9830dbd1b3ee2e799a06b3d8b486e5285fc508264f87777905827510551';
     const EMOJIS = ['👍', '❤️', '😂', '🎉', '🚀'];
     const EMOJI_MAP = { '👍': '+1', '❤️': 'heart', '😂': 'laugh', '🎉': 'hooray', '🚀': 'rocket' };
     let adminPassword = '';
+    const reactionWatchers = {};
+
+    function cloudApi() {
+        if (window.DavidCloudBaseAPI && window.DavidCloudBaseAPI.enabled()) return window.DavidCloudBaseAPI;
+        throw new Error('CloudBase 未启用，请检查 cloudbase-config.js 和 SDK 引入。');
+    }
 
     async function hashStr(str) {
         const buf = new TextEncoder().encode(str);
@@ -74,16 +79,8 @@
 
         els.list.innerHTML = '<li class="article-comment-empty">加载中...</li>';
         try {
-            const groups = await Promise.all(pages.map(async function(page) {
-                const res = await fetch(API_BASE + '/comments?page=' + encodeURIComponent(page), {
-                    cache: 'no-store',
-                    mode: 'cors',
-                    credentials: 'omit'
-                });
-                const data = await res.json();
-                if (!data.ok) throw new Error(data.error || '加载失败');
-                return data.comments || [];
-            }));
+            const api = cloudApi();
+            const groups = [await api.listComments(pages)];
 
             const seen = {};
             const comments = groups.flat().filter(function(comment) {
@@ -99,13 +96,7 @@
             const reactionsPromises = comments.map(async function(comment) {
                 const commentKey = (comment.page || primaryPage) + ':' + comment.id;
                 try {
-                    const res = await fetch(API_BASE + '/reactions?page=' + encodeURIComponent(commentKey), {
-                        cache: 'no-store',
-                        mode: 'cors',
-                        credentials: 'omit'
-                    });
-                    const data = await res.json();
-                    return data.ok ? (data.reactions || {}) : {};
+                    return await api.getReactions(commentKey);
                 } catch (e) {
                     return {};
                 }
@@ -156,6 +147,28 @@
         });
         bindReactionButtons(wall);
         bindDeleteButtons(wall);
+        startReactionRealtime(wall);
+    }
+
+    function cssEscape(value) {
+        if (window.CSS && typeof window.CSS.escape === 'function') return window.CSS.escape(value);
+        return String(value || '').replace(/["\\]/g, '\\$&');
+    }
+
+    async function refreshCommentReactions(wall, commentKey) {
+        const els = getElements(wall);
+        if (!els.list) return;
+        try {
+            const reactions = await cloudApi().getReactions(commentKey);
+            els.list.querySelectorAll('[data-comment-key="' + cssEscape(commentKey) + '"]').forEach(function(btn) {
+                const count = reactions[btn.dataset.reaction] || 0;
+                const countEl = btn.querySelector('.count');
+                if (countEl) countEl.textContent = count > 0 ? count : '';
+                btn.classList.toggle('active', count > 0);
+            });
+        } catch (e) {
+            console.warn('刷新表情计数失败:', e);
+        }
     }
 
     function bindReactionButtons(wall) {
@@ -174,18 +187,10 @@
                 btn.disabled = true;
 
                 try {
-                    const res = await fetch(API_BASE + '/reactions', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        mode: 'cors',
-                        credentials: 'omit',
-                        body: JSON.stringify({ page: commentKey, reaction: reaction })
-                    });
-                    const data = await res.json();
-                    if (data.ok && data.count) {
-                        // 使用服务器返回的真实计数
-                        countEl.textContent = data.count > 0 ? data.count : '';
-                    }
+                    const count = await cloudApi().addReaction(commentKey, reaction);
+                    countEl.textContent = count > 0 ? count : '';
+                    btn.classList.add('active');
+                    await refreshCommentReactions(wall, commentKey);
                 } catch (e) {
                     // 失败时回滚
                     countEl.textContent = currentCount > 0 ? currentCount : '';
@@ -208,22 +213,7 @@
                 btn.disabled = true;
                 try {
                     const page = btn.dataset.page || getCommentPages(wall)[0] || window.location.pathname;
-                    const res = await fetch(API_BASE + '/comments', {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Admin-Password': adminPassword
-                        },
-                        mode: 'cors',
-                        credentials: 'omit',
-                        body: JSON.stringify({
-                            page: page,
-                            id: btn.dataset.id,
-                            created_at: btn.dataset.created
-                        })
-                    });
-                    const data = await res.json();
-                    if (!data.ok) throw new Error(data.error || '删除失败');
+                    await cloudApi().deleteComment({ id: btn.dataset.id, page: page }, adminPassword);
                     item.classList.add('shattering');
                     setTimeout(function() { item.remove(); }, 900);
                 } catch (e) {
@@ -261,18 +251,10 @@
             els.submit.textContent = '发布中...';
 
             try {
-                const res = await fetch(API_BASE + '/comments', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    mode: 'cors',
-                    credentials: 'omit',
-                    body: JSON.stringify({ page, nickname, content })
-                });
-                const data = await res.json();
-                if (!data.ok) throw new Error(data.error || '发布失败');
+                const comment = await cloudApi().createComment({ page, nickname, content });
                 els.content.value = '';
-                if (data.comment) {
-                    renderComments(wall, [data.comment].concat(readCurrentComments(els.list)), page);
+                if (comment) {
+                    renderComments(wall, [comment].concat(readCurrentComments(els.list)), page);
                 }
                 await loadComments(wall);
             } catch (error) {
@@ -284,7 +266,51 @@
         });
 
         loadComments(wall);
-        setInterval(function() { loadComments(wall); }, 45000);
+        startCommentRealtime(wall);
+        setInterval(function() { loadComments(wall); }, 300000);
+    }
+
+    function startCommentRealtime(wall) {
+        const api = cloudApi();
+        if (wall.dataset.cloudbaseWatchReady === 'true') return;
+        wall.dataset.cloudbaseWatchReady = 'true';
+        const pages = getCommentPages(wall);
+        const primaryPage = pages[0] || window.location.pathname;
+        api.watchComments(pages, async function(comments) {
+            const allReactions = await Promise.all(comments.map(async function(comment) {
+                try {
+                    return await api.getReactions((comment.page || primaryPage) + ':' + comment.id);
+                } catch (e) {
+                    return {};
+                }
+            }));
+            comments.forEach(function(comment, index) {
+                comment.reactions = allReactions[index];
+            });
+            renderComments(wall, comments, primaryPage);
+        }, function(error) {
+            console.warn('CloudBase 实时监听失败，保留轮询兜底:', error);
+        });
+    }
+
+    function startReactionRealtime(wall) {
+        const api = cloudApi();
+        const els = getElements(wall);
+        if (!els.list) return;
+        els.list.querySelectorAll('.msg-reaction-btn').forEach(function(btn) {
+            const commentKey = btn.dataset.commentKey;
+            if (!commentKey || reactionWatchers[commentKey]) return;
+            reactionWatchers[commentKey] = api.watchReactions(commentKey, function(reactions) {
+                els.list.querySelectorAll('[data-comment-key="' + cssEscape(commentKey) + '"]').forEach(function(reactionBtn) {
+                    const count = reactions[reactionBtn.dataset.reaction] || 0;
+                    const countEl = reactionBtn.querySelector('.count');
+                    if (countEl) countEl.textContent = count > 0 ? count : '';
+                    reactionBtn.classList.toggle('active', count > 0);
+                });
+            }, function(error) {
+                console.warn('评论表情实时监听失败:', error);
+            });
+        });
     }
 
     function readCurrentComments(list) {

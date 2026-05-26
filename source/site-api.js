@@ -40,9 +40,14 @@
 
     async function fetchIssues(label) {
         const url = API_PROXY + '/github/issues?label=' + encodeURIComponent(label) + '&state=open&per_page=50&_=' + Date.now();
-        const res = await fetch(url, { cache: 'no-store', mode: 'cors', credentials: 'omit' });
-        if (!res.ok) return [];
-        return res.json();
+        try {
+            const res = await fetch(url, { cache: 'no-store', mode: 'cors', credentials: 'omit' });
+            if (!res.ok) return [];
+            return res.json();
+        } catch (e) {
+            console.warn('GitHub issue 内容源暂时不可用，继续加载静态内容:', e);
+            return [];
+        }
     }
 
     async function createIssue(title, body, labels, explicitToken) {
@@ -364,28 +369,19 @@
         return true;
     }
 
-    // Deno API reactions
-    async function getReactionsFromDeno(page) {
-        const url = API_PROXY + '/reactions?page=' + encodeURIComponent(page);
-        const res = await fetch(url, { cache: 'no-store', mode: 'cors', credentials: 'omit' });
-        if (!res.ok) return {};
-        const data = await res.json();
-        return data.ok ? (data.reactions || {}) : {};
+    // CloudBase reactions
+    async function getReactionsFromCloudBase(page) {
+        if (!window.DavidCloudBaseAPI || !window.DavidCloudBaseAPI.enabled()) {
+            throw new Error('CloudBase 未启用，请检查 cloudbase-config.js 和 SDK 引入。');
+        }
+        return window.DavidCloudBaseAPI.getReactions(page);
     }
 
-    async function addReactionToDeno(page, reaction) {
-        const url = API_PROXY + '/reactions';
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            mode: 'cors',
-            credentials: 'omit',
-            body: JSON.stringify({ page: page, reaction: reaction })
-        });
-        if (!res.ok) throw new Error('添加表情失败');
-        const data = await res.json();
-        if (!data.ok) throw new Error(data.error || '添加表情失败');
-        return data.count || 1;
+    async function addReactionToCloudBase(page, reaction) {
+        if (!window.DavidCloudBaseAPI || !window.DavidCloudBaseAPI.enabled()) {
+            throw new Error('CloudBase 未启用，请检查 cloudbase-config.js 和 SDK 引入。');
+        }
+        return window.DavidCloudBaseAPI.addReaction(page, reaction);
     }
 
     // Expose API
@@ -398,8 +394,8 @@
         closeIssueAdmin: closeIssueAdmin,
         getReactions: getReactions,
         addReaction: addReaction,
-        getReactionsFromDeno: getReactionsFromDeno,
-        addReactionToDeno: addReactionToDeno,
+        getReactionsFromCloudBase: getReactionsFromCloudBase,
+        addReactionToCloudBase: addReactionToCloudBase,
         uploadFile: uploadFile,
         uploadFileAdmin: uploadFileAdmin,
         getRepositoryFile: getRepositoryFile,
