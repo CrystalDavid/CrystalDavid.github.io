@@ -367,6 +367,9 @@
             color: #31506d;
             background: rgba(102, 175, 239, 0.14);
         }
+        .msg-reaction-btn .count:empty {
+            display: none;
+        }
 
         /* 回复区域 */
         .msg-replies {
@@ -547,6 +550,48 @@
             color: #eaf2ff;
             background: rgba(154, 187, 247, 0.22);
         }
+        body.dark-mode .msg-reaction-btn .count:empty {
+            display: none;
+        }
+        .about-admin-status {
+            margin: 0 0 18px;
+            padding: 12px 16px;
+            border-radius: 14px;
+            color: #2f6a4f;
+            background: rgba(76, 175, 120, 0.12);
+            border: 1px solid rgba(76, 175, 120, 0.28);
+            line-height: 1.6;
+            text-align: left;
+        }
+        body.dark-mode #about-admin-panel {
+            background: rgba(26, 26, 46, 0.75);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(154, 187, 247, 0.2);
+        }
+        body.dark-mode #about-admin-form h3 {
+            color: #9abbf7 !important;
+        }
+        body.dark-mode #about-admin-form label {
+            color: #dce7ff;
+        }
+        body.dark-mode #about-admin-form input,
+        body.dark-mode #about-admin-form textarea,
+        body.dark-mode #about-admin-login input {
+            background: rgba(40, 40, 70, 0.6) !important;
+            border-color: rgba(154, 187, 247, 0.3) !important;
+            color: #e0e0e0 !important;
+        }
+        body.dark-mode #about-admin-form input:focus,
+        body.dark-mode #about-admin-form textarea:focus,
+        body.dark-mode #about-admin-login input:focus {
+            border-color: #9abbf7 !important;
+        }
+        body.dark-mode .about-admin-status {
+            color: #79d79d;
+            background: rgba(45, 126, 83, 0.18);
+            border-color: rgba(80, 190, 127, 0.35);
+        }
 
         @keyframes shatter {
             0% { transform: scale(1); opacity: 1; filter: blur(0); }
@@ -697,6 +742,7 @@
                 <button id="about-admin-login-btn" style="background:#667eea;color:#fff;border:none;border-radius:50px;padding:10px 20px;font-size:14px;cursor:pointer;margin-left:10px;">验证</button>
             </div>
             <div id="about-admin-form" style="display:none;margin-top:20px;">
+                <div class="about-admin-status">管理员模式已开启，可以编辑 About 页面信息，保存后会应用在当前浏览器。</div>
                 <h3 style="font-size:24px;text-align:center;margin-bottom:20px;color:#1e3e3f;"><i class="fa-solid fa-pen-to-square" style="color:#66afef;margin-right:10px;"></i><span style="color:#66afef;">编辑 About 页面</span></h3>
 
                 <label style="font-weight:bold;display:block;margin-bottom:6px;">个人介绍</label>

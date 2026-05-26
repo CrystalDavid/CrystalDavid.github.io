@@ -613,6 +613,11 @@ body.dark-mode .article-comment-wall .msg-reaction-btn .count {
     background: rgba(154, 187, 247, 0.22);
 }
 
+.article-comment-wall .msg-reaction-btn .count:empty,
+body.dark-mode .article-comment-wall .msg-reaction-btn .count:empty {
+    display: none;
+}
+
 body.dark-mode .article-admin-panel {
     background: rgba(26, 26, 46, 0.75);
     border: 1px solid rgba(154, 187, 247, 0.2);

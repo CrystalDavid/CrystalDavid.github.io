@@ -313,6 +313,7 @@
                 adminLogin.style.display = 'none';
                 adminToggle.style.display = 'none';
                 adminForm.style.display = 'block';
+                ensureAdminStatus();
                 // Reload posts with delete buttons
                 await loadPosts();
             } else {
@@ -324,6 +325,15 @@
         adminPwd.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') adminLoginBtn.click();
         });
+    }
+
+    function ensureAdminStatus() {
+        if (!adminForm || adminForm.querySelector('.admin-status')) return;
+        const status = document.createElement('div');
+        status.className = 'admin-status';
+        const labelName = LABEL === 'article' ? '文章' : LABEL === 'agent' ? 'Agent 项目' : '内容';
+        status.textContent = '管理员模式已开启，可以编辑和发布' + labelName + '，保存后会自动触发 GitHub Pages 构建。';
+        adminForm.insertBefore(status, adminForm.firstChild);
     }
 
     if (adminPush) {

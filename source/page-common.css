@@ -189,6 +189,10 @@
     background: rgba(102, 175, 239, 0.14);
 }
 
+.reaction-btn .r-count:empty {
+    display: none;
+}
+
 .admin-delete-btn {
     position: absolute;
     top: 18px;
@@ -279,6 +283,17 @@
 
 .admin-form {
     margin-top: 20px;
+    text-align: left;
+}
+
+.admin-status {
+    margin: 0 0 18px;
+    padding: 12px 16px;
+    border-radius: 14px;
+    color: #2f6a4f;
+    background: rgba(76, 175, 120, 0.12);
+    border: 1px solid rgba(76, 175, 120, 0.28);
+    line-height: 1.6;
     text-align: left;
 }
 
@@ -509,6 +524,10 @@ body.dark-mode .reaction-btn .r-count {
     background: rgba(154, 187, 247, 0.22);
 }
 
+body.dark-mode .reaction-btn .r-count:empty {
+    display: none;
+}
+
 body.dark-mode .admin-field-label {
     color: #a0a0b0;
 }
@@ -528,6 +547,12 @@ body.dark-mode .file-picker-name {
 
 body.dark-mode .admin-help {
     color: #a0a0b0;
+}
+
+body.dark-mode .admin-status {
+    color: #79d79d;
+    background: rgba(45, 126, 83, 0.18);
+    border-color: rgba(80, 190, 127, 0.35);
 }
 
 body.dark-mode .admin-form input:focus,
