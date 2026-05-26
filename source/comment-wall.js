@@ -115,6 +115,7 @@
     function renderComments(wall, comments, primaryPage) {
         const els = getElements(wall);
         if (!els.list) return;
+        const replyDraft = captureReplyDraft(wall);
         const threads = buildCommentThreads(comments);
         if (!threads.length) {
             els.list.innerHTML = '<li class="article-comment-empty">暂无评论，来写第一条吧。</li>';
@@ -156,6 +157,7 @@
         bindReactionButtons(wall);
         bindReplyButtons(wall);
         bindDeleteButtons(wall);
+        if (replyDraft) restoreReplyDraft(wall, replyDraft);
         startReactionRealtime(wall);
     }
 
@@ -299,23 +301,57 @@
         });
     }
 
+    function captureReplyDraft(wall) {
+        const form = wall.querySelector('.msg-reply-form[data-open="true"]');
+        if (!form || form.dataset.submitted === 'true') return null;
+        const nickname = form.querySelector('.msg-reply-nickname');
+        const content = form.querySelector('.msg-reply-content-input');
+        return {
+            page: form.dataset.page || getCommentPages(wall)[0] || window.location.pathname,
+            parentId: form.dataset.parentId || '',
+            replyToNickname: form.dataset.replyToNickname || '匿名',
+            nickname: nickname ? nickname.value : '',
+            content: content ? content.value : '',
+            focus: document.activeElement === nickname ? 'nickname' : (document.activeElement === content ? 'content' : '')
+        };
+    }
+
+    function restoreReplyDraft(wall, draft) {
+        draft.forceOpen = true;
+        showReplyForm(wall, draft, true);
+    }
+
     function showReplyForm(wall, options) {
         const form = wall.querySelector('[data-reply-form="' + cssEscape(options.parentId) + '"]');
         if (!form) return;
+        const isOpen = form.dataset.open === 'true' && form.style.display !== 'none';
+        if (!options.forceOpen && isOpen && form.dataset.replyToNickname === (options.replyToNickname || '匿名')) {
+            form.style.display = 'none';
+            form.innerHTML = '';
+            delete form.dataset.open;
+            return;
+        }
         wall.querySelectorAll('.msg-reply-form').forEach(function(item) {
             if (item !== form) item.style.display = 'none';
         });
         const saved = localStorage.getItem(NICKNAME_KEY) || '';
+        const draftNickname = options.nickname || saved;
+        const draftContent = options.content || '';
         form.innerHTML = [
             '<div class="msg-reply-form-title">回复 ' + escapeHtml(options.replyToNickname) + '</div>',
-            '<input class="msg-reply-nickname" type="text" maxlength="20" placeholder="你的昵称" value="' + escapeHtml(saved) + '">',
-            '<textarea class="msg-reply-content-input" maxlength="500" placeholder="写下你的回复..."></textarea>',
+            '<input class="msg-reply-nickname" type="text" maxlength="20" placeholder="你的昵称" value="' + escapeHtml(draftNickname) + '">',
+            '<textarea class="msg-reply-content-input" maxlength="500" placeholder="写下你的回复...">' + escapeHtml(draftContent) + '</textarea>',
             '<div class="msg-reply-form-actions">',
             '<button class="msg-reply-submit" type="button">发布回复</button>',
             '<button class="msg-reply-cancel" type="button">取消</button>',
             '</div>'
         ].join('');
         form.style.display = 'block';
+        form.dataset.open = 'true';
+        form.dataset.page = options.page || '';
+        form.dataset.parentId = options.parentId || '';
+        form.dataset.replyToNickname = options.replyToNickname || '匿名';
+        delete form.dataset.submitted;
 
         const nickname = form.querySelector('.msg-reply-nickname');
         const content = form.querySelector('.msg-reply-content-input');
@@ -339,6 +375,7 @@
             submit.disabled = true;
             submit.textContent = '发布中...';
             try {
+                form.dataset.submitted = 'true';
                 await cloudApi().createComment({
                     page: options.page,
                     nickname: name,
@@ -346,14 +383,23 @@
                     parentId: options.parentId,
                     replyToNickname: options.replyToNickname
                 });
+                form.style.display = 'none';
+                form.innerHTML = '';
                 await loadComments(wall);
             } catch (error) {
+                delete form.dataset.submitted;
                 alert('回复失败：留言服务暂时连接失败，请稍后重试。');
                 submit.disabled = false;
                 submit.textContent = '发布回复';
             }
         });
-        content.focus();
+        if (options.focus === 'nickname') {
+            nickname.focus();
+        } else {
+            content.focus();
+            const end = content.value.length;
+            content.setSelectionRange(end, end);
+        }
     }
 
     function runPowderDelete(element, done) {

@@ -17,21 +17,36 @@
             return;
         }
 
+        const computed = window.getComputedStyle(element);
         const palette = ['#9abbf7', '#66afef', '#ffbbf4', '#ffd666', '#7ee6d8', '#ff7a96'];
-        const count = Math.max(42, Math.min(120, Math.round((rect.width * rect.height) / 4200)));
+        const count = Math.max(70, Math.min(180, Math.round((rect.width * rect.height) / 2600)));
         const fragment = document.createDocumentFragment();
         const particles = [];
 
+        element.style.boxSizing = 'border-box';
+        element.style.height = rect.height + 'px';
+        element.style.marginTop = computed.marginTop;
+        element.style.marginBottom = computed.marginBottom;
+        element.style.paddingTop = computed.paddingTop;
+        element.style.paddingBottom = computed.paddingBottom;
+        element.style.overflow = 'hidden';
+        element.style.transition = [
+            'opacity 1050ms cubic-bezier(0.16, 0.84, 0.22, 1)',
+            'transform 1050ms cubic-bezier(0.16, 0.84, 0.22, 1)',
+            'filter 1050ms cubic-bezier(0.16, 0.84, 0.22, 1)',
+            'height 720ms cubic-bezier(0.2, 0.8, 0.2, 1) 520ms',
+            'margin 720ms cubic-bezier(0.2, 0.8, 0.2, 1) 520ms',
+            'padding 720ms cubic-bezier(0.2, 0.8, 0.2, 1) 520ms'
+        ].join(', ');
         element.classList.add('shattering');
-        element.style.visibility = 'hidden';
 
         for (let i = 0; i < count; i++) {
             const particle = document.createElement('span');
             const x = rect.left + Math.random() * rect.width;
             const y = rect.top + Math.random() * rect.height;
             const angle = Math.atan2(y - (rect.top + rect.height / 2), x - (rect.left + rect.width / 2)) + (Math.random() - 0.5) * 1.6;
-            const distance = 42 + Math.random() * 118;
-            const size = 3 + Math.random() * 6;
+            const distance = 54 + Math.random() * 172;
+            const size = 2.5 + Math.random() * 6.5;
 
             particle.className = 'powder-particle';
             particle.style.setProperty('--particle-x', x + 'px');
@@ -46,10 +61,22 @@
         }
 
         document.body.appendChild(fragment);
+        requestAnimationFrame(function() {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(-8px) scale(0.96)';
+            element.style.filter = 'blur(5px)';
+            setTimeout(function() {
+                element.style.height = '0';
+                element.style.marginTop = '0';
+                element.style.marginBottom = '0';
+                element.style.paddingTop = '0';
+                element.style.paddingBottom = '0';
+            }, 520);
+        });
         setTimeout(function() {
             particles.forEach(function(particle) { particle.remove(); });
             if (typeof done === 'function') done();
-        }, 860);
+        }, 1480);
     };
 })();
 
