@@ -44,8 +44,8 @@
     <% if (theme.twikoo.enable && page.comments) { %>
     <script src="https://s4.zstatic.net/ajax/libs/twikoo/1.6.31/twikoo.all.min.js"></script>
     <% } %>
-    <link rel="stylesheet" href="<%- url_for("/styles.css?v=9") %>">
-    <link rel="stylesheet" href="<%- url_for("/page-common.css?v=12") %>">
+    <link rel="stylesheet" href="<%- url_for("/styles.css?v=10") %>">
+    <link rel="stylesheet" href="<%- url_for("/page-common.css?v=13") %>">
     <link rel="stylesheet" href="<%- url_for("/article-detail.css?v=10") %>">
 </head>
 <body>
@@ -101,10 +101,11 @@
 
     <canvas id="fireworks-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <script src="<%- url_for("/script.js?v=9") %>"></script>
+    <script src="<%- url_for("/script.js?v=10") %>"></script>
     <script src="<%- url_for("/cloudbase-config.js?v=2") %>"></script>
-    <script src="<%- url_for("/cloudbase-api.js?v=3") %>"></script>
-    <script src="<%- url_for("/site-api.js?v=7") %>"></script>
+    <script src="<%- url_for("/cloudbase-api.js?v=4") %>"></script>
+    <script src="<%- url_for("/visit-tracker.js?v=1") %>"></script>
+    <script src="<%- url_for("/site-api.js?v=8") %>"></script>
     <% if (page.comments) { %>
     <script src="<%- url_for("/comment-wall.js?v=11") %>"></script>
     <%- partial("comment") %>

@@ -28,24 +28,38 @@ button i,
 [role="button"] i,
 .post-card-link i,
 .go-post i,
+.file-picker-btn i,
+.qq-copy-btn i,
 button .david-btn-text,
 [role="button"] .david-btn-text,
 .post-card-link .david-btn-text,
-.go-post .david-btn-text {
+.go-post .david-btn-text,
+.file-picker-btn .david-btn-text,
+.qq-copy-btn .david-btn-text,
+button .david-btn-icon,
+.reaction-btn .david-btn-icon,
+.msg-reaction-btn .david-btn-icon {
     display: inline-block;
 }
 
 button:not(:disabled):hover i,
 [role="button"]:hover i,
 .post-card-link:hover i,
-.go-post:hover i {
+.go-post:hover i,
+.file-picker-btn:hover i,
+.qq-copy-btn:hover i,
+button:not(:disabled):hover .david-btn-icon,
+.reaction-btn:not(:disabled):hover .david-btn-icon,
+.msg-reaction-btn:not(:disabled):hover .david-btn-icon {
     animation: iconBounce 0.5s ease;
 }
 
 button:not(:disabled):hover .david-btn-text,
 [role="button"]:hover .david-btn-text,
 .post-card-link:hover .david-btn-text,
-.go-post:hover .david-btn-text {
+.go-post:hover .david-btn-text,
+.file-picker-btn:hover .david-btn-text,
+.qq-copy-btn:hover .david-btn-text {
     animation: textWave 0.5s ease;
 }
 

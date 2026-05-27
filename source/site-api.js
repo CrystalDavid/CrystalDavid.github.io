@@ -208,6 +208,34 @@
         return res.json();
     }
 
+    async function listRepositoryDirectoryAdmin(path, adminPassword) {
+        const repoPath = normalizeRepoPath(path);
+        if (!repoPath) throw new Error('Missing repository directory path');
+        const res = await fetch(contentUrl(repoPath) + '&ref=main&_=' + Date.now(), {
+            headers: _adminHeaders(adminPassword),
+            cache: 'no-store',
+            mode: 'cors',
+            credentials: 'omit'
+        });
+        if (res.status === 404) return [];
+        if (!res.ok) throw new Error('Failed to read repository directory: ' + res.status);
+        const data = await res.json();
+        return Array.isArray(data) ? data : [data];
+    }
+
+    async function getRepositoryFileAdmin(path, adminPassword) {
+        const repoPath = normalizeRepoPath(path);
+        if (!repoPath) throw new Error('Missing repository file path');
+        const res = await fetch(contentUrl(repoPath) + '&ref=main&_=' + Date.now(), {
+            headers: _adminHeaders(adminPassword),
+            cache: 'no-store',
+            mode: 'cors',
+            credentials: 'omit'
+        });
+        if (!res.ok) throw new Error('Failed to read repository file: ' + res.status);
+        return res.json();
+    }
+
     async function putContent(path, base64Content, message, token) {
         const repoPath = normalizeRepoPath(path);
         const sha = await getContentSha(repoPath, token);
@@ -399,6 +427,8 @@
         uploadFile: uploadFile,
         uploadFileAdmin: uploadFileAdmin,
         getRepositoryFile: getRepositoryFile,
+        getRepositoryFileAdmin: getRepositoryFileAdmin,
+        listRepositoryDirectoryAdmin: listRepositoryDirectoryAdmin,
         uploadRepositoryFile: uploadRepositoryFile,
         uploadRepositoryFileAdmin: uploadRepositoryFileAdmin,
         publishMarkdownPost: publishMarkdownPost,

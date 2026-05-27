@@ -82,14 +82,17 @@
     window.DavidButtonMotion = {
         enhance: function(root) {
             const scope = root || document;
-            const controls = scope.querySelectorAll('button, .post-card-link, .go-post, [role="button"]');
+            const selector = 'button, .post-card-link, .go-post, .file-picker-btn, .qq-copy-btn, [role="button"]';
+            const controls = Array.from(scope.querySelectorAll(selector));
+            if (scope.matches && scope.matches(selector)) controls.unshift(scope);
             controls.forEach(function(control) {
                 if (control.dataset.buttonMotionReady === 'true') return;
                 control.dataset.buttonMotionReady = 'true';
                 Array.from(control.childNodes).forEach(function(node) {
                     if (node.nodeType !== Node.TEXT_NODE || !node.textContent.trim()) return;
                     const span = document.createElement('span');
-                    span.className = 'david-btn-text';
+                    const isReaction = control.classList.contains('reaction-btn') || control.classList.contains('msg-reaction-btn');
+                    span.className = isReaction && node.textContent.trim().length <= 4 ? 'david-btn-icon' : 'david-btn-text';
                     span.textContent = node.textContent;
                     node.replaceWith(span);
                 });
@@ -103,7 +106,7 @@
             records.forEach(function(record) {
                 record.addedNodes.forEach(function(node) {
                     if (node.nodeType !== Node.ELEMENT_NODE) return;
-                    if (node.matches && node.matches('button, .post-card-link, .go-post, [role="button"]')) {
+                    if (node.matches && node.matches('button, .post-card-link, .go-post, .file-picker-btn, .qq-copy-btn, [role="button"]')) {
                         window.DavidButtonMotion.enhance(node.parentElement || document);
                     } else if (node.querySelector) {
                         window.DavidButtonMotion.enhance(node);

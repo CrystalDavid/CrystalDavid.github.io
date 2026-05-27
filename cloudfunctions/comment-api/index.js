@@ -11,7 +11,9 @@ const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH ||
   'da3fb9830dbd1b3ee2e799a06b3d8b486e5285fc508264f87777905827510551';
 const MAX_NICKNAME_LENGTH = 24;
 const MAX_CONTENT_LENGTH = 600;
+const MAX_VISIT_FIELD_LENGTH = 240;
 const PAGE_SIZE = 200;
+const VISIT_PAGE_SIZE = 500;
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
 const ALLOWED_ORIGINS = [
   'https://crystaldavid.github.io',
@@ -84,6 +86,50 @@ function getActor(event) {
   const headers = event.headers || {};
   const ip = headers['x-forwarded-for'] || headers['X-Forwarded-For'] || headers['x-real-ip'] || headers['X-Real-IP'];
   return context.OPENID || context.UNIONID || event.openId || event.userInfo && event.userInfo.openId || ip || 'anonymous';
+}
+
+function getClientIp(event) {
+  const headers = event.headers || {};
+  const forwarded = headers['x-forwarded-for'] || headers['X-Forwarded-For'] || '';
+  const ip = forwarded.split(',')[0].trim() ||
+    headers['x-real-ip'] ||
+    headers['X-Real-IP'] ||
+    headers['x-client-ip'] ||
+    headers['X-Client-IP'] ||
+    '';
+  return String(ip || '').replace(/^::ffff:/, '').slice(0, 64);
+}
+
+function isPrivateIp(ip) {
+  return /^10\./.test(ip) ||
+    /^127\./.test(ip) ||
+    /^192\.168\./.test(ip) ||
+    /^172\.(1[6-9]|2\d|3[01])\./.test(ip) ||
+    ip === '::1' ||
+    ip.indexOf('fc') === 0 ||
+    ip.indexOf('fd') === 0;
+}
+
+async function resolveIpLocation(ip) {
+  if (!ip) return '未知 IP';
+  if (isPrivateIp(ip)) return '本地/内网';
+  const controller = new AbortController();
+  const timeout = setTimeout(function() { controller.abort(); }, 1200);
+  try {
+    const res = await fetch('http://ip-api.com/json/' + encodeURIComponent(ip) + '?lang=zh-CN&fields=status,country,regionName,city,isp,query', {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' },
+      signal: controller.signal
+    });
+    if (!res.ok) return '待解析';
+    const data = await res.json();
+    if (!data || data.status !== 'success') return '待解析';
+    return [data.country, data.regionName, data.city, data.isp].filter(Boolean).join(' / ') || '待解析';
+  } catch (e) {
+    return '待解析';
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 async function checkRateLimit(event, bucketName, maxCount) {
@@ -247,6 +293,64 @@ async function addReaction(event) {
   return ok({ count: data.count || 1 });
 }
 
+async function recordVisit(event) {
+  if (!await checkRateLimit(event, 'visit', 120)) {
+    return ok({ skipped: true });
+  }
+  const ip = getClientIp(event);
+  const now = Date.now();
+  const location = await resolveIpLocation(ip);
+  await db.collection('visit_logs').add({
+    actionType: cleanText(event.actionType || 'pageview', 40),
+    path: normalizeKey(event.path || '/'),
+    pageKind: cleanText(event.pageKind || 'page', 40),
+    title: cleanText(event.title, MAX_VISIT_FIELD_LENGTH),
+    target: cleanText(event.target, MAX_VISIT_FIELD_LENGTH),
+    targetText: cleanText(event.targetText, 100),
+    referrer: cleanText(event.referrer, MAX_VISIT_FIELD_LENGTH),
+    language: cleanText(event.language, 40),
+    timezone: cleanText(event.timezone, 80),
+    screen: cleanText(event.screen, 40),
+    userAgent: cleanText(event.userAgent, MAX_VISIT_FIELD_LENGTH),
+    ip,
+    ipHash: sha256(ip || getActor(event)),
+    location,
+    createdAt: now
+  });
+  return ok({ recorded: true });
+}
+
+async function listVisitLogs(event) {
+  if (sha256(event.adminPassword || '') !== ADMIN_PASSWORD_HASH) {
+    return fail('Unauthorized', 'UNAUTHORIZED');
+  }
+  const res = await db.collection('visit_logs')
+    .orderBy('createdAt', 'desc')
+    .limit(VISIT_PAGE_SIZE)
+    .get();
+  return ok({
+    logs: (res.data || []).map(function(item) {
+      return {
+        id: item._id,
+        action_type: item.actionType || 'pageview',
+        path: item.path || '/',
+        page_kind: item.pageKind || 'page',
+        title: item.title || '',
+        target: item.target || '',
+        target_text: item.targetText || '',
+        referrer: item.referrer || '',
+        language: item.language || '',
+        timezone: item.timezone || '',
+        screen: item.screen || '',
+        user_agent: item.userAgent || '',
+        ip: item.ip || '',
+        location: item.location || '待解析',
+        created_at: new Date(item.createdAt || Date.now()).toISOString()
+      };
+    })
+  });
+}
+
 async function route(event) {
   try {
     switch (event.action) {
@@ -260,6 +364,10 @@ async function route(event) {
         return getReactions(event);
       case 'addReaction':
         return addReaction(event);
+      case 'recordVisit':
+        return recordVisit(event);
+      case 'listVisitLogs':
+        return listVisitLogs(event);
       case 'health':
         return ok({ service: 'cloudbase-comment-api', time: new Date().toISOString() });
       default:

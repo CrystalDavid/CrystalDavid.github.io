@@ -6,6 +6,7 @@
     const grid = document.getElementById('posts-grid');
     const EMOJI_MAP = { '👍': '+1', '❤️': 'heart', '😂': 'laugh', '🎉': 'hooray', '🚀': 'rocket' };
     const EMOJIS = Object.keys(EMOJI_MAP);
+    const ADMIN_ONLY_DIR = 'source/_admin_posts';
     let isAdmin = false;
     let adminPassword = '';
 
@@ -292,6 +293,17 @@
     const postFileName = document.getElementById('post-file-name');
     const postMediaFile = document.getElementById('post-media-file');
     const postMediaFileName = document.getElementById('post-media-file-name');
+    const postAdminOnly = document.getElementById('post-admin-only');
+    const adminOnlySection = document.getElementById('admin-only-section');
+    const adminOnlyList = document.getElementById('admin-only-list');
+
+    if (postAdminOnly) {
+        postAdminOnly.addEventListener('click', function() {
+            const active = this.getAttribute('aria-pressed') !== 'true';
+            this.setAttribute('aria-pressed', active ? 'true' : 'false');
+            this.classList.toggle('active', active);
+        });
+    }
 
     if (postFile && postFileName) {
         postFile.addEventListener('change', function() {
@@ -324,6 +336,7 @@
                 ensureAdminStatus();
                 // Reload posts with delete buttons
                 await loadPosts();
+                if (LABEL === 'article') await loadAdminOnlyArticles();
             } else {
                 adminPwd.style.borderColor = '#ff4444';
                 setTimeout(function() { adminPwd.style.borderColor = ''; }, 1500);
@@ -355,8 +368,14 @@
 
             try {
                 if (LABEL === 'article') {
-                    await publishHexoArticle(title, desc);
-                    await loadPosts();
+                    const adminOnly = postAdminOnly && postAdminOnly.getAttribute('aria-pressed') === 'true';
+                    if (adminOnly) {
+                        await publishAdminOnlyArticle(title, desc);
+                        await loadAdminOnlyArticles();
+                    } else {
+                        await publishHexoArticle(title, desc);
+                        await loadPosts();
+                    }
                     adminPush.disabled = false;
                     adminPush.textContent = '生成 Hexo 文章并发布';
                     return;
@@ -453,6 +472,202 @@
         alert('文章已提交到 GitHub。GitHub Pages 构建完成后会出现在 Article 页面。');
     }
 
+    async function publishAdminOnlyArticle(title, desc) {
+        const fileEl = document.getElementById('post-file');
+        const tagsEl = document.getElementById('post-tags');
+        const file = fileEl && fileEl.files ? fileEl.files[0] : null;
+        if (!file) throw new Error('请选择 Markdown 文件');
+        if (!/\.(md|markdown)$/i.test(file.name)) throw new Error('只支持上传 Markdown (.md) 文件');
+        if (!adminPassword) throw new Error('请先通过管理员验证');
+
+        adminPush.textContent = '读取管理员文章中...';
+        const extracted = stripMarkdownFrontMatter(await extractMarkdownText(file));
+        const now = new Date();
+        const pad = n => String(n).padStart(2, '0');
+        const dateText = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+        const slug = normalizeSlug(title || file.name);
+        const datePrefix = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate());
+        const postPath = ADMIN_ONLY_DIR + '/' + datePrefix + '-' + slug + '.md';
+        const inputTags = tagsEl ? tagsEl.value.split(',').map(function(t) { return t.trim(); }).filter(Boolean) : [];
+        const tags = ['仅管理员可见'].concat(inputTags.filter(function(tag) { return tag !== '仅管理员可见'; }));
+
+        const markdown = buildMarkdownPost({
+            title: title,
+            description: desc,
+            date: dateText,
+            tags: tags,
+            adminOnly: true,
+            body: extracted
+        });
+
+        adminPush.textContent = '提交管理员文章中...';
+        await SiteAPI.publishMarkdownPostAdmin(postPath, markdown, 'Publish admin-only article: ' + title, adminPassword);
+        clearArticleForm();
+        alert('仅管理员可见文章已保存，刷新管理员列表后可见。');
+    }
+
+    function clearArticleForm() {
+        const titleEl = document.getElementById('post-title');
+        const descEl = document.getElementById('post-desc');
+        const tagsEl = document.getElementById('post-tags');
+        const fileEl = document.getElementById('post-file');
+        if (titleEl) titleEl.value = '';
+        if (descEl) descEl.value = '';
+        if (tagsEl) tagsEl.value = '';
+        if (fileEl) fileEl.value = '';
+        if (postFileName) postFileName.textContent = '未选择文件';
+        if (postAdminOnly) {
+            postAdminOnly.setAttribute('aria-pressed', 'false');
+            postAdminOnly.classList.remove('active');
+        }
+    }
+
+    async function loadAdminOnlyArticles() {
+        if (!adminOnlySection || !adminOnlyList || LABEL !== 'article') return;
+        adminOnlySection.style.display = 'block';
+        adminOnlyList.innerHTML = '<div class="admin-only-loading">加载管理员文章中...</div>';
+        try {
+            const cards = [await buildVisitorLogCard()];
+            const entries = await SiteAPI.listRepositoryDirectoryAdmin(ADMIN_ONLY_DIR, adminPassword);
+            const files = entries.filter(function(entry) {
+                return entry && entry.type === 'file' && /\.md$/i.test(entry.name || '');
+            });
+            const posts = await Promise.all(files.map(readAdminOnlyPost));
+            posts.filter(Boolean).sort(function(a, b) {
+                return new Date(b.date || 0) - new Date(a.date || 0);
+            }).forEach(function(post) {
+                cards.push(renderAdminOnlyCard(post));
+            });
+            adminOnlyList.innerHTML = cards.join('') || '<div class="admin-only-empty">暂无仅管理员可见文章</div>';
+            bindAdminOnlyToggles();
+            if (window.DavidButtonMotion) window.DavidButtonMotion.enhance(adminOnlySection);
+        } catch (e) {
+            adminOnlyList.innerHTML = '<div class="admin-only-empty">管理员文章加载失败：' + escapeHtml(e.message) + '</div>';
+        }
+    }
+
+    async function readAdminOnlyPost(entry) {
+        try {
+            const data = await SiteAPI.getRepositoryFileAdmin(entry.path, adminPassword);
+            const markdown = decodeRepositoryContent(data.content || '');
+            const parsed = parseMarkdownPost(markdown);
+            return Object.assign(parsed, {
+                title: parsed.title || entry.name,
+                path: entry.path,
+                markdown: markdown
+            });
+        } catch (e) {
+            console.warn('管理员文章读取失败:', entry && entry.path, e);
+            return null;
+        }
+    }
+
+    async function buildVisitorLogCard() {
+        let logs = [];
+        try {
+            if (window.DavidCloudBaseAPI && window.DavidCloudBaseAPI.enabled()) {
+                logs = await window.DavidCloudBaseAPI.listVisitLogs(adminPassword);
+            }
+        } catch (e) {
+            console.warn('访问日志读取失败:', e);
+        }
+        const lines = [
+            '# 网站访问 IP 属地记录',
+            '',
+            '> 这篇管理员文章永久置顶，用来查看访客打开了哪些页面、文章或功能。',
+            '',
+            '| 访问时间 | IP 属地 | IP | 行为 | 页面 | 点击/目标 | 标题 |',
+            '| --- | --- | --- | --- | --- | --- | --- |'
+        ];
+        (logs || []).slice(0, 120).forEach(function(log) {
+            lines.push('| ' + [
+                formatDate(log.created_at),
+                log.location || '待解析',
+                log.ip || '未知',
+                log.action_type || 'pageview',
+                log.path || '/',
+                (log.target_text || log.target || '').replace(/\|/g, '/'),
+                (log.title || '').replace(/\|/g, '/')
+            ].map(function(value) { return String(value || '').replace(/\n/g, ' '); }).join(' | ') + ' |');
+        });
+        if (!logs.length) lines.push('| 暂无记录 | - | - | - | - | - | - |');
+        return renderAdminOnlyCard({
+            title: '网站访问 IP 属地记录',
+            date: new Date().toISOString(),
+            tags: ['仅管理员可见', '永久置顶', '访问日志'],
+            description: '记录访问时间、IP 属地、访问页面/文章/Agent 等行为。',
+            markdown: lines.join('\n'),
+            pinned: true
+        });
+    }
+
+    function decodeRepositoryContent(content) {
+        const clean = String(content || '').replace(/\s/g, '');
+        const binary = atob(clean);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        return new TextDecoder('utf-8').decode(bytes);
+    }
+
+    function parseMarkdownPost(markdown) {
+        const result = { title: '', date: '', tags: [], description: '', body: markdown || '' };
+        const text = String(markdown || '').replace(/\r\n/g, '\n');
+        const match = text.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+        if (!match) return result;
+        result.body = match[2] || '';
+        const lines = match[1].split('\n');
+        let currentList = '';
+        lines.forEach(function(line) {
+            const pair = line.match(/^([A-Za-z_][\w-]*):\s*(.*)$/);
+            if (pair) {
+                currentList = pair[1];
+                const key = pair[1];
+                const value = unquoteYaml(pair[2]);
+                if (key === 'title') result.title = value;
+                if (key === 'date') result.date = value;
+                if (key === 'description') result.description = value;
+                return;
+            }
+            const listItem = line.match(/^\s*-\s*(.*)$/);
+            if (listItem && currentList === 'tags') result.tags.push(unquoteYaml(listItem[1]));
+        });
+        return result;
+    }
+
+    function unquoteYaml(value) {
+        return String(value || '').trim().replace(/^["']|["']$/g, '').replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+    }
+
+    function renderAdminOnlyCard(post) {
+        const tags = Array.isArray(post.tags) ? post.tags : String(post.tags || '').split(',').map(function(t) { return t.trim(); }).filter(Boolean);
+        return [
+            '<article class="admin-only-card' + (post.pinned ? ' pinned' : '') + '">',
+            '<div class="admin-only-meta">',
+            post.pinned ? '<span class="admin-only-pin"><i class="fa-solid fa-thumbtack"></i> 永久置顶</span>' : '<span class="admin-only-pin"><i class="fa-solid fa-lock"></i> 仅管理员可见</span>',
+            '<span>' + escapeHtml(formatDate(post.date || new Date().toISOString())) + '</span>',
+            '</div>',
+            '<h4>' + escapeHtml(post.title || '未命名管理员文章') + '</h4>',
+            post.description ? '<p>' + escapeHtml(post.description) + '</p>' : '',
+            '<div class="post-card-tags">' + tags.map(function(tag) { return '<span>#' + escapeHtml(tag) + '</span>'; }).join('') + '</div>',
+            '<button class="admin-only-preview-btn" type="button"><i class="fa-solid fa-file-lines"></i> 查看 Markdown</button>',
+            '<pre class="admin-only-markdown" style="display:none;">' + escapeHtml(post.markdown || post.body || '') + '</pre>',
+            '</article>'
+        ].join('');
+    }
+
+    function bindAdminOnlyToggles() {
+        adminOnlyList.querySelectorAll('.admin-only-preview-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const pre = btn.parentElement.querySelector('.admin-only-markdown');
+                if (!pre) return;
+                const open = pre.style.display !== 'none';
+                pre.style.display = open ? 'none' : 'block';
+                btn.innerHTML = open ? '<i class="fa-solid fa-file-lines"></i> 查看 Markdown' : '<i class="fa-solid fa-eye-slash"></i> 收起 Markdown';
+                if (window.DavidButtonMotion) window.DavidButtonMotion.enhance(btn);
+            });
+        });
+    }
+
     async function extractMarkdownText(file) {
         return file.text();
     }
@@ -487,6 +702,7 @@
             'categories:',
             '  - Article',
             'description: ' + yamlEscape(options.description || ''),
+            options.adminOnly ? 'adminOnly: true' : '',
             'comments: true',
             '---',
             '',

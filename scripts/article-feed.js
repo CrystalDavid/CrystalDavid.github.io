@@ -4,6 +4,7 @@ hexo.extend.generator.register('article_data', function(locals) {
     .toArray()
     .filter(function(post) {
       if (!post.published) return false;
+      if (isAdminOnlyPost(post)) return false;
       if (!post.categories || !post.categories.length) return true;
       return post.categories.toArray().some(function(category) {
         return String(category.name).toLowerCase() === 'article';
@@ -33,6 +34,14 @@ hexo.extend.generator.register('article_data', function(locals) {
     data: JSON.stringify(posts, null, 2)
   };
 });
+
+function isAdminOnlyPost(post) {
+  if (post.adminOnly || post.admin_only || post.private) return true;
+  const tags = post.tags ? post.tags.toArray().map(function(tag) { return String(tag.name); }) : [];
+  return tags.some(function(tag) {
+    return tag === '仅管理员可见' || tag.toLowerCase() === 'admin-only';
+  });
+}
 
 function stripHtml(value) {
   return String(value || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ');

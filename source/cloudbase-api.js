@@ -114,6 +114,19 @@
         return result.count || 1;
     }
 
+    async function recordVisit(payload) {
+        try {
+            await call('recordVisit', payload || {});
+        } catch (e) {
+            console.warn('访问记录写入失败:', e);
+        }
+    }
+
+    async function listVisitLogs(adminPassword) {
+        const result = await call('listVisitLogs', { adminPassword: adminPassword || '' });
+        return result.logs || [];
+    }
+
     function watchComments(pages, onChange, onError) {
         if (!available()) return null;
         if (transport === 'http') {
@@ -219,6 +232,8 @@
             page: item.page,
             nickname: item.nickname,
             content: item.content,
+            parent_id: item.parentId || item.parent_id || '',
+            reply_to_nickname: item.replyToNickname || item.reply_to_nickname || '',
             created_at: item.createdAt ? new Date(item.createdAt).toISOString() : item.created_at
         };
     }
@@ -230,6 +245,8 @@
         deleteComment: deleteComment,
         getReactions: getReactions,
         addReaction: addReaction,
+        recordVisit: recordVisit,
+        listVisitLogs: listVisitLogs,
         watchComments: watchComments,
         watchReactions: watchReactions
     };
