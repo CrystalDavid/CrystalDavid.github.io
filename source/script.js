@@ -78,6 +78,47 @@
             if (typeof done === 'function') done();
         }, 1480);
     };
+
+    window.DavidButtonMotion = {
+        enhance: function(root) {
+            const scope = root || document;
+            const controls = scope.querySelectorAll('button, .post-card-link, .go-post, [role="button"]');
+            controls.forEach(function(control) {
+                if (control.dataset.buttonMotionReady === 'true') return;
+                control.dataset.buttonMotionReady = 'true';
+                Array.from(control.childNodes).forEach(function(node) {
+                    if (node.nodeType !== Node.TEXT_NODE || !node.textContent.trim()) return;
+                    const span = document.createElement('span');
+                    span.className = 'david-btn-text';
+                    span.textContent = node.textContent;
+                    node.replaceWith(span);
+                });
+            });
+        }
+    };
+
+    function initButtonMotion() {
+        window.DavidButtonMotion.enhance(document);
+        const observer = new MutationObserver(function(records) {
+            records.forEach(function(record) {
+                record.addedNodes.forEach(function(node) {
+                    if (node.nodeType !== Node.ELEMENT_NODE) return;
+                    if (node.matches && node.matches('button, .post-card-link, .go-post, [role="button"]')) {
+                        window.DavidButtonMotion.enhance(node.parentElement || document);
+                    } else if (node.querySelector) {
+                        window.DavidButtonMotion.enhance(node);
+                    }
+                });
+            });
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initButtonMotion);
+    } else {
+        initButtonMotion();
+    }
 })();
 
 const menu = document.getElementById('menu');

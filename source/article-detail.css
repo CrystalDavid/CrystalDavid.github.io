@@ -307,12 +307,11 @@
     background: #f0f7ff;
     border-color: #66afef;
     transform: translateY(-1px) scale(1.05);
+    box-shadow: 0 6px 18px rgba(154, 187, 247, 0.18);
 }
 
 .article-comment-wall .msg-reaction-btn.active {
-    background: linear-gradient(120deg, rgba(154, 187, 247, 0.28), rgba(255, 187, 244, 0.28));
-    border-color: #9abbf7;
-    box-shadow: 0 6px 18px rgba(154, 187, 247, 0.18);
+    box-shadow: none;
 }
 
 .article-comment-wall .msg-reaction-btn .count {
@@ -616,9 +615,14 @@ body.dark-mode .article-comment-wall .msg-reaction-btn {
 }
 
 body.dark-mode .article-comment-wall .msg-reaction-btn:hover,
-body.dark-mode .article-comment-wall .msg-reaction-btn.active {
+body.dark-mode .article-comment-wall .msg-reaction-btn.active:hover {
     background: linear-gradient(120deg, rgba(154, 187, 247, 0.32), rgba(255, 187, 244, 0.24));
     border-color: #9abbf7;
+}
+
+body.dark-mode .article-comment-wall .msg-reaction-btn.active {
+    background: rgba(40, 40, 70, 0.8);
+    border-color: rgba(154, 187, 247, 0.3);
 }
 
 body.dark-mode .article-comment-wall .msg-reaction-btn .count {

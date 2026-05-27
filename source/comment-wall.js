@@ -77,7 +77,9 @@
         const els = getElements(wall);
         if (!els.list) return;
 
-        els.list.innerHTML = '<li class="article-comment-empty">加载中...</li>';
+        if (!els.list.querySelector('.msg-item') && !isReplyFormOpen(wall)) {
+            els.list.innerHTML = '<li class="article-comment-empty">加载中...</li>';
+        }
         try {
             const api = cloudApi();
             const groups = [await api.listComments(pages)];
@@ -108,15 +110,62 @@
 
             renderComments(wall, comments, primaryPage);
         } catch (error) {
-            els.list.innerHTML = '<li class="article-comment-empty">留言服务暂时连接失败，请稍后重试。</li>';
+            if (!els.list.querySelector('.msg-item')) {
+                els.list.innerHTML = '<li class="article-comment-empty">留言服务暂时连接失败，请稍后重试。</li>';
+            }
         }
     }
 
-    function renderComments(wall, comments, primaryPage) {
+    function getCommentsSignature(comments, primaryPage) {
+        return JSON.stringify({
+            admin: !!adminPassword,
+            page: primaryPage,
+            items: comments.map(function(comment) {
+                return {
+                    id: comment.id || '',
+                    page: comment.page || primaryPage,
+                    parent: comment.parent_id || comment.parentId || '',
+                    replyTo: comment.reply_to_nickname || comment.replyToNickname || '',
+                    nickname: comment.nickname || '',
+                    content: comment.content || '',
+                    created: comment.created_at || '',
+                    reactions: comment.reactions || {}
+                };
+            })
+        });
+    }
+
+    function isReplyFormOpen(wall) {
+        return Array.from(wall.querySelectorAll('.msg-reply-form[data-open="true"]')).some(function(form) {
+            return form.style.display !== 'none';
+        });
+    }
+
+    function shouldDeferRender(wall) {
+        return isReplyFormOpen(wall);
+    }
+
+    function flushPendingComments(wall) {
+        const pending = wall._pendingComments;
+        if (!pending) return;
+        wall._pendingComments = null;
+        renderComments(wall, pending.comments, pending.primaryPage, { force: true });
+    }
+
+    function renderComments(wall, comments, primaryPage, options) {
+        options = options || {};
         const els = getElements(wall);
         if (!els.list) return;
+        const signature = getCommentsSignature(comments, primaryPage);
+        if (!options.force && signature === wall.dataset.commentsSignature) return;
+        if (!options.force && shouldDeferRender(wall)) {
+            wall._pendingComments = { comments: comments, primaryPage: primaryPage };
+            return;
+        }
+
         const replyDraft = captureReplyDraft(wall);
         const threads = buildCommentThreads(comments);
+        wall.dataset.commentsSignature = signature;
         if (!threads.length) {
             els.list.innerHTML = '<li class="article-comment-empty">暂无评论，来写第一条吧。</li>';
             return;
@@ -159,6 +208,7 @@
         bindDeleteButtons(wall);
         if (replyDraft) restoreReplyDraft(wall, replyDraft);
         startReactionRealtime(wall);
+        if (window.DavidButtonMotion) window.DavidButtonMotion.enhance(wall);
     }
 
     function buildCommentThreads(comments) {
@@ -228,7 +278,6 @@
                 const count = reactions[btn.dataset.reaction] || 0;
                 const countEl = btn.querySelector('.count');
                 if (countEl) countEl.textContent = count > 0 ? count : '';
-                btn.classList.toggle('active', count > 0);
             });
         } catch (e) {
             console.warn('刷新表情计数失败:', e);
@@ -253,7 +302,6 @@
                 try {
                     const count = await cloudApi().addReaction(commentKey, reaction);
                     countEl.textContent = count > 0 ? count : '';
-                    btn.classList.add('active');
                     await refreshCommentReactions(wall, commentKey);
                 } catch (e) {
                     // 失败时回滚
@@ -329,10 +377,15 @@
             form.style.display = 'none';
             form.innerHTML = '';
             delete form.dataset.open;
+            flushPendingComments(wall);
             return;
         }
         wall.querySelectorAll('.msg-reply-form').forEach(function(item) {
-            if (item !== form) item.style.display = 'none';
+            if (item !== form) {
+                item.style.display = 'none';
+                item.innerHTML = '';
+                delete item.dataset.open;
+            }
         });
         const saved = localStorage.getItem(NICKNAME_KEY) || '';
         const draftNickname = options.nickname || saved;
@@ -356,9 +409,19 @@
         const nickname = form.querySelector('.msg-reply-nickname');
         const content = form.querySelector('.msg-reply-content-input');
         const submit = form.querySelector('.msg-reply-submit');
+        [nickname, content].forEach(function(input) {
+            input.addEventListener('compositionstart', function() {
+                form.dataset.composing = 'true';
+            });
+            input.addEventListener('compositionend', function() {
+                delete form.dataset.composing;
+            });
+        });
         form.querySelector('.msg-reply-cancel').addEventListener('click', function() {
             form.style.display = 'none';
             form.innerHTML = '';
+            delete form.dataset.open;
+            flushPendingComments(wall);
         });
         submit.addEventListener('click', async function() {
             const name = nickname.value.trim();
@@ -385,6 +448,7 @@
                 });
                 form.style.display = 'none';
                 form.innerHTML = '';
+                delete form.dataset.open;
                 await loadComments(wall);
             } catch (error) {
                 delete form.dataset.submitted;
@@ -441,7 +505,7 @@
                 const comment = await cloudApi().createComment({ page, nickname, content });
                 els.content.value = '';
                 if (comment) {
-                    renderComments(wall, [comment].concat(readCurrentComments(els.list)), page);
+                    renderComments(wall, [comment].concat(readCurrentComments(els.list)), page, { force: true });
                 }
                 await loadComments(wall);
             } catch (error) {
@@ -492,7 +556,6 @@
                     const count = reactions[reactionBtn.dataset.reaction] || 0;
                     const countEl = reactionBtn.querySelector('.count');
                     if (countEl) countEl.textContent = count > 0 ? count : '';
-                    reactionBtn.classList.toggle('active', count > 0);
                 });
             }, function(error) {
                 console.warn('评论表情实时监听失败:', error);

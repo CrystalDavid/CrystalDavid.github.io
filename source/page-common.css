@@ -167,12 +167,11 @@
     background: #f0f7ff;
     border-color: #66afef;
     transform: scale(1.1);
+    box-shadow: 0 6px 18px rgba(154, 187, 247, 0.18);
 }
 
 .reaction-btn.active {
-    background: linear-gradient(120deg, rgba(154, 187, 247, 0.28), rgba(255, 187, 244, 0.28));
-    border-color: #9abbf7;
-    box-shadow: 0 6px 18px rgba(154, 187, 247, 0.18);
+    box-shadow: none;
 }
 
 .reaction-btn .r-count {
@@ -509,14 +508,15 @@ body.dark-mode .reaction-btn {
     color: #e0e0e0;
 }
 
-body.dark-mode .reaction-btn:hover {
+body.dark-mode .reaction-btn:hover,
+body.dark-mode .reaction-btn.active:hover {
     background: rgba(60, 60, 100, 0.8);
     border-color: #9abbf7;
 }
 
 body.dark-mode .reaction-btn.active {
-    background: linear-gradient(120deg, rgba(154, 187, 247, 0.32), rgba(255, 187, 244, 0.24));
-    border-color: #9abbf7;
+    background: rgba(40, 40, 70, 0.8);
+    border-color: rgba(154, 187, 247, 0.3);
 }
 
 body.dark-mode .reaction-btn .r-count {

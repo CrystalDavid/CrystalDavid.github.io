@@ -24,6 +24,31 @@ a:hover {
     opacity: 0.8;
 }
 
+button i,
+[role="button"] i,
+.post-card-link i,
+.go-post i,
+button .david-btn-text,
+[role="button"] .david-btn-text,
+.post-card-link .david-btn-text,
+.go-post .david-btn-text {
+    display: inline-block;
+}
+
+button:not(:disabled):hover i,
+[role="button"]:hover i,
+.post-card-link:hover i,
+.go-post:hover i {
+    animation: iconBounce 0.5s ease;
+}
+
+button:not(:disabled):hover .david-btn-text,
+[role="button"]:hover .david-btn-text,
+.post-card-link:hover .david-btn-text,
+.go-post:hover .david-btn-text {
+    animation: textWave 0.5s ease;
+}
+
 /* 导航栏 */
 #menu {
     background: #92cafa;

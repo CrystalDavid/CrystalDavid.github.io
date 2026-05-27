@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css?v=8">
+    <link rel="stylesheet" href="/styles.css?v=9">
     <style>
         .about-container {
             max-width: 900px;
@@ -348,11 +348,10 @@
             background: #f0f7ff;
             border-color: #66afef;
             transform: scale(1.1);
+            box-shadow: 0 6px 18px rgba(154, 187, 247, 0.18);
         }
         .msg-reaction-btn.active {
-            background: linear-gradient(120deg, rgba(154, 187, 247, 0.28), rgba(255, 187, 244, 0.28));
-            border-color: #9abbf7;
-            box-shadow: 0 6px 18px rgba(154, 187, 247, 0.18);
+            box-shadow: none;
         }
         .msg-reaction-btn .count {
             display: inline-flex;
@@ -548,6 +547,10 @@
             color: #fff;
         }
         body.dark-mode .msg-reaction-btn.active {
+            background: rgba(40, 40, 70, 0.8);
+            border-color: rgba(154, 187, 247, 0.3);
+        }
+        body.dark-mode .msg-reaction-btn.active:hover {
             background: linear-gradient(120deg, rgba(154, 187, 247, 0.32), rgba(255, 187, 244, 0.24));
             border-color: #9abbf7;
         }
@@ -787,10 +790,10 @@
 
     <canvas id="fireworks-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <script src="/script.js?v=8"></script>
+    <script src="/script.js?v=9"></script>
     <script src="/cloudbase-config.js?v=2"></script>
     <script src="/cloudbase-api.js?v=3"></script>
-    <script src="/comment-wall.js?v=10"></script>
+    <script src="/comment-wall.js?v=11"></script>
     <script>
     // About 管理员编辑逻辑
     (function() {

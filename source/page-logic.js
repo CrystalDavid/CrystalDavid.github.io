@@ -145,7 +145,6 @@
                     const newCount = await SiteAPI.addReactionToCloudBase(pageKey, reaction);
                     // 使用服务器返回的真实计数
                     countEl.textContent = newCount > 0 ? newCount : '';
-                    btn.classList.add('active');
                 } catch(e) {
                     // 失败时回滚
                     countEl.textContent = currentCount > 0 ? currentCount : '';
@@ -156,6 +155,7 @@
             });
         });
         startReactionRealtime(el, pageKey);
+        if (window.DavidButtonMotion) window.DavidButtonMotion.enhance(el);
 
         // Admin delete
         const delBtn = el.querySelector('.admin-delete-btn');
