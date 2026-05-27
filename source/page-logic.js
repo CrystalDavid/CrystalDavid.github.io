@@ -9,6 +9,7 @@
     const ADMIN_ONLY_DIR = 'source/_admin_posts';
     let isAdmin = false;
     let adminPassword = '';
+    let adminOnlyPostsByKey = {};
 
     async function loadPosts() {
         try {
@@ -527,19 +528,28 @@
         adminOnlySection.style.display = 'block';
         adminOnlyList.innerHTML = '<div class="admin-only-loading">加载管理员文章中...</div>';
         try {
-            const cards = [await buildVisitorLogCard()];
+            const posts = [await buildVisitorLogPost()];
             const entries = await SiteAPI.listRepositoryDirectoryAdmin(ADMIN_ONLY_DIR, adminPassword);
             const files = entries.filter(function(entry) {
                 return entry && entry.type === 'file' && /\.md$/i.test(entry.name || '');
             });
-            const posts = await Promise.all(files.map(readAdminOnlyPost));
-            posts.filter(Boolean).sort(function(a, b) {
+            const adminPosts = await Promise.all(files.map(readAdminOnlyPost));
+            adminPosts.filter(Boolean).sort(function(a, b) {
                 return new Date(b.date || 0) - new Date(a.date || 0);
             }).forEach(function(post) {
-                cards.push(renderAdminOnlyCard(post));
+                posts.push(post);
+            });
+            adminOnlyPostsByKey = {};
+            const reactions = await Promise.all(posts.map(function(post) {
+                const pageKey = getAdminOnlyPageKey(post);
+                adminOnlyPostsByKey[pageKey] = post;
+                return SiteAPI.getReactionsFromCloudBase(pageKey).catch(function() { return {}; });
+            }));
+            const cards = posts.map(function(post, index) {
+                return renderAdminOnlyCard(post, reactions[index] || {});
             });
             adminOnlyList.innerHTML = cards.join('') || '<div class="admin-only-empty">暂无仅管理员可见文章</div>';
-            bindAdminOnlyToggles();
+            bindAdminOnlyCards();
             if (window.DavidButtonMotion) window.DavidButtonMotion.enhance(adminOnlySection);
         } catch (e) {
             adminOnlyList.innerHTML = '<div class="admin-only-empty">管理员文章加载失败：' + escapeHtml(e.message) + '</div>';
@@ -562,7 +572,7 @@
         }
     }
 
-    async function buildVisitorLogCard() {
+    async function buildVisitorLogPost() {
         let logs = [];
         try {
             if (window.DavidCloudBaseAPI && window.DavidCloudBaseAPI.enabled()) {
@@ -591,14 +601,18 @@
             ].map(function(value) { return String(value || '').replace(/\n/g, ' '); }).join(' | ') + ' |');
         });
         if (!logs.length) lines.push('| 暂无记录 | - | - | - | - | - | - |');
-        return renderAdminOnlyCard({
+        return {
             title: '网站访问 IP 属地记录',
             date: new Date().toISOString(),
             tags: ['仅管理员可见', '永久置顶', '访问日志'],
             description: '记录访问时间、IP 属地、访问页面/文章/Agent 等行为。',
             markdown: lines.join('\n'),
-            pinned: true
-        });
+            body: lines.join('\n'),
+            pinned: true,
+            virtual: true,
+            path: 'admin/visitor-ip-log',
+            commentKey: 'admin-article:visitor-ip-log'
+        };
     }
 
     function decodeRepositoryContent(content) {
@@ -666,6 +680,195 @@
                 if (window.DavidButtonMotion) window.DavidButtonMotion.enhance(btn);
             });
         });
+    }
+
+    function getAdminOnlyPageKey(post) {
+        return post.commentKey || ('admin-article:' + (post.path || post.title || 'untitled'));
+    }
+
+    function renderReactionBar(pageKey, reactions) {
+        return '<div class="reaction-bar">' + EMOJIS.map(function(emoji) {
+            const apiName = EMOJI_MAP[emoji];
+            const count = reactions && reactions[apiName] ? reactions[apiName] : 0;
+            return '<button class="reaction-btn" data-page-key="' + escapeHtml(pageKey) + '" data-reaction="' + apiName + '">' + emoji + '<span class="r-count">' + (count > 0 ? count : '') + '</span></button>';
+        }).join('') + '</div>';
+    }
+
+    function bindReactionClicks(scope) {
+        scope.querySelectorAll('.reaction-btn').forEach(function(btn) {
+            btn.addEventListener('click', async function() {
+                const reaction = this.dataset.reaction;
+                const pageKey = this.dataset.pageKey;
+                const countEl = this.querySelector('.r-count');
+                const currentCount = parseInt(countEl.textContent) || 0;
+                countEl.textContent = currentCount + 1;
+                btn.disabled = true;
+                try {
+                    const newCount = await SiteAPI.addReactionToCloudBase(pageKey, reaction);
+                    countEl.textContent = newCount > 0 ? newCount : '';
+                } catch(e) {
+                    countEl.textContent = currentCount > 0 ? currentCount : '';
+                    console.error('娣诲姞琛ㄦ儏澶辫触:', e);
+                } finally {
+                    btn.disabled = false;
+                }
+            });
+        });
+    }
+
+    function renderAdminOnlyCard(post, reactions) {
+        const tags = Array.isArray(post.tags) ? post.tags : String(post.tags || '').split(',').map(function(t) { return t.trim(); }).filter(Boolean);
+        const pageKey = getAdminOnlyPageKey(post);
+        return [
+            '<article class="post-card admin-only-card' + (post.pinned ? ' pinned' : '') + '" data-admin-page-key="' + escapeAttr(pageKey) + '">',
+            '<div class="admin-only-meta">',
+            post.pinned ? '<span class="admin-only-pin"><i class="fa-solid fa-thumbtack"></i> 永久置顶</span>' : '<span class="admin-only-pin"><i class="fa-solid fa-lock"></i> 仅管理员可见</span>',
+            '<span>' + escapeHtml(formatDate(post.date || new Date().toISOString())) + '</span>',
+            '</div>',
+            '<div class="post-card-title">' + escapeHtml(post.title || '未命名管理员文章') + '</div>',
+            post.description ? '<div class="post-card-desc">' + escapeHtml(post.description) + '</div>' : '',
+            '<div class="post-card-tags">' + tags.map(function(tag) { return '<span>#' + escapeHtml(tag) + '</span>'; }).join('') + '</div>',
+            '<button class="post-card-link admin-only-open-btn" type="button" data-admin-page-key="' + escapeAttr(pageKey) + '">进入 -></button>',
+            renderReactionBar(pageKey, reactions || {}),
+            '</article>'
+        ].join('');
+    }
+
+    function bindAdminOnlyCards() {
+        adminOnlyList.querySelectorAll('.admin-only-open-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const post = adminOnlyPostsByKey[btn.dataset.adminPageKey];
+                if (post) showAdminOnlyArticleDetail(post);
+            });
+        });
+        bindReactionClicks(adminOnlyList);
+        adminOnlyList.querySelectorAll('.admin-only-card[data-admin-page-key]').forEach(function(card) {
+            startReactionRealtime(card, card.dataset.adminPageKey);
+        });
+    }
+
+    function showAdminOnlyArticleDetail(post) {
+        const pageKey = getAdminOnlyPageKey(post);
+        const tags = Array.isArray(post.tags) ? post.tags : String(post.tags || '').split(',').map(function(t) { return t.trim(); }).filter(Boolean);
+        adminOnlyList.innerHTML = [
+            '<article class="article-detail-card admin-only-detail-card">',
+            '<button class="admin-only-back-btn" type="button"><i class="fa-solid fa-arrow-left"></i> 返回管理员文章列表</button>',
+            '<div class="article">',
+            '<div class="title">',
+            '<h1>' + escapeHtml(post.title || '未命名管理员文章') + '</h1>',
+            '<div class="info">',
+            '<span><i class="fa-solid fa-calendar fa-fw"></i> ' + escapeHtml(formatDate(post.date || new Date().toISOString())) + '</span>',
+            tags.length ? '<span><i class="fa-solid fa-tags fa-fw"></i> ' + tags.map(function(tag) { return '#' + escapeHtml(tag); }).join(' ') + '</span>' : '',
+            '</div>',
+            '</div>',
+            '<div class="content admin-only-rendered-content">' + markdownToHtml(post.body || post.markdown || '') + '</div>',
+            '<div class="article-comment-wall" data-comment-wall data-comment-page="' + escapeAttr(pageKey) + '">',
+            '<div class="section-title"><i class="fa-solid fa-comments"></i> 评论</div>',
+            '<div class="msg-input-area">',
+            '<input type="text" data-comment-nickname placeholder="你的昵称" maxlength="20">',
+            '<textarea data-comment-content placeholder="写下你想说的话..." maxlength="500"></textarea>',
+            '<button class="msg-submit-btn" data-comment-submit>发布评论</button>',
+            '</div>',
+            '<ul class="msg-list" data-comment-list></ul>',
+            '</div>',
+            '</div>',
+            '</article>'
+        ].join('');
+        const back = adminOnlyList.querySelector('.admin-only-back-btn');
+        if (back) back.addEventListener('click', loadAdminOnlyArticles);
+        if (window.DavidCommentWall) {
+            window.DavidCommentWall.bind(adminOnlyList);
+            window.DavidCommentWall.setAdminPassword(adminPassword);
+        }
+        if (window.DavidButtonMotion) window.DavidButtonMotion.enhance(adminOnlyList);
+        adminOnlySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function markdownToHtml(markdown) {
+        const lines = String(markdown || '').replace(/\r\n/g, '\n').split('\n');
+        const html = [];
+        let paragraph = [];
+        let inCode = false;
+        let code = [];
+        let table = [];
+
+        function flushParagraph() {
+            if (!paragraph.length) return;
+            html.push('<p>' + inlineMarkdown(escapeHtml(paragraph.join(' '))) + '</p>');
+            paragraph = [];
+        }
+        function flushCode() {
+            if (!code.length) return;
+            html.push('<pre><code>' + escapeHtml(code.join('\n')) + '</code></pre>');
+            code = [];
+        }
+        function flushTable() {
+            if (!table.length) return;
+            const rows = table.filter(function(line) { return !/^\|\s*-+/.test(line); }).map(function(line) {
+                return line.replace(/^\||\|$/g, '').split('|').map(function(cell) {
+                    return inlineMarkdown(escapeHtml(cell.trim()));
+                });
+            });
+            if (rows.length) {
+                const head = rows.shift();
+                html.push('<table><thead><tr>' + head.map(function(cell) { return '<th>' + cell + '</th>'; }).join('') + '</tr></thead><tbody>' + rows.map(function(row) {
+                    return '<tr>' + row.map(function(cell) { return '<td>' + cell + '</td>'; }).join('') + '</tr>';
+                }).join('') + '</tbody></table>');
+            }
+            table = [];
+        }
+
+        lines.forEach(function(line) {
+            if (/^```/.test(line)) {
+                flushParagraph();
+                flushTable();
+                if (inCode) {
+                    inCode = false;
+                    flushCode();
+                } else {
+                    inCode = true;
+                }
+                return;
+            }
+            if (inCode) {
+                code.push(line);
+                return;
+            }
+            if (/^\|.*\|$/.test(line.trim())) {
+                flushParagraph();
+                table.push(line.trim());
+                return;
+            }
+            flushTable();
+            if (!line.trim()) {
+                flushParagraph();
+                return;
+            }
+            const heading = line.match(/^(#{1,4})\s+(.+)$/);
+            if (heading) {
+                flushParagraph();
+                const level = Math.min(heading[1].length + 1, 5);
+                html.push('<h' + level + '>' + inlineMarkdown(escapeHtml(heading[2])) + '</h' + level + '>');
+                return;
+            }
+            if (/^>\s+/.test(line)) {
+                flushParagraph();
+                html.push('<blockquote>' + inlineMarkdown(escapeHtml(line.replace(/^>\s+/, ''))) + '</blockquote>');
+                return;
+            }
+            paragraph.push(line.trim());
+        });
+        flushParagraph();
+        flushTable();
+        flushCode();
+        return html.join('\n') || '<p>暂无正文。</p>';
+    }
+
+    function inlineMarkdown(text) {
+        return String(text || '')
+            .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+            .replace(/`([^`]+)`/g, '<code>$1</code>')
+            .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
     }
 
     async function extractMarkdownText(file) {

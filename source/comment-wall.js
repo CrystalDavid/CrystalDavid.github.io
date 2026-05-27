@@ -476,8 +476,10 @@
     }
 
     function bindWall(wall) {
+        if (wall.dataset.commentWallReady === 'true') return;
         const els = getElements(wall);
         if (!els.nickname || !els.content || !els.submit || !els.list) return;
+        wall.dataset.commentWallReady = 'true';
         setupCommentAdmin(wall);
 
         const saved = localStorage.getItem(NICKNAME_KEY);
@@ -629,6 +631,10 @@
 
     window.DavidCommentWall = {
         setAdminPassword: setAdminPassword,
+        bind: function(root) {
+            const scope = root || document;
+            scope.querySelectorAll('[data-comment-wall]').forEach(bindWall);
+        },
         reload: function() {
             document.querySelectorAll('[data-comment-wall]').forEach(loadComments);
         }

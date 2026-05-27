@@ -15,6 +15,7 @@ const MAX_VISIT_FIELD_LENGTH = 240;
 const PAGE_SIZE = 200;
 const VISIT_PAGE_SIZE = 500;
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+const ensuredCollections = {};
 const ALLOWED_ORIGINS = [
   'https://crystaldavid.github.io',
   'http://localhost:4000',
@@ -108,6 +109,17 @@ function isPrivateIp(ip) {
     ip === '::1' ||
     ip.indexOf('fc') === 0 ||
     ip.indexOf('fd') === 0;
+}
+
+async function ensureCollection(name) {
+  if (ensuredCollections[name]) return;
+  try {
+    await db.createCollection(name);
+  } catch (e) {
+    // Collection already exists, or the runtime has no create permission. In either case
+    // we still try the real read/write below so the error path stays accurate.
+  }
+  ensuredCollections[name] = true;
 }
 
 async function resolveIpLocation(ip) {
@@ -297,6 +309,7 @@ async function recordVisit(event) {
   if (!await checkRateLimit(event, 'visit', 120)) {
     return ok({ skipped: true });
   }
+  await ensureCollection('visit_logs');
   const ip = getClientIp(event);
   const now = Date.now();
   const location = await resolveIpLocation(ip);
@@ -324,6 +337,7 @@ async function listVisitLogs(event) {
   if (sha256(event.adminPassword || '') !== ADMIN_PASSWORD_HASH) {
     return fail('Unauthorized', 'UNAUTHORIZED');
   }
+  await ensureCollection('visit_logs');
   const res = await db.collection('visit_logs')
     .orderBy('createdAt', 'desc')
     .limit(VISIT_PAGE_SIZE)
