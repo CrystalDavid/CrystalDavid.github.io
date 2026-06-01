@@ -1,12 +1,17 @@
 const express = require('express');
 const router = express.Router();
+const fs = require('fs');
+const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const { createSession, getSession } = require('../services/session');
+const { createSession, getSession, importSession, serializeSession } = require('../services/session');
 const { handleInterviewMessage } = require('../services/interview');
 const { generateOutline, refineOutline } = require('../services/outline');
 const { generatePlanning, refinePlanningPage } = require('../services/planning');
 const { renderPage, renderAllPages, modifyPage } = require('../services/render');
-const { exportPdf, exportHtmlBundle } = require('../services/export');
+const { exportPdf, exportHtmlBundle, exportPptx } = require('../services/export');
+
+const OUTPUT_DIR = path.join(__dirname, '../../output');
+const SESSION_EXPORT_VERSION = '2026.6.1';
 
 // ============================================================
 // 统一对话入口
@@ -47,6 +52,54 @@ router.post('/chat', async (req, res) => {
   } catch (err) {
     console.error('Workflow chat error:', err);
     res.status(500).json({ error: err.message || '服务器内部错误' });
+  }
+});
+
+// ============================================================
+// Session import / export
+// ============================================================
+router.post('/session/export', (req, res) => {
+  try {
+    const { sessionId } = req.body;
+    const session = getSession(sessionId);
+    if (!session) return res.status(404).json({ error: '会话不存在' });
+
+    ensureOutputDir();
+    const shortId = session.id.slice(0, 8);
+    const filename = `ppt-agent-session-${shortId}-${Date.now()}.pptagent.json`;
+    const filepath = path.join(OUTPUT_DIR, filename);
+    const payload = {
+      format: 'ppt-agent-session',
+      version: SESSION_EXPORT_VERSION,
+      exportedAt: new Date().toISOString(),
+      session: serializeSession(session),
+    };
+
+    fs.writeFileSync(filepath, JSON.stringify(payload, null, 2), 'utf8');
+    res.json({ sessionId: session.id, filename, downloadUrl: `/api/export/download/${filename}` });
+  } catch (err) {
+    console.error('Session export error:', err);
+    res.status(500).json({ error: err.message || '导出会话失败' });
+  }
+});
+
+router.post('/session/import', (req, res) => {
+  try {
+    const payload = req.body?.payload || req.body;
+    const snapshot = payload?.format === 'ppt-agent-session' ? payload.session : payload?.session || payload;
+    if (!snapshot || typeof snapshot !== 'object') {
+      return res.status(400).json({ error: '无效的会话文件' });
+    }
+
+    const session = importSession(uuidv4(), snapshot);
+    res.json({
+      sessionId: session.id,
+      stage: session.stage,
+      session: serializeSession(session),
+    });
+  } catch (err) {
+    console.error('Session import error:', err);
+    res.status(500).json({ error: err.message || '导入会话失败' });
   }
 });
 
@@ -160,7 +213,7 @@ router.post('/planning/refine-all', async (req, res) => {
 });
 
 // ============================================================
-// Step 4: 渲染 HTML 页面
+// Step 4: 渲染 SVG 页面
 // ============================================================
 router.post('/render', async (req, res) => {
   try {
@@ -184,20 +237,26 @@ router.post('/render/page', async (req, res) => {
     const session = getSession(sessionId);
     if (!session) return res.status(404).json({ error: '会话不存在' });
 
-    const html = await renderPage(session, pageNumber);
+    const result = await renderPage(session, pageNumber);
 
     // 存储到 session 以便导出使用
     if (!session.renderedPages) session.renderedPages = [];
     const existing = session.renderedPages.find(p => p.page_number === pageNumber);
     if (existing) {
-      existing.html = html;
+      existing.svg = result.svg;
+      existing.html = result.html;
     } else {
       const pages = session.planning?.planning_draft?.pages || session.planning?.pages || [];
       const pageData = pages.find(p => p.page_number === pageNumber);
-      session.renderedPages.push({ page_number: pageNumber, title: pageData?.title || `第${pageNumber}页`, html });
+      session.renderedPages.push({
+        page_number: pageNumber,
+        title: pageData?.title || `第${pageNumber}页`,
+        svg: result.svg,
+        html: result.html,
+      });
     }
 
-    res.json({ sessionId: session.id, pageNumber, html });
+    res.json({ sessionId: session.id, pageNumber, svg: result.svg, html: result.html });
   } catch (err) {
     console.error('Render page error:', err);
     res.status(500).json({ error: err.message });
@@ -211,8 +270,8 @@ router.post('/render/modify', async (req, res) => {
     const session = getSession(sessionId);
     if (!session) return res.status(404).json({ error: '会话不存在' });
 
-    const html = await modifyPage(session, pageNumber, instruction);
-    res.json({ sessionId: session.id, pageNumber, html });
+    const result = await modifyPage(session, pageNumber, instruction);
+    res.json({ sessionId: session.id, pageNumber, svg: result.svg, html: result.html });
   } catch (err) {
     console.error('Render modify error:', err);
     res.status(500).json({ error: err.message });
@@ -251,5 +310,26 @@ router.post('/export/pdf', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+router.post('/export/pptx', async (req, res) => {
+  try {
+    const { sessionId } = req.body;
+    const session = getSession(sessionId);
+    if (!session) return res.status(404).json({ error: '会话不存在' });
+    if (!session.renderedPages) return res.status(400).json({ error: '请先渲染页面' });
+
+    const { filename, filepath } = await exportPptx(session);
+    res.json({ sessionId: session.id, filename, downloadUrl: `/api/export/download/${filename}` });
+  } catch (err) {
+    console.error('Export PPTX error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+function ensureOutputDir() {
+  if (!fs.existsSync(OUTPUT_DIR)) {
+    fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+  }
+}
 
 module.exports = router;

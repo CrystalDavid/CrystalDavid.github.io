@@ -3,8 +3,8 @@
  * 所有请求直接调用后端，绕过 Next.js 代理（避免代理超时导致数据丢失）
  */
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001';
-const API = `${BACKEND_URL}/api/workflow`;
+export const BACKEND_ORIGIN = (process.env.NEXT_PUBLIC_BACKEND_ORIGIN || 'http://localhost:3001').replace(/\/$/, '');
+const API = (process.env.NEXT_PUBLIC_WORKFLOW_API || `${BACKEND_ORIGIN}/api/workflow`).replace(/\/$/, '');
 
 /**
  * 带重试的 fetch 封装
@@ -55,6 +55,7 @@ export interface PlanningResponse {
 export interface RenderedPage {
   page_number: number;
   title: string;
+  svg?: string;
   html: string;
 }
 
@@ -68,6 +69,27 @@ export interface ExportResponse {
   sessionId: string;
   filename: string;
   downloadUrl: string;
+}
+
+export interface SessionState {
+  id: string;
+  stage?: string;
+  interviewStep?: number;
+  topic?: string;
+  messages?: unknown[];
+  context?: Record<string, unknown>;
+  brief?: Record<string, unknown> | null;
+  outline?: Record<string, unknown> | null;
+  planning?: Record<string, unknown> | null;
+  renderedPages?: RenderedPage[];
+  createdAt?: number;
+  importedAt?: number | null;
+}
+
+export interface SessionImportResponse {
+  sessionId: string;
+  stage: string;
+  session: SessionState;
 }
 
 export async function sendMessage(sessionId: string | null, message: string): Promise<ChatResponse> {
@@ -163,7 +185,7 @@ export async function refinePlanningAll(sessionId: string, feedback: string): Pr
 
 export async function renderAllPages(sessionId: string): Promise<RenderResponse> {
   // 直接调用后端，绕过 Next.js 代理（避免代理超时）
-  const res = await fetchWithRetry(`${BACKEND_URL}/api/workflow/render`, {
+  const res = await fetchWithRetry(`${API}/render`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId }),
@@ -175,8 +197,8 @@ export async function renderAllPages(sessionId: string): Promise<RenderResponse>
   return res.json();
 }
 
-export async function renderSinglePage(sessionId: string, pageNumber: number): Promise<{ html: string }> {
-  const res = await fetchWithRetry(`${BACKEND_URL}/api/workflow/render/page`, {
+export async function renderSinglePage(sessionId: string, pageNumber: number): Promise<{ svg?: string; html: string }> {
+  const res = await fetchWithRetry(`${API}/render/page`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId, pageNumber }),
@@ -188,8 +210,8 @@ export async function renderSinglePage(sessionId: string, pageNumber: number): P
   return res.json();
 }
 
-export async function modifyRenderedPage(sessionId: string, pageNumber: number, instruction: string): Promise<{ html: string }> {
-  const res = await fetchWithRetry(`${BACKEND_URL}/api/workflow/render/modify`, {
+export async function modifyRenderedPage(sessionId: string, pageNumber: number, instruction: string): Promise<{ svg?: string; html: string }> {
+  const res = await fetchWithRetry(`${API}/render/modify`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId, pageNumber, instruction }),
@@ -202,7 +224,7 @@ export async function modifyRenderedPage(sessionId: string, pageNumber: number, 
 }
 
 export async function exportHtml(sessionId: string): Promise<ExportResponse> {
-  const res = await fetchWithRetry(`${BACKEND_URL}/api/workflow/export/html`, {
+  const res = await fetchWithRetry(`${API}/export/html`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId }),
@@ -215,10 +237,49 @@ export async function exportHtml(sessionId: string): Promise<ExportResponse> {
 }
 
 export async function exportPdf(sessionId: string): Promise<ExportResponse> {
-  const res = await fetchWithRetry(`${BACKEND_URL}/api/workflow/export/pdf`, {
+  const res = await fetchWithRetry(`${API}/export/pdf`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sessionId }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: '请求失败' }));
+    throw new Error(err.error || `HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function exportPptx(sessionId: string): Promise<ExportResponse> {
+  const res = await fetchWithRetry(`${API}/export/pptx`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ sessionId }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: '请求失败' }));
+    throw new Error(err.error || `HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function exportSession(sessionId: string): Promise<ExportResponse> {
+  const res = await fetchWithRetry(`${API}/session/export`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ sessionId }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: '请求失败' }));
+    throw new Error(err.error || `HTTP ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function importSessionFile(payload: unknown): Promise<SessionImportResponse> {
+  const res = await fetchWithRetry(`${API}/session/import`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ payload }),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: '请求失败' }));
