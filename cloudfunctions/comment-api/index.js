@@ -82,6 +82,20 @@ function cleanText(value, maxLength) {
     .slice(0, maxLength);
 }
 
+function cleanMultilineText(value, maxLength) {
+  return String(value || '')
+    .replace(/\r\n?/g, '\n')
+    .replace(/[\u0000-\u0009\u000b-\u001f\u007f]/g, ' ')
+    .split('\n')
+    .map(function(line) {
+      return line.replace(/[ \t]+/g, ' ').trimEnd();
+    })
+    .join('\n')
+    .replace(/\n{4,}/g, '\n\n\n')
+    .trim()
+    .slice(0, maxLength);
+}
+
 function getActor(event) {
   const context = cloudbase.getCloudbaseContext ? cloudbase.getCloudbaseContext() : {};
   const headers = event.headers || {};
@@ -219,7 +233,7 @@ async function createComment(event) {
   }
   const page = normalizeKey(event.page);
   const nickname = cleanText(event.nickname, MAX_NICKNAME_LENGTH);
-  const content = cleanText(event.content, MAX_CONTENT_LENGTH);
+  const content = cleanMultilineText(event.content, MAX_CONTENT_LENGTH);
   const parentId = cleanText(event.parentId || event.parent_id, 128);
   const replyToNickname = cleanText(event.replyToNickname || event.reply_to_nickname, MAX_NICKNAME_LENGTH);
   if (!nickname) return fail('请输入昵称。');

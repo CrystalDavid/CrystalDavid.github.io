@@ -25,6 +25,10 @@
         return div.innerHTML;
     }
 
+    function formatCommentContent(value) {
+        return escapeHtml(value || '').replace(/\r\n|\r|\n/g, '<br>');
+    }
+
     function formatTime(value) {
         const date = new Date(value);
         if (Number.isNaN(date.getTime())) return value || '';
@@ -186,7 +190,7 @@
                 '<span class="msg-nickname">' + escapeHtml(comment.nickname || '匿名') + '</span>',
                 '<span class="msg-time">' + escapeHtml(formatTime(comment.created_at)) + '</span>',
                 '</div>',
-                '<div class="msg-content">' + escapeHtml(comment.content || '') + '</div>',
+                '<div class="msg-content">' + formatCommentContent(comment.content || '') + '</div>',
                 '<div class="msg-actions">',
                 '<div class="msg-reactions">',
                 EMOJIS.map(function(emoji) {
@@ -256,7 +260,7 @@
                     '<button class="msg-reply-btn msg-reply-inline-btn" type="button" data-page="' + escapeHtml(page) + '" data-parent-id="' + escapeHtml(root.id || '') + '" data-reply-to="' + escapeHtml(reply.nickname || '匿名') + '">回复</button>',
                     adminPassword ? '<button class="msg-delete-btn msg-reply-delete-btn" type="button" data-page="' + escapeHtml(page) + '" data-id="' + escapeHtml(reply.id || '') + '" data-created="' + escapeHtml(reply.created_at || '') + '" title="删除"><i class="fa-solid fa-trash"></i></button>' : '',
                     '</div>',
-                    '<div class="msg-reply-content">' + escapeHtml(reply.content || '') + '</div>',
+                    '<div class="msg-reply-content">' + formatCommentContent(reply.content || '') + '</div>',
                     '</div>'
                 ].join('');
             }).join(''),
