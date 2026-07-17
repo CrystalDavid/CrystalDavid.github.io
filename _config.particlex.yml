@@ -1,9 +1,9 @@
-avatar: /assets/头像.png
+avatar: /assets/头像.webp
 
 background:
-  - /assets/壁纸.png
-  - /assets/壁纸2.png
-  - /assets/壁纸3.png
+  - /assets/壁纸.webp
+  - /assets/壁纸2.webp
+  - /assets/壁纸3.webp
 
 loading: /images/loading.gif
 

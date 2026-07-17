@@ -218,11 +218,11 @@ if (themeToggle) {
 
 // 壁纸切换
 const wallpapers = [
-    { src: 'assets/壁纸3.png', type: 'image' },
-    { src: 'assets/壁纸.png', type: 'image' },
+    { src: 'assets/壁纸3.webp', type: 'image' },
+    { src: 'assets/壁纸.webp', type: 'image' },
     { src: 'assets/壁纸1.mp4', type: 'video' },
-    { src: 'assets/壁纸2.png', type: 'image' },
-    { src: 'assets/壁纸4.mp4', type: 'video' },
+    { src: 'assets/壁纸2.webp', type: 'image' },
+    { src: 'assets/壁纸4-lite.mp4', type: 'video' },
 ];
 let currentWallpaper = 0;
 

@@ -2,21 +2,22 @@
 <html lang="zh-CN">
 <head>
     <meta charset="utf-8">
-    <title>Davidの小窝</title>
+    <title>David的个人博客</title>
     <meta name="author" content="David">
-    <meta name="description" content="Davidの小窝">
+    <meta name="description" content="David的个人博客">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=10">
+    <link rel="preload" as="image" href="assets/壁纸3.webp" fetchpriority="high">
+    <link rel="stylesheet" href="styles.css?v=11">
 </head>
-<body>
+<body class="home-page">
     <!-- 顶部导航栏 -->
     <div id="menu">
         <nav id="desktop-menu">
             <a class="title" href="/">
-                <span>Davidの小窝</span>
+                <span>David的个人博客</span>
             </a>
             <div class="nav-links">
                 <a href="/">
@@ -50,7 +51,7 @@
         <nav id="mobile-menu">
             <div class="title" id="mobile-menu-toggle">
                 <i class="fa-solid fa-bars fa-fw"></i>
-                <span>&emsp;Davidの小窝</span>
+                <span>&emsp;David的个人博客</span>
             </div>
             <div class="items" id="mobile-menu-items" style="display:none;">
                 <a href="/"><div class="item"><div class="item-icon"><i class="fa-solid fa-house fa-fw"></i></div><div class="item-text">Home</div></div></a>
@@ -75,7 +76,7 @@
         <div id="home-info">
             <span class="info">
                 <div class="wrap">
-                    <h1>Davidの小窝</h1>
+                    <h1>David的个人博客</h1>
                     <h3>构建智能，连接未来</h3>
                     <h5>个人开发者 / AI-Agent 开发者</h5>
                 </div>
@@ -102,7 +103,7 @@
             <div id="card-style">
                 <div id="card-div">
                     <div class="avatar">
-                        <img src="assets/头像.png" alt="avatar">
+                        <img src="assets/头像.webp" alt="David" width="512" height="512" loading="lazy" decoding="async">
                     </div>
                     <div class="name">David</div>
                     <div class="description">
@@ -127,7 +128,7 @@
     <footer id="footer">
         <div id="footer-wrap">
             <div>
-                &copy; 2025 Davidの小窝
+                &copy; 2025 David的个人博客
                 <span id="footer-icon"><i class="fa-solid fa-heart fa-fw"></i></span>
                 @David
             </div>
@@ -159,7 +160,7 @@
 
     <canvas id="fireworks-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;"></canvas>
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <script src="script.js?v=10"></script>
+    <script src="script.js?v=11"></script>
     <script src="cloudbase-config.js?v=2"></script>
     <script src="cloudbase-api.js?v=5"></script>
     <script src="visit-tracker.js?v=2"></script>
