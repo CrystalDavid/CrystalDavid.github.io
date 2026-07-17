@@ -411,6 +411,10 @@ body.dark-mode .description {
     text-align: center;
 }
 
+#home-head #home-info .info .wrap h1 {
+    font-family: SimSun, "宋体", serif;
+}
+
 /* 内容区域 */
 #home-posts-wrap {
     background: transparent;
