@@ -1,7 +1,8 @@
 node_modules/
+.next/
+out/
 .env
 *.log
-public/
 db.json
 .deploy_git/
 PPT-Agent/backend/.env

@@ -1,25 +1,39 @@
 {
-  "name": "crystaldavid-github-io",
-  "version": "1.0.0",
+  "name": "david-personal-site",
+  "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "clean": "hexo clean",
-    "build": "hexo generate",
-    "server": "hexo server",
-    "deploy": "hexo clean && hexo generate"
+  "engines": {
+    "node": ">=22.13.0"
   },
-  "hexo": {
-    "version": "7.3.0"
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "npm run build && node --test tests/rendered-html.test.mjs",
+    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
   },
   "dependencies": {
-    "hexo": "^7.3.0",
-    "hexo-cli": "^4.3.2",
-    "hexo-generator-archive": "^2.0.0",
-    "hexo-generator-category": "^2.0.0",
-    "hexo-generator-tag": "^2.0.0",
-    "hexo-renderer-ejs": "^2.0.0",
-    "hexo-renderer-marked": "^6.3.0",
-    "hexo-renderer-stylus": "^3.0.1",
-    "hexo-server": "^3.0.0"
-  }
+    "next": "16.2.6",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "simple-icons": "^16.27.0"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "1.37.1",
+    "@tailwindcss/postcss": "4.2.1",
+    "@types/node": "22.19.19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.2",
+    "@vitejs/plugin-rsc": "0.5.26",
+    "eslint": "9.39.4",
+    "eslint-config-next": "16.2.6",
+    "react-server-dom-webpack": "19.2.6",
+    "tailwindcss": "4.2.1",
+    "typescript": "5.9.3",
+    "vinext": "0.0.50",
+    "vite": "8.0.13",
+    "wrangler": "4.92.0"
+  },
+  "type": "module"
 }
