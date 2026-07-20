@@ -37,14 +37,14 @@ type Mark = {
 };
 
 const agentMarks: Mark[] = [
-  { name: "OpenAI", image: "/media/openai-logo.png", x: "37%", y: "38%", delay: "150ms" },
-  { name: "Google", image: "/media/google-g.png", x: "43%", y: "21%", delay: "185ms" },
-  { name: "NVIDIA", icon: siNvidia, x: "57%", y: "21%", delay: "220ms" },
-  { name: "Anthropic", icon: siAnthropic, x: "63%", y: "38%", delay: "255ms" },
-  { name: "DeepSeek", icon: siDeepseek, x: "37%", y: "62%", delay: "290ms" },
-  { name: "Alibaba Cloud", icon: siAlibabacloud, x: "43%", y: "79%", delay: "325ms" },
-  { name: "Doubao", image: "/media/doubao-logo.png", x: "57%", y: "79%", delay: "360ms" },
-  { name: "ByteDance", icon: siBytedance, x: "63%", y: "62%", delay: "395ms" },
+  { name: "OpenAI", image: "/media/openai-logo.png", x: "25%", y: "42%", delay: "150ms" },
+  { name: "Google", image: "/media/google-g.png", x: "41%", y: "27%", delay: "185ms" },
+  { name: "NVIDIA", icon: siNvidia, x: "59%", y: "27%", delay: "220ms" },
+  { name: "Anthropic", icon: siAnthropic, x: "75%", y: "42%", delay: "255ms" },
+  { name: "DeepSeek", icon: siDeepseek, x: "25%", y: "62%", delay: "290ms" },
+  { name: "Alibaba Cloud", icon: siAlibabacloud, x: "41%", y: "77%", delay: "325ms" },
+  { name: "Doubao", image: "/media/doubao-logo.png", x: "59%", y: "77%", delay: "360ms" },
+  { name: "ByteDance", icon: siBytedance, x: "75%", y: "62%", delay: "395ms" },
 ];
 
 const socialLinks = [
@@ -278,6 +278,12 @@ export default function Home() {
                      key={article.slug}
                      prefetch={false}
                    >
+                     <span
+                       className="article-work-placeholder"
+                       aria-hidden="true"
+                     >
+                       <span className="article-work-placeholder-inner" />
+                     </span>
                      <span className="article-work-copy">
                        <small>{article.meta}</small>
                        <strong>

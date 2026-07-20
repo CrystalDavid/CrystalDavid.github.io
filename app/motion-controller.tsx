@@ -209,6 +209,14 @@ export function MotionController() {
               window.setTimeout(() => {
                 target.classList.add("motion-settled");
                 agentChapter?.classList.add("motion-settled");
+
+                if (target.matches("[data-top-flip]")) {
+                  const label = target.getAttribute("aria-label");
+                  if (label) {
+                    target.replaceChildren(document.createTextNode(label));
+                    target.classList.remove("top-flip-ready");
+                  }
+                }
               }, 920),
             );
             textObserver?.unobserve(target);
@@ -280,20 +288,17 @@ export function MotionController() {
 
           if (!isActive && !featureWasActive) return;
 
-          const copyOffset = Math.round(
-            clamp(panelTop / viewportHeight, -1, 1) * 142,
-          );
-          const mediaOffset = Math.round(
-            clamp(panelTop / viewportHeight, -1, 1) * -34,
-          );
+          const progress = clamp(panelTop / viewportHeight, -1, 1);
+          const copyOffset = progress * 142;
+          const mediaOffset = progress * -34;
 
           featurePanel.style.setProperty(
             "--feature-copy-y",
-            `${copyOffset}px`,
+            `${copyOffset.toFixed(2)}px`,
           );
           featurePanel.style.setProperty(
             "--feature-media-y",
-            `${mediaOffset}px`,
+            `${mediaOffset.toFixed(2)}px`,
           );
           featurePanel.classList.toggle("parallax-active", isActive);
           featureWasActive = isActive;
@@ -340,20 +345,12 @@ export function MotionController() {
       currentDepthY += (targetDepthY - currentDepthY) * 0.2;
 
       activeDepthPanel.style.setProperty(
-        "--depth-title-x",
-        `${Math.round(currentDepthX * 10)}px`,
-      );
-      activeDepthPanel.style.setProperty(
-        "--depth-title-y",
-        `${Math.round(currentDepthY * 6)}px`,
-      );
-      activeDepthPanel.style.setProperty(
         "--depth-mark-x",
-        `${Math.round(currentDepthX * 18)}px`,
+        `${(currentDepthX * 18).toFixed(2)}px`,
       );
       activeDepthPanel.style.setProperty(
         "--depth-mark-y",
-        `${Math.round(currentDepthY * 9)}px`,
+        `${(currentDepthY * 9).toFixed(2)}px`,
       );
 
       if (

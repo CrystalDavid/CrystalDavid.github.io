@@ -61,7 +61,7 @@ body {
     sans-serif;
   font-synthesis: none;
   letter-spacing: 0.018em;
-  text-rendering: auto;
+  text-rendering: optimizeSpeed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -302,6 +302,9 @@ html[data-lang="zh"] .lang-zh {
 
 .center-magnet-ready.motion-settled .magnet-word {
   will-change: auto;
+  transform: none;
+  transition: none;
+  backface-visibility: visible;
 }
 
 .center-magnet-ready.motion-calibrating .magnet-word {
@@ -401,6 +404,7 @@ html[data-lang="en"] .hero-title > .lang-en.center-magnet-ready .magnet-word {
   transition:
     opacity 720ms 70ms var(--ease-out),
     transform 720ms 70ms var(--ease-out);
+  text-rendering: optimizeSpeed;
 }
 
 .chapter-screen.is-visible .chapter-title {
@@ -413,14 +417,6 @@ html[data-lang="en"] .hero-title > .lang-en.center-magnet-ready .magnet-word {
   transform: none;
   transition: none;
   white-space: nowrap;
-}
-
-.chapter-screen[data-pointer-depth] .chapter-title[data-top-flip] {
-  transform: translate3d(
-    var(--depth-title-x, 0),
-    var(--depth-title-y, 0),
-    0
-  );
 }
 
 .flip-char-mask {
@@ -459,6 +455,18 @@ html[data-lang="en"] .hero-title > .lang-en.center-magnet-ready .magnet-word {
 .top-flip-ready.motion-settled .flip-char-mask > span,
 .agent-chapter.motion-settled .orbit-object {
   will-change: auto;
+}
+
+.top-flip-ready.motion-settled .flip-char-mask {
+  overflow: visible;
+  perspective: none;
+}
+
+.top-flip-ready.motion-settled .flip-char-mask > span {
+  opacity: 1;
+  transform: none;
+  transition: none;
+  backface-visibility: visible;
 }
 
 .orbit-object {
@@ -621,7 +629,7 @@ html[data-lang="en"] .hero-title > .lang-en.center-magnet-ready .magnet-word {
   border-radius: 32px;
   background: #eef2f7;
   place-items: center;
-  transform: translate3d(0, var(--feature-media-y), 0);
+  transform: none;
 }
 
 .product-backdrop img {
@@ -633,6 +641,7 @@ html[data-lang="en"] .hero-title > .lang-en.center-magnet-ready .magnet-word {
 }
 
 .feature-screen.parallax-active .product-backdrop {
+  transform: translate3d(0, var(--feature-media-y), 0);
   will-change: transform;
 }
 
@@ -659,10 +668,11 @@ html[data-lang="en"] .hero-title > .lang-en.center-magnet-ready .magnet-word {
 
 .feature-copy {
   max-width: 440px;
-  transform: translate3d(0, var(--feature-copy-y), 0);
+  transform: none;
 }
 
 .feature-screen.parallax-active .feature-copy {
+  transform: translate3d(0, var(--feature-copy-y), 0);
   will-change: transform;
 }
 
@@ -775,19 +785,34 @@ html[data-lang="en"] .hero-title > .lang-en.center-magnet-ready .magnet-word {
 
 .article-work-card {
   min-width: 0;
-  min-height: 132px;
-  display: flex;
-  align-items: center;
-  padding: 26px 4px 30px;
-  border-top: 1px solid rgba(33, 40, 189, 0.14);
+  display: block;
   opacity: 1;
+}
+
+.article-work-placeholder {
+  position: relative;
+  aspect-ratio: 1.55 / 1;
+  display: block;
+  overflow: hidden;
+  border: 1px solid rgba(33, 40, 189, 0.19);
+  border-radius: 27px;
+  background: rgba(250, 253, 255, 0.92);
+}
+
+.article-work-placeholder-inner {
+  position: absolute;
+  inset: 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(33, 40, 189, 0.08);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(220, 235, 255, 0.68));
 }
 
 .article-work-copy {
   position: relative;
-  min-height: 0;
+  min-height: 78px;
   display: block;
-  padding: 0;
+  padding: 15px 2px 0;
   transition: transform 220ms var(--ease-out);
 }
 
@@ -1600,7 +1625,7 @@ html[data-lang="en"] .hero-title > .lang-en.center-magnet-ready .magnet-word {
   .feature-copy {
     width: min(88vw, 430px);
     margin: 0 auto;
-    transform: translate3d(0, var(--feature-copy-y), 0);
+    transform: none;
   }
 
   .feature-title {
