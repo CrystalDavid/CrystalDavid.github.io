@@ -37,14 +37,14 @@ type Mark = {
 };
 
 const agentMarks: Mark[] = [
-  { name: "OpenAI", image: "/media/openai-logo.png", x: "25%", y: "42%", delay: "150ms" },
+  { name: "OpenAI", image: "/media/openai-logo.png", x: "26%", y: "38%", delay: "150ms" },
   { name: "Google", image: "/media/google-g.png", x: "41%", y: "27%", delay: "185ms" },
   { name: "NVIDIA", icon: siNvidia, x: "59%", y: "27%", delay: "220ms" },
-  { name: "Anthropic", icon: siAnthropic, x: "75%", y: "42%", delay: "255ms" },
-  { name: "DeepSeek", icon: siDeepseek, x: "25%", y: "62%", delay: "290ms" },
+  { name: "Anthropic", icon: siAnthropic, x: "74%", y: "38%", delay: "255ms" },
+  { name: "DeepSeek", icon: siDeepseek, x: "26%", y: "66%", delay: "290ms" },
   { name: "Alibaba Cloud", icon: siAlibabacloud, x: "41%", y: "77%", delay: "325ms" },
   { name: "Doubao", image: "/media/doubao-logo.png", x: "59%", y: "77%", delay: "360ms" },
-  { name: "ByteDance", icon: siBytedance, x: "75%", y: "62%", delay: "395ms" },
+  { name: "ByteDance", icon: siBytedance, x: "74%", y: "66%", delay: "395ms" },
 ];
 
 const socialLinks = [

@@ -1780,6 +1780,163 @@ html[data-lang="en"] .hero-title > .lang-en.center-magnet-ready .magnet-word {
   }
 }
 
+.agent-lab-page {
+  width: 100%;
+  min-height: 100svh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--cream);
+}
+
+.agent-lab-header {
+  position: fixed;
+  z-index: 10;
+  top: 34px;
+  right: var(--page-gutter);
+  left: var(--page-gutter);
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.agent-lab-header > * {
+  pointer-events: auto;
+}
+
+.agent-lab-header nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.agent-lab-header nav a {
+  padding: 11px 16px;
+  border-radius: 999px;
+}
+
+.agent-lab-header nav a.is-current {
+  color: var(--action);
+  background: #e4edff;
+}
+
+.agent-lab-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100svh;
+  display: grid;
+  overflow: hidden;
+  cursor: crosshair;
+  place-items: center;
+  touch-action: pan-y;
+}
+
+.agent-lab-stage h1 {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(92px, 9vw, 158px);
+  font-weight: 700;
+  line-height: 1.22;
+  letter-spacing: 0.015em;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  text-rendering: optimizeSpeed;
+}
+
+.agent-lab-orbit {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
+.agent-lab-mark {
+  position: absolute;
+  top: var(--lab-y);
+  left: var(--lab-x);
+  width: 42px;
+  height: 42px;
+  display: grid;
+  color: var(--lab-color);
+  transform: translate3d(-50%, -50%, 0);
+  place-items: center;
+}
+
+.agent-lab-mark svg,
+.agent-lab-mark img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+}
+
+.agent-lab-mark svg {
+  fill: currentColor;
+}
+
+.agent-lab-mark img {
+  border-radius: 9px;
+}
+
+.agent-lab-mark[aria-label="OpenAI"] img,
+.agent-lab-mark[aria-label="Doubao"] img {
+  border-radius: 50%;
+}
+
+.agent-lab-caption {
+  position: absolute;
+  z-index: 3;
+  bottom: 28px;
+  left: 50%;
+  margin: 0;
+  color: color-mix(in srgb, var(--ink) 60%, transparent);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .agent-lab-header {
+    top: 18px;
+    right: 18px;
+    left: 18px;
+  }
+
+  .agent-lab-header nav {
+    gap: 0;
+    font-size: 11px;
+  }
+
+  .agent-lab-header nav a {
+    padding: 9px 10px;
+  }
+
+  .agent-lab-stage h1 {
+    font-size: clamp(72px, 24vw, 108px);
+  }
+
+  .agent-lab-mark {
+    width: 34px;
+    height: 34px;
+  }
+
+  .agent-lab-mark svg,
+  .agent-lab-mark img {
+    width: 31px;
+    height: 31px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
