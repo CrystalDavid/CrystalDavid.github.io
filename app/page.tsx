@@ -37,48 +37,15 @@ type Mark = {
 };
 
 const agentMarks: Mark[] = [
-  { name: "OpenAI", image: "/media/openai-logo.png", x: "30%", y: "30%", delay: "150ms" },
+  { name: "OpenAI", image: "/media/openai-logo.png", x: "37%", y: "38%", delay: "150ms" },
   { name: "Google", image: "/media/google-g.png", x: "43%", y: "21%", delay: "185ms" },
   { name: "NVIDIA", icon: siNvidia, x: "57%", y: "21%", delay: "220ms" },
-  { name: "Anthropic", icon: siAnthropic, x: "70%", y: "30%", delay: "255ms" },
-  { name: "DeepSeek", icon: siDeepseek, x: "30%", y: "70%", delay: "290ms" },
+  { name: "Anthropic", icon: siAnthropic, x: "63%", y: "38%", delay: "255ms" },
+  { name: "DeepSeek", icon: siDeepseek, x: "37%", y: "62%", delay: "290ms" },
   { name: "Alibaba Cloud", icon: siAlibabacloud, x: "43%", y: "79%", delay: "325ms" },
   { name: "Doubao", image: "/media/doubao-logo.png", x: "57%", y: "79%", delay: "360ms" },
-  { name: "ByteDance", icon: siBytedance, x: "70%", y: "70%", delay: "395ms" },
+  { name: "ByteDance", icon: siBytedance, x: "63%", y: "62%", delay: "395ms" },
 ];
-
-const articleMedia: Record<string, { src: string; position: string; tone: string }> = {
-  "ai-tools-notes": {
-    src: "/media/article-openclaw.webp",
-    position: "42% 48%",
-    tone: "azure",
-  },
-  "ppt-agent": {
-    src: "/media/ppt-agent-1.webp",
-    position: "50% 50%",
-    tone: "indigo",
-  },
-  "openclaw-evidence": {
-    src: "/media/article-openclaw.webp",
-    position: "72% 48%",
-    tone: "violet",
-  },
-  "evidence-grading": {
-    src: "/media/article-openclaw.webp",
-    position: "22% 62%",
-    tone: "cyan",
-  },
-  "human-ai-handoffs": {
-    src: "/media/ppt-agent-1.webp",
-    position: "28% 54%",
-    tone: "coral",
-  },
-  "statistics-to-product": {
-    src: "/media/ppt-agent-1.webp",
-    position: "78% 54%",
-    tone: "gold",
-  },
-};
 
 const socialLinks = [
   {
@@ -134,7 +101,7 @@ function OrbitMark({ mark, kind }: { mark: Mark; kind: string }) {
   } else if (mark.image) {
     content = (
       // eslint-disable-next-line @next/next/no-img-element
-      <img src={mark.image} width="48" height="48" alt="" loading="eager" decoding="async" />
+      <img src={mark.image} width="48" height="48" alt="" loading="lazy" decoding="async" />
     );
   } else if (mark.emoji) {
     content = <span className="emoji-mark">{mark.emoji}</span>;
@@ -213,6 +180,7 @@ export default function Home() {
           className="screen chapter-screen experience-chapter"
           id="experience"
           data-reveal-section
+          data-pointer-depth
           aria-labelledby="experience-title"
         >
           <h2 id="experience-title" className="chapter-title" data-top-flip>
@@ -224,6 +192,7 @@ export default function Home() {
           className="screen chapter-screen agent-chapter"
           id="agent"
           data-reveal-section
+          data-pointer-depth
           aria-labelledby="agent-title"
         >
           <div className="chapter-orbit agent-orbit" aria-label="Leading AI company logos">
@@ -248,7 +217,7 @@ export default function Home() {
               <div className="product-backdrop">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                  <img
-                   src="/media/ppt-agent-mac-composite.png"
+                   src="/media/ppt-agent-mac-composite.webp"
                    alt="Two overlapping Mac browser windows showing the PPT-Agent home and editing interfaces"
                    width="1536"
                    height="1024"
@@ -286,6 +255,7 @@ export default function Home() {
           className="screen chapter-screen article-chapter"
           id="article"
           data-reveal-section
+          data-pointer-depth
           aria-labelledby="article-title"
         >
           <h2 id="article-title" className="chapter-title" data-top-flip>
@@ -301,26 +271,13 @@ export default function Home() {
          >
            <div className="article-gallery-inner">
              <div className="article-gallery" aria-label="Article list">
-               {articles.map((article) => {
-                 const media = articleMedia[article.slug];
-                 return (
+               {articles.map((article) => (
                    <Link
-                     className={`article-work-card tone-${media.tone}`}
+                     className="article-work-card"
                      href={`/articles/${article.slug}`}
                      key={article.slug}
+                     prefetch={false}
                    >
-                     <span className="article-work-image">
-                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                       <img
-                         src={media.src}
-                         alt=""
-                         width="1200"
-                         height="800"
-                         loading="lazy"
-                         decoding="async"
-                         style={{ objectPosition: media.position }}
-                       />
-                     </span>
                      <span className="article-work-copy">
                        <small>{article.meta}</small>
                        <strong>
@@ -328,8 +285,7 @@ export default function Home() {
                        </strong>
                      </span>
                    </Link>
-                 );
-               })}
+               ))}
              </div>
            </div>
         </section>

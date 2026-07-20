@@ -280,18 +280,20 @@ export function MotionController() {
 
           if (!isActive && !featureWasActive) return;
 
-          const copyOffset =
-            clamp(panelTop / viewportHeight, -1, 1) * 142;
-          const mediaOffset =
-            clamp(panelTop / viewportHeight, -1, 1) * -34;
+          const copyOffset = Math.round(
+            clamp(panelTop / viewportHeight, -1, 1) * 142,
+          );
+          const mediaOffset = Math.round(
+            clamp(panelTop / viewportHeight, -1, 1) * -34,
+          );
 
           featurePanel.style.setProperty(
             "--feature-copy-y",
-            `${copyOffset.toFixed(2)}px`,
+            `${copyOffset}px`,
           );
           featurePanel.style.setProperty(
             "--feature-media-y",
-            `${mediaOffset.toFixed(2)}px`,
+            `${mediaOffset}px`,
           );
           featurePanel.classList.toggle("parallax-active", isActive);
           featureWasActive = isActive;
@@ -318,6 +320,92 @@ export function MotionController() {
 
     measureFeaturePanel();
     requestScrollMotion();
+
+    const depthPanels = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-pointer-depth]"),
+    );
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    let depthFrame = 0;
+    let activeDepthPanel: HTMLElement | null = null;
+    let targetDepthX = 0;
+    let targetDepthY = 0;
+    let currentDepthX = 0;
+    let currentDepthY = 0;
+
+    const renderDepth = () => {
+      depthFrame = 0;
+      if (!activeDepthPanel) return;
+
+      currentDepthX += (targetDepthX - currentDepthX) * 0.2;
+      currentDepthY += (targetDepthY - currentDepthY) * 0.2;
+
+      activeDepthPanel.style.setProperty(
+        "--depth-title-x",
+        `${Math.round(currentDepthX * 10)}px`,
+      );
+      activeDepthPanel.style.setProperty(
+        "--depth-title-y",
+        `${Math.round(currentDepthY * 6)}px`,
+      );
+      activeDepthPanel.style.setProperty(
+        "--depth-mark-x",
+        `${Math.round(currentDepthX * 18)}px`,
+      );
+      activeDepthPanel.style.setProperty(
+        "--depth-mark-y",
+        `${Math.round(currentDepthY * 9)}px`,
+      );
+
+      if (
+        Math.abs(targetDepthX - currentDepthX) > 0.02 ||
+        Math.abs(targetDepthY - currentDepthY) > 0.02
+      ) {
+        depthFrame = window.requestAnimationFrame(renderDepth);
+      } else if (targetDepthX === 0 && targetDepthY === 0) {
+        activeDepthPanel.classList.remove("pointer-depth-active");
+        activeDepthPanel = null;
+      }
+    };
+
+    const requestDepthRender = () => {
+      if (!depthFrame) depthFrame = window.requestAnimationFrame(renderDepth);
+    };
+
+    const depthMoveHandlers = new Map<
+      HTMLElement,
+      { move: (event: PointerEvent) => void; leave: () => void }
+    >();
+
+    if (!reducedMotion && finePointer) {
+      depthPanels.forEach((panel) => {
+        const move = (event: PointerEvent) => {
+          const rect = panel.getBoundingClientRect();
+          activeDepthPanel = panel;
+          panel.classList.add("pointer-depth-active");
+          targetDepthX = -clamp(
+            (event.clientX - (rect.left + rect.width / 2)) / (rect.width / 2),
+            -1,
+            1,
+          );
+          targetDepthY = -clamp(
+            (event.clientY - (rect.top + rect.height / 2)) / (rect.height / 2),
+            -1,
+            1,
+          );
+          requestDepthRender();
+        };
+        const leave = () => {
+          if (activeDepthPanel !== panel) return;
+          targetDepthX = 0;
+          targetDepthY = 0;
+          requestDepthRender();
+        };
+        panel.addEventListener("pointermove", move, { passive: true });
+        panel.addEventListener("pointerleave", leave);
+        depthMoveHandlers.set(panel, { move, leave });
+      });
+    }
+
     window.addEventListener("scroll", requestScrollMotion, { passive: true });
     window.addEventListener("resize", requestResize);
     window.visualViewport?.addEventListener("resize", syncViewportHeight);
@@ -330,6 +418,7 @@ export function MotionController() {
       if (magnetFrame) window.cancelAnimationFrame(magnetFrame);
       if (scrollMotionFrame) window.cancelAnimationFrame(scrollMotionFrame);
       if (resizeFrame) window.cancelAnimationFrame(resizeFrame);
+      if (depthFrame) window.cancelAnimationFrame(depthFrame);
       settleTimers.forEach((timer) => window.clearTimeout(timer));
       revealObserver?.disconnect();
       textObserver?.disconnect();
@@ -340,6 +429,10 @@ export function MotionController() {
       toggles.forEach((toggle) =>
         toggle.removeEventListener("click", toggleLanguage),
       );
+      depthMoveHandlers.forEach(({ move, leave }, panel) => {
+        panel.removeEventListener("pointermove", move);
+        panel.removeEventListener("pointerleave", leave);
+      });
     };
   }, []);
 
