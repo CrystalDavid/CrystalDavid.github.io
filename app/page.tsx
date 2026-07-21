@@ -180,7 +180,7 @@ export default function Home() {
           className="screen chapter-screen experience-chapter"
           id="experience"
           data-reveal-section
-          data-pointer-depth
+          data-wickret-pointer
           aria-labelledby="experience-title"
         >
           <h2 id="experience-title" className="chapter-title" data-top-flip>
@@ -192,7 +192,7 @@ export default function Home() {
           className="screen chapter-screen agent-chapter"
           id="agent"
           data-reveal-section
-          data-pointer-depth
+          data-wickret-pointer
           aria-labelledby="agent-title"
         >
           <div className="chapter-orbit agent-orbit" aria-label="Leading AI company logos">
@@ -213,40 +213,44 @@ export default function Home() {
           aria-labelledby="ppt-title"
         >
           <div className="feature-grid">
-            <div className="product-visual reveal-visual">
-              <div className="product-backdrop">
+            <div className="feature-media-motion">
+              <div className="product-visual reveal-visual">
+                <div className="product-backdrop">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                 <img
-                   src="/media/ppt-agent-mac-composite.webp"
-                   alt="Two overlapping Mac browser windows showing the PPT-Agent home and editing interfaces"
-                   width="1536"
-                   height="1024"
-                   loading="lazy"
-                   decoding="async"
-                 />
+                  <img
+                    src="/media/ppt-agent-mac-composite.webp"
+                    alt="Two overlapping Mac browser windows showing the PPT-Agent home and editing interfaces"
+                    width="1536"
+                    height="1024"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <span className="visual-dot visual-dot-one" aria-hidden="true" />
+                <span className="visual-dot visual-dot-two" aria-hidden="true" />
               </div>
-              <span className="visual-dot visual-dot-one" aria-hidden="true" />
-              <span className="visual-dot visual-dot-two" aria-hidden="true" />
             </div>
 
-            <div className="feature-copy">
-              <h2 id="ppt-title" className="feature-title">
-                PPT-Agent
-              </h2>
-              <Bilingual
-                as="p"
-                zh="从需求到可编辑的演示文稿。"
-                en="From brief to polished, fully editable slides."
-              />
-              <a
-                className="outline-button"
-                href="https://github.com/CrystalDavid"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Bilingual zh="使用 PPT-Agent" en="Try PPT-Agent" />
-                <span aria-hidden="true">↗</span>
-              </a>
+            <div className="feature-copy-motion">
+              <div className="feature-copy">
+                <h2 id="ppt-title" className="feature-title">
+                  PPT-Agent
+                </h2>
+                <Bilingual
+                  as="p"
+                  zh="从需求到可编辑的演示文稿。"
+                  en="From brief to polished, fully editable slides."
+                />
+                <a
+                  className="outline-button"
+                  href="https://github.com/CrystalDavid"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Bilingual zh="使用 PPT-Agent" en="Try PPT-Agent" />
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </div>
             </div>
           </div>
         </section>
@@ -255,7 +259,7 @@ export default function Home() {
           className="screen chapter-screen article-chapter"
           id="article"
           data-reveal-section
-          data-pointer-depth
+          data-wickret-pointer
           aria-labelledby="article-title"
         >
           <h2 id="article-title" className="chapter-title" data-top-flip>
@@ -270,7 +274,8 @@ export default function Home() {
            aria-label="Articles"
          >
            <div className="article-gallery-inner">
-             <div className="article-gallery" aria-label="Article list">
+             <div className="article-gallery-motion">
+               <div className="article-gallery" aria-label="Article list">
                {articles.map((article) => (
                    <Link
                      className="article-work-card"
@@ -285,13 +290,13 @@ export default function Home() {
                        <span className="article-work-placeholder-inner" />
                      </span>
                      <span className="article-work-copy">
-                       <small>{article.meta}</small>
                        <strong>
                          <Bilingual zh={article.titleZh} en={article.titleEn} />
                        </strong>
                      </span>
                    </Link>
                ))}
+               </div>
              </div>
            </div>
         </section>

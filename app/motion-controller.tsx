@@ -255,17 +255,35 @@ export function MotionController() {
     const featurePanel = document.querySelector<HTMLElement>(
       "[data-feature-parallax]",
     );
+    const articleGalleryPanel = document.querySelector<HTMLElement>(
+      ".article-gallery-section",
+    );
     let scrollMotionFrame = 0;
     let resizeFrame = 0;
     let featureTop = 0;
     let featureHeight = 0;
+    let articleGalleryTop = 0;
+    let articleGalleryHeight = 0;
     let featureWasActive = false;
+    let articleGalleryWasActive = false;
 
     const measureFeaturePanel = () => {
       if (!featurePanel) return;
       const rect = featurePanel.getBoundingClientRect();
       featureTop = window.scrollY + rect.top;
       featureHeight = rect.height;
+    };
+
+    const measureArticleGallery = () => {
+      if (!articleGalleryPanel) return;
+      const rect = articleGalleryPanel.getBoundingClientRect();
+      articleGalleryTop = window.scrollY + rect.top;
+      articleGalleryHeight = rect.height;
+    };
+
+    const snapToDevicePixel = (value: number) => {
+      const scale = Math.max(1, window.devicePixelRatio || 1);
+      return Math.round(value * scale) / scale;
     };
 
     const updateScrollMotion = () => {
@@ -289,19 +307,47 @@ export function MotionController() {
           if (!isActive && !featureWasActive) return;
 
           const progress = clamp(panelTop / viewportHeight, -1, 1);
-          const copyOffset = progress * 142;
-          const mediaOffset = progress * -34;
+          const copyOffset = snapToDevicePixel(progress * 92);
+          const mediaOffset = snapToDevicePixel(progress * -28);
 
           featurePanel.style.setProperty(
             "--feature-copy-y",
-            `${copyOffset.toFixed(2)}px`,
+            `${copyOffset}px`,
           );
           featurePanel.style.setProperty(
             "--feature-media-y",
-            `${mediaOffset.toFixed(2)}px`,
+            `${mediaOffset}px`,
           );
           featurePanel.classList.toggle("parallax-active", isActive);
           featureWasActive = isActive;
+        }
+      }
+
+      if (articleGalleryPanel) {
+        if (reducedMotion || compactLayout) {
+          articleGalleryPanel.style.setProperty("--article-grid-y", "0px");
+          articleGalleryPanel.classList.remove("gallery-motion-active");
+          articleGalleryWasActive = false;
+        } else {
+          const panelTop = articleGalleryTop - window.scrollY;
+          const panelBottom = panelTop + articleGalleryHeight;
+          const isActive =
+            panelBottom > -viewportHeight * 0.2 &&
+            panelTop < viewportHeight * 1.2;
+
+          if (isActive || articleGalleryWasActive) {
+            const progress = clamp(panelTop / viewportHeight, -1, 1);
+            const offset = snapToDevicePixel(progress * 24);
+            articleGalleryPanel.style.setProperty(
+              "--article-grid-y",
+              `${offset}px`,
+            );
+            articleGalleryPanel.classList.toggle(
+              "gallery-motion-active",
+              isActive,
+            );
+            articleGalleryWasActive = isActive;
+          }
         }
       }
     };
@@ -318,88 +364,94 @@ export function MotionController() {
         resizeFrame = 0;
         syncViewportHeight();
         measureFeaturePanel();
+        measureArticleGallery();
         restageMagneticLines();
         updateScrollMotion();
       });
     };
 
     measureFeaturePanel();
+    measureArticleGallery();
     requestScrollMotion();
 
-    const depthPanels = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-pointer-depth]"),
+    const pointerPanels = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-wickret-pointer]"),
     );
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-    let depthFrame = 0;
-    let activeDepthPanel: HTMLElement | null = null;
-    let targetDepthX = 0;
-    let targetDepthY = 0;
-    let currentDepthX = 0;
-    let currentDepthY = 0;
+    let pointerMotionDisposed = false;
+    let removePointerMotion = () => {};
 
-    const renderDepth = () => {
-      depthFrame = 0;
-      if (!activeDepthPanel) return;
+    if (!reducedMotion && finePointer && pointerPanels.length) {
+      void import("gsap").then(({ gsap }) => {
+        if (pointerMotionDisposed) return;
+        const cleanups: Array<() => void> = [];
 
-      currentDepthX += (targetDepthX - currentDepthX) * 0.2;
-      currentDepthY += (targetDepthY - currentDepthY) * 0.2;
+        pointerPanels.forEach((panel) => {
+          const title = panel.querySelector<HTMLElement>(".chapter-title");
+          const orbit = panel.querySelector<HTMLElement>(".chapter-orbit");
+          if (!title) return;
 
-      activeDepthPanel.style.setProperty(
-        "--depth-mark-x",
-        `${(currentDepthX * 18).toFixed(2)}px`,
-      );
-      activeDepthPanel.style.setProperty(
-        "--depth-mark-y",
-        `${(currentDepthY * 9).toFixed(2)}px`,
-      );
+          let frame = 0;
+          let pointerX = 0;
+          let pointerY = 0;
 
-      if (
-        Math.abs(targetDepthX - currentDepthX) > 0.02 ||
-        Math.abs(targetDepthY - currentDepthY) > 0.02
-      ) {
-        depthFrame = window.requestAnimationFrame(renderDepth);
-      } else if (targetDepthX === 0 && targetDepthY === 0) {
-        activeDepthPanel.classList.remove("pointer-depth-active");
-        activeDepthPanel = null;
-      }
-    };
+          const tweenToPointer = () => {
+            frame = 0;
+            gsap.to(title, {
+              x: pointerX * 28,
+              y: pointerY * 18,
+              duration: 0.3,
+              overwrite: true,
+              force3D: true,
+              ease: "power1.out",
+            });
+            if (orbit) {
+              gsap.to(orbit, {
+                x: pointerX * 46,
+                y: pointerY * 28,
+                duration: 0.3,
+                overwrite: true,
+                force3D: true,
+                ease: "power1.out",
+              });
+            }
+          };
 
-    const requestDepthRender = () => {
-      if (!depthFrame) depthFrame = window.requestAnimationFrame(renderDepth);
-    };
+          const move = (event: PointerEvent) => {
+            const rect = panel.getBoundingClientRect();
+            pointerX = (event.clientX - rect.left) / rect.width - 0.5;
+            pointerY = (event.clientY - rect.top) / rect.height - 0.5;
+            if (!frame) frame = window.requestAnimationFrame(tweenToPointer);
+          };
 
-    const depthMoveHandlers = new Map<
-      HTMLElement,
-      { move: (event: PointerEvent) => void; leave: () => void }
-    >();
+          const leave = () => {
+            pointerX = 0;
+            pointerY = 0;
+            if (frame) window.cancelAnimationFrame(frame);
+            frame = window.requestAnimationFrame(() => {
+              frame = 0;
+              gsap.to(orbit ? [title, orbit] : title, {
+                x: 0,
+                y: 0,
+                duration: 0.7,
+                overwrite: true,
+                force3D: true,
+                ease: "power1.out",
+              });
+            });
+          };
 
-    if (!reducedMotion && finePointer) {
-      depthPanels.forEach((panel) => {
-        const move = (event: PointerEvent) => {
-          const rect = panel.getBoundingClientRect();
-          activeDepthPanel = panel;
-          panel.classList.add("pointer-depth-active");
-          targetDepthX = -clamp(
-            (event.clientX - (rect.left + rect.width / 2)) / (rect.width / 2),
-            -1,
-            1,
-          );
-          targetDepthY = -clamp(
-            (event.clientY - (rect.top + rect.height / 2)) / (rect.height / 2),
-            -1,
-            1,
-          );
-          requestDepthRender();
-        };
-        const leave = () => {
-          if (activeDepthPanel !== panel) return;
-          targetDepthX = 0;
-          targetDepthY = 0;
-          requestDepthRender();
-        };
-        panel.addEventListener("pointermove", move, { passive: true });
-        panel.addEventListener("pointerleave", leave);
-        depthMoveHandlers.set(panel, { move, leave });
+          panel.addEventListener("pointermove", move, { passive: true });
+          panel.addEventListener("pointerleave", leave, { passive: true });
+          cleanups.push(() => {
+            panel.removeEventListener("pointermove", move);
+            panel.removeEventListener("pointerleave", leave);
+            if (frame) window.cancelAnimationFrame(frame);
+            gsap.killTweensOf(orbit ? [title, orbit] : title);
+          });
+        });
+
+        removePointerMotion = () => cleanups.forEach((cleanup) => cleanup());
       });
     }
 
@@ -408,6 +460,7 @@ export function MotionController() {
     window.visualViewport?.addEventListener("resize", syncViewportHeight);
     document.fonts?.ready.then(() => {
       measureFeaturePanel();
+      measureArticleGallery();
       requestScrollMotion();
     });
 
@@ -415,7 +468,8 @@ export function MotionController() {
       if (magnetFrame) window.cancelAnimationFrame(magnetFrame);
       if (scrollMotionFrame) window.cancelAnimationFrame(scrollMotionFrame);
       if (resizeFrame) window.cancelAnimationFrame(resizeFrame);
-      if (depthFrame) window.cancelAnimationFrame(depthFrame);
+      pointerMotionDisposed = true;
+      removePointerMotion();
       settleTimers.forEach((timer) => window.clearTimeout(timer));
       revealObserver?.disconnect();
       textObserver?.disconnect();
@@ -426,10 +480,6 @@ export function MotionController() {
       toggles.forEach((toggle) =>
         toggle.removeEventListener("click", toggleLanguage),
       );
-      depthMoveHandlers.forEach(({ move, leave }, panel) => {
-        panel.removeEventListener("pointermove", move);
-        panel.removeEventListener("pointerleave", leave);
-      });
     };
   }, []);
 
