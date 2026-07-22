@@ -24,8 +24,24 @@ test("article gallery stays simple and title-only", async () => {
   assert.equal((html.match(/<a class="article-work-card"/g) ?? []).length, 6);
   assert.doesNotMatch(html, /article-work-meta/);
   assert.doesNotMatch(html, /gallery-motion-active/);
-  assert.match(html, /Notes on Using AI Tools/);
-  assert.match(html, /How I Built PPT-Agent/);
+  assert.match(html, /PPT-Agent Technical Report/);
+  assert.match(html, /Evidence-Chain Tracker Technical Report/);
+});
+
+test("the two PDF reports export as bilingual canonical articles", async () => {
+  const [pptAgent, evidenceTracker] = await Promise.all([
+    readOutput("articles/ppt-agent-report"),
+    readOutput("articles/openclaw-evidence-tracker"),
+  ]);
+
+  for (const html of [pptAgent, evidenceTracker]) {
+    assert.match(html, /article-language-toggle/);
+    assert.match(html, /lang-en/);
+    assert.match(html, /lang-zh/);
+  }
+
+  assert.match(pptAgent, /content-first agent workflow/i);
+  assert.match(evidenceTracker, /auditable, traceable and reproducible/i);
 });
 
 test("both Agent motion comparison pages are exported", async () => {

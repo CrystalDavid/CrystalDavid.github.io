@@ -11,201 +11,144 @@ export type Article = {
   titleEn: string;
   summaryZh: string;
   summaryEn: string;
-  meta: string;
+  metaZh: string;
+  metaEn: string;
   sections: ArticleSection[];
 };
 
 export const articles: Article[] = [
   {
-    slug: "ai-tools-notes",
-    titleZh: "AI 工具使用心得",
-    titleEn: "Notes on Using AI Tools",
-    summaryZh:
-      "从 Gemini、Codex 到 Claude Code：真正影响效率的不是工具数量，而是任务边界、上下文质量和验证习惯。",
-    summaryEn:
-      "From Gemini and Codex to Claude Code: the real gains come from clear task boundaries, good context and disciplined verification.",
-    meta: "AI TOOLS · WORKFLOW · NOTES",
+    slug: "ppt-agent-report",
+    titleZh: "PPT-Agent 技术报告",
+    titleEn: "PPT-Agent Technical Report",
+    summaryZh: "一个由内容驱动、允许逐阶段审阅，并最终交付可编辑演示文稿的智能体工作流。",
+    summaryEn: "A content-first agent workflow that supports staged review and delivers editable presentations.",
+    metaZh: "智能体 · 演示文稿 · 工作流",
+    metaEn: "AGENT · PRESENTATION · WORKFLOW",
     sections: [
       {
-        headingZh: "工具不是工作流",
-        headingEn: "A tool is not a workflow",
-        bodyZh:
-          "模型能力越强，越容易让人把“能生成”误认为“已完成”。我更愿意先定义输入、输出和验收方式，再决定把哪一步交给 AI。这样工具变化时，工作方法仍然成立。",
-        bodyEn:
-          "Powerful models make it easy to confuse generation with completion. I define inputs, outputs and acceptance checks first, then decide which step belongs to AI.",
+        headingZh: "为什么不是套模板",
+        headingEn: "Why it is not a template engine",
+        bodyZh: "传统生成器常常直接跳到最终页面：结构固定、论证薄弱，也缺少审阅入口。PPT-Agent 先理解内容，再决定每一页应该表达什么，最后才选择布局与视觉形式。",
+        bodyEn: "Traditional generators often jump straight to final slides, producing fixed structures, weak reasoning and no review point. PPT-Agent understands the content first, decides what each page must communicate, and only then chooses layout and visual form.",
       },
       {
-        headingZh: "上下文决定上限",
-        headingEn: "Context sets the ceiling",
-        bodyZh:
-          "高质量上下文不是把所有资料一次塞进去，而是提供当前决策真正需要的证据、约束和已有状态。上下文越可审计，模型的回答越容易被检查。",
-        bodyEn:
-          "Good context is not a giant dump. It is the evidence, constraints and current state needed for the decision at hand—and it should remain auditable.",
+        headingZh: "逐阶段生成",
+        headingEn: "Progressive generation",
+        bodyZh: "流程依次经过需求访谈、资料调研、金字塔式大纲、策划稿、设计稿与最终渲染。每个阶段都产生明确的结构化产物，用户可以检查、修改或回退。",
+        bodyEn: "The workflow moves through requirements, research, a pyramid-structured outline, planning, design and final rendering. Every stage produces an explicit structured artifact that can be reviewed, edited or rolled back.",
       },
       {
-        headingZh: "验证是最后一公里",
-        headingEn: "Verification is the last mile",
-        bodyZh:
-          "代码要构建和测试，研究结论要回到来源，视觉结果要在真实设备上检查。只有经过验证的输出，才有资格进入下一步。",
-        bodyEn:
-          "Code needs builds and tests, claims need sources, and visual work needs real-device review. Only verified output should move forward.",
+        headingZh: "搜索与追问形成闭环",
+        headingEn: "A search-and-question loop",
+        bodyZh: "访谈不是一次性表单。智能体会根据回答继续提出问题，并通过宽搜与深搜补足事实、案例和引用，最后把上下文整理为研究简报 JSON。",
+        bodyEn: "The interview is not a one-shot form. The agent asks follow-up questions, combines broad and deep search to fill factual gaps, and consolidates the context into a research-brief JSON artifact.",
+      },
+      {
+        headingZh: "策划稿是关键中间层",
+        headingEn: "The planning draft is the key layer",
+        bodyZh: "策划稿把内容结构翻译为信息层级、视觉形式、来源和设计说明。它把推理与排版解耦，让设计不再依赖固定模板，也让后续修改更加可控。",
+        bodyEn: "The planning draft translates content structure into information hierarchy, visual form, sources and design notes. It decouples reasoning from layout, removes dependence on fixed templates and makes later revisions controllable.",
+      },
+      {
+        headingZh: "渲染与交付",
+        headingEn: "Rendering and delivery",
+        bodyZh: "页面以 1280×720 的 HTML 画布渲染，再导出为 PDF 或 HTML。当前重点是提升可编辑性、图片上传与身份化设计，并通过分层提示词控制个性化程度。",
+        bodyEn: "Slides render on a 1280×720 HTML canvas and export to PDF or HTML. The next priorities are richer editability, image upload and identity-aware design controlled through gated prompt layers.",
       },
     ],
   },
   {
-    slug: "ppt-agent",
-    titleZh: "PPT-Agent 实现思路",
-    titleEn: "How I Built PPT-Agent",
-    summaryZh:
-      "从需求访谈到可编辑 PPTX，一套把内容策划、页面设计、局部修改和最终交付串起来的七阶段工作流。",
-    summaryEn:
-      "A seven-stage workflow from requirements interview to editable PPTX, connecting content planning, visual design, revision and delivery.",
-    meta: "AGENT · PRESENTATION · SYSTEM",
+    slug: "openclaw-evidence-tracker",
+    titleZh: "证据链追踪插件技术报告",
+    titleEn: "Evidence-Chain Tracker Technical Report",
+    summaryZh: "把文献发现与证据核验分开，让每个结论都可以审计、追踪和复现。",
+    summaryEn: "Separating literature discovery from evidence verification so every claim remains auditable, traceable and reproducible.",
+    metaZh: "OPENCLAW · 证据 · 研究",
+    metaEn: "OPENCLAW · EVIDENCE · RESEARCH",
     sections: [
       {
-        headingZh: "从表达目标开始",
-        headingEn: "Start with the communication goal",
-        bodyZh:
-          "PPT-Agent 的第一步不是选模板，而是询问受众、场景、时长和希望促成的行动。只有明确表达目标，页面数量和视觉风格才有意义。",
-        bodyEn:
-          "PPT-Agent begins with audience, setting, time and desired action—not a template. Page count and visual style only make sense after that.",
+        headingZh: "发现不等于证据",
+        headingEn: "Discovery is not evidence",
+        bodyZh: "搜索模型负责生成候选文献，证据追踪器则独立核验论文身份、全文与具体主张。这样可以避免把搜索摘要、模型转述或错误页码直接当作证据。",
+        bodyEn: "A search model proposes candidate papers while the tracker independently verifies paper identity, full text and individual claims. Search snippets, model paraphrases and invented page numbers never become evidence by default.",
       },
       {
-        headingZh: "把生成拆成可检查阶段",
-        headingEn: "Make generation inspectable",
-        bodyZh:
-          "系统把任务拆为访谈、调研、大纲、页级策划、视觉生成、复核和导出。每一步都有结构化产物，失败时只返工局部，不必整套重来。",
-        bodyEn:
-          "The system separates interview, research, outline, page planning, visual generation, review and export. Each stage has a structured artifact.",
+        headingZh: "六个可组合工具",
+        headingEn: "Six composable tools",
+        bodyZh: "插件提供会话启动、文献搜索、引用记录、证据核验、报告生成和状态查询六类工具。它们形成清晰状态机，同时保留失败记录和每一步的审计信息。",
+        bodyEn: "The plugin exposes tools for session startup, literature search, citation recording, evidence verification, report generation and status inspection. Together they form an explicit state machine that preserves failures and audit details.",
       },
       {
-        headingZh: "交付必须可继续编辑",
-        headingEn: "Delivery must stay editable",
-        bodyZh:
-          "最终文件不是一组截图。文字、形状和图表仍然能够在 PowerPoint 中修改，这让 AI 生成从演示效果走向真实生产。",
-        bodyEn:
-          "The final deck is not a stack of screenshots. Text, shapes and charts remain editable in PowerPoint, making the output useful in production.",
-      },
-    ],
-  },
-  {
-    slug: "openclaw-evidence",
-    titleZh: "OpenClaw 证据链追踪",
-    titleEn: "Evidence Trails in OpenClaw",
-    summaryZh:
-      "为科研 Agent 增加来源核验、证据分级与可追踪的研究过程，让结论和引用之间始终存在清晰路径。",
-    summaryEn:
-      "Adding source validation, evidence grading and traceable research steps to a research agent so claims remain connected to their evidence.",
-    meta: "OPENCLAW · EVIDENCE · RESEARCH",
-    sections: [
-      {
-        headingZh: "为什么需要证据链",
-        headingEn: "Why evidence trails matter",
-        bodyZh:
-          "Agent 可以很快给出流畅答案，但流畅并不等于可靠。证据链记录每个关键判断依赖了什么来源、来源质量如何，以及是否经过交叉验证。",
-        bodyEn:
-          "Agents can produce fluent answers quickly, but fluency is not reliability. An evidence trail records the sources, their quality and cross-check status.",
+        headingZh: "跨来源规范化",
+        headingEn: "Cross-source normalization",
+        bodyZh: "系统检索 arXiv、PubMed、Europe PMC、OpenAlex、Crossref、Semantic Scholar 与 DBLP，并利用规范标识符去重，把同名冲突隔离处理。",
+        bodyEn: "The system searches arXiv, PubMed, Europe PMC, OpenAlex, Crossref, Semantic Scholar and DBLP, then deduplicates with canonical identifiers and isolates ambiguous title conflicts.",
       },
       {
-        headingZh: "让来源成为结构化数据",
-        headingEn: "Treat sources as structured data",
-        bodyZh:
-          "系统把标题、作者、时间、链接、摘录和支持的具体主张一起保存。这样来源不再是报告末尾的装饰，而是推理过程的一部分。",
-        bodyEn:
-          "Titles, authors, dates, links, excerpts and supported claims are stored together. Sources become part of reasoning instead of decoration.",
+        headingZh: "原子主张与混合检索",
+        headingEn: "Atomic claims and hybrid retrieval",
+        bodyZh: "每次只核验一条原子主张。全文下载后先校验论文身份，再结合 BM25、哈希向量、数字匹配、页码提示与查询扩展寻找最相关的证据片段。",
+        bodyEn: "Each verification targets one atomic claim. After download, the tracker confirms document identity and combines BM25, hash vectors, numeric matching, page hints and query expansion to retrieve the strongest passages.",
       },
       {
-        headingZh: "保留人的判断位置",
-        headingEn: "Keep a place for human judgment",
-        bodyZh:
-          "当来源冲突、时效性不足或结论影响较大时，系统应主动升级给人，而不是继续用更肯定的语气掩盖不确定性。",
-        bodyEn:
-          "When sources conflict, age poorly or carry high impact, the system should escalate to a person instead of hiding uncertainty behind confident prose.",
+        headingZh: "明确的证据等级",
+        headingEn: "Explicit evidence grades",
+        bodyZh: "核验结果分为支持、部分支持、矛盾与未找到，并映射到绿色、黄色、红色和阻塞状态。最终 Markdown 报告同时保留成功与失败，确保读者能够复查。",
+        bodyEn: "Verification outcomes are ENTAILMENT, PARTIAL, CONTRADICTION or NOT_FOUND, mapped to GREEN, YELLOW, RED and BLOCKED states. The final Markdown report keeps both successes and failures so readers can reproduce the audit.",
       },
     ],
   },
   {
     slug: "evidence-grading",
-    titleZh: "可信 Agent 的证据分级",
+    titleZh: "可信智能体的证据分级",
     titleEn: "Evidence Grading for Trustworthy Agents",
-    summaryZh:
-      "不是所有来源都应拥有同样权重。用来源类型、直接性、时效性和一致性帮助 Agent 管理不确定性。",
-    summaryEn:
-      "Not all sources deserve equal weight. Source type, directness, recency and agreement help an agent manage uncertainty.",
-    meta: "TRUST · SOURCES · EVALUATION",
+    summaryZh: "把来源质量、结论强度和人工复核组合为可执行的判断规则。",
+    summaryEn: "Turning source quality, claim strength and human review into actionable judgment rules.",
+    metaZh: "信任 · 来源 · 评估",
+    metaEn: "TRUST · SOURCES · EVALUATION",
     sections: [
-      {
-        headingZh: "先区分事实与判断",
-        headingEn: "Separate fact from judgment",
-        bodyZh:
-          "事实主张需要可核验的原始来源；解释和建议则需要展示假设。先区分两者，才能选择合适的证据标准。",
-        bodyEn:
-          "Factual claims need verifiable primary sources, while interpretation needs visible assumptions. Different claims require different standards.",
-      },
-      {
-        headingZh: "分级不是简单打分",
-        headingEn: "Grading is more than a score",
-        bodyZh:
-          "单一分数会掩盖信息。更有效的方法是同时记录来源类型、与主张的距离、发布时间和其他来源是否一致。",
-        bodyEn:
-          "A single score hides information. It is more useful to record source type, distance from the claim, recency and agreement with other sources.",
-      },
+      { headingZh: "先分离事实与判断", headingEn: "Separate facts from judgments", bodyZh: "可靠系统必须明确哪些内容来自来源，哪些内容是模型推断。", bodyEn: "Reliable systems make a visible distinction between sourced facts and model inference." },
+      { headingZh: "让不确定性可操作", headingEn: "Make uncertainty actionable", bodyZh: "分级不是装饰，而是决定自动执行、请求复核或停止流程。", bodyEn: "Grades are operational controls that decide whether to proceed, request review or stop." },
     ],
   },
   {
     slug: "human-ai-handoffs",
-    titleZh: "人与 AI 的协作节点",
+    titleZh: "设计人机交接",
     titleEn: "Designing Human–AI Handoffs",
-    summaryZh:
-      "好的 Agent 不是删除人，而是把人的判断安排在最有价值的节点：定义目标、处理例外和承担最终责任。",
-    summaryEn:
-      "A good agent does not remove people. It places human judgment where it adds the most value: goals, exceptions and accountability.",
-    meta: "HUMAN + AI · PRODUCT · FLOW",
+    summaryZh: "在自动化与人工判断之间建立清晰、可逆的交接点。",
+    summaryEn: "Building clear and reversible handoff points between automation and human judgment.",
+    metaZh: "人机 · 产品 · 流程",
+    metaEn: "HUMAN + AI · PRODUCT · FLOW",
     sections: [
-      {
-        headingZh: "自动化高频，保留高风险",
-        headingEn: "Automate frequency, preserve high-risk judgment",
-        bodyZh:
-          "重复、可逆、容易验证的步骤适合自动化；影响大、信息不足或需要价值判断的步骤应该明确交还给人。",
-        bodyEn:
-          "Repetitive, reversible and verifiable work is suitable for automation. High-impact or value-laden decisions should return to a person.",
-      },
-      {
-        headingZh: "交接必须带着状态",
-        headingEn: "A handoff needs state",
-        bodyZh:
-          "Agent 交给人的不应只有一句“请确认”，还应包括已完成的工作、证据、未解决问题和可选择的下一步。",
-        bodyEn:
-          "An agent should hand over completed work, evidence, unresolved questions and available next steps—not just a request to confirm.",
-      },
+      { headingZh: "交接是一种界面", headingEn: "A handoff is an interface", bodyZh: "好的交接会提供上下文、候选方案和下一步，而不是把问题丢给用户。", bodyEn: "A good handoff supplies context, options and a next action instead of simply dumping a problem on the user." },
+      { headingZh: "默认可撤销", headingEn: "Reversible by default", bodyZh: "高风险动作需要预览、确认和恢复路径。", bodyEn: "High-impact actions need preview, confirmation and a recovery path." },
     ],
   },
   {
     slug: "statistics-to-product",
     titleZh: "从统计学习到产品判断",
     titleEn: "From Statistical Learning to Product Judgment",
-    summaryZh:
-      "模型指标只回答了一部分问题。真正的产品判断还要考虑数据质量、用户成本、错误后果与可解释性。",
-    summaryEn:
-      "Model metrics answer only part of the question. Product judgment also depends on data quality, user cost, error impact and explainability.",
-    meta: "DATA SCIENCE · PRODUCT · DECISIONS",
+    summaryZh: "模型指标只有与真实决策、成本和用户体验连接时才有意义。",
+    summaryEn: "Model metrics matter only when connected to real decisions, costs and user experience.",
+    metaZh: "数据科学 · 产品 · 决策",
+    metaEn: "DATA SCIENCE · PRODUCT · DECISIONS",
     sections: [
-      {
-        headingZh: "指标需要语境",
-        headingEn: "Metrics need context",
-        bodyZh:
-          "准确率提升并不自动等于用户体验提升。必须知道错误发生在哪里、影响谁，以及用户是否能够发现和修正。",
-        bodyEn:
-          "Higher accuracy does not automatically improve the experience. We need to know where errors happen, who they affect and whether users can recover.",
-      },
-      {
-        headingZh: "把不确定性设计进界面",
-        headingEn: "Design uncertainty into the interface",
-        bodyZh:
-          "当模型没有足够把握时，界面应提供来源、置信提示或进一步确认，而不是把概率输出包装成确定答案。",
-        bodyEn:
-          "When confidence is low, the interface should expose sources, confidence or a confirmation step instead of presenting probability as certainty.",
-      },
+      { headingZh: "指标不是目标", headingEn: "Metrics are not the goal", bodyZh: "离线分数无法替代真实场景中的风险、延迟和可解释性。", bodyEn: "Offline scores cannot replace real-world risk, latency and interpretability." },
+      { headingZh: "从决策倒推模型", headingEn: "Work backward from decisions", bodyZh: "先定义错误的代价，再选择阈值、数据和评估方式。", bodyEn: "Define the cost of errors first, then choose thresholds, data and evaluation." },
+    ],
+  },
+  {
+    slug: "ai-tools-notes",
+    titleZh: "AI 工具使用心得",
+    titleEn: "Notes on Using AI Tools",
+    summaryZh: "真正影响效率的不是工具数量，而是任务边界、上下文质量和验证习惯。",
+    summaryEn: "The real gains come from clear task boundaries, good context and disciplined verification.",
+    metaZh: "AI 工具 · 工作流 · 笔记",
+    metaEn: "AI TOOLS · WORKFLOW · NOTES",
+    sections: [
+      { headingZh: "工具不是工作流", headingEn: "A tool is not a workflow", bodyZh: "先定义输入、输出和验收方式，再决定把哪一步交给 AI。", bodyEn: "Define inputs, outputs and acceptance checks before deciding which step belongs to AI." },
+      { headingZh: "上下文决定上限", headingEn: "Context sets the ceiling", bodyZh: "好的上下文比更长的提示词更重要。", bodyEn: "Useful context matters more than a longer prompt." },
     ],
   },
 ];

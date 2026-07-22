@@ -3,10 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://crystaldavid.github.io"),
-  title: {
-    default: "David — Independent Developer",
-    template: "%s",
-  },
+  title: { default: "David — Independent Developer", template: "%s" },
   description: "David builds AI agents, products and research.",
   authors: [{ name: "David" }],
   creator: "David",
@@ -15,14 +12,7 @@ export const metadata: Metadata = {
     description: "AI agents, products and research.",
     type: "website",
     locale: "en_US",
-    images: [
-      {
-        url: "/og.png",
-        width: 1731,
-        height: 909,
-        alt: "David — Independent Developer",
-      },
-    ],
+    images: [{ url: "/og.png", width: 1731, height: 909, alt: "David — Independent Developer" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -39,21 +29,11 @@ export const viewport: Viewport = {
   colorScheme: "light",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" data-lang="en">
       <head>
-        <link
-          rel="preload"
-          href="/fonts/nunito-latin.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
+        <link rel="preload" href="/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body>{children}</body>
     </html>
