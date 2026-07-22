@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import "chiron-go-round-tc-webfont-truetype/css/vf.t1.css";
 import "./globals.css";
 
 export const metadata: Metadata = {

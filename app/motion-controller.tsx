@@ -129,11 +129,26 @@ export function MotionController() {
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     let pointerDisposed = false;
     let removePointerMotion = () => {};
+    let resetPointerMotion = () => {};
+    let scrolling = false;
+    let scrollIdleTimer = 0;
+
+    const handleScrollActivity = () => {
+      scrolling = true;
+      root.classList.add("is-scrolling");
+      resetPointerMotion();
+      window.clearTimeout(scrollIdleTimer);
+      scrollIdleTimer = window.setTimeout(() => {
+        scrolling = false;
+        root.classList.remove("is-scrolling");
+      }, 160);
+    };
 
     if (!reducedMotion && finePointer && pointerPanels.length) {
       void import("gsap").then(({ gsap }) => {
         if (pointerDisposed) return;
         const cleanups: Array<() => void> = [];
+        const resets: Array<() => void> = [];
 
         pointerPanels.forEach((panel) => {
           const title = panel.querySelector<HTMLElement>(".chapter-title");
@@ -141,60 +156,100 @@ export function MotionController() {
           if (!title) return;
 
           const titleX = gsap.quickTo(title, "x", {
-            duration: 0.1,
+            duration: 0.5,
             ease: "power2.out",
           });
           const titleY = gsap.quickTo(title, "y", {
-            duration: 0.1,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+          const titleRotateY = gsap.quickTo(title, "rotationY", {
+            duration: 0.5,
             ease: "power2.out",
           });
           const orbitX = orbit
-            ? gsap.quickTo(orbit, "x", { duration: 0.12, ease: "power2.out" })
+            ? gsap.quickTo(orbit, "x", { duration: 0.5, ease: "power2.out" })
             : null;
           const orbitY = orbit
-            ? gsap.quickTo(orbit, "y", { duration: 0.12, ease: "power2.out" })
+            ? gsap.quickTo(orbit, "y", { duration: 0.5, ease: "power2.out" })
             : null;
+          let settleTimer = 0;
 
-          const move = (event: PointerEvent) => {
-            const rect = panel.getBoundingClientRect();
-            const x = (event.clientX - rect.left) / rect.width - 0.5;
-            const y = (event.clientY - rect.top) / rect.height - 0.5;
-            panel.classList.add("pointer-active");
-            titleX(x * 34);
-            titleY(y * 22);
-            orbitX?.(x * 52);
-            orbitY?.(y * 34);
-          };
-          const leave = () => {
+          const reset = () => {
             titleX(0);
             titleY(0);
+            titleRotateY(0);
             orbitX?.(0);
             orbitY?.(0);
-            panel.classList.remove("pointer-active");
+            window.clearTimeout(settleTimer);
+            settleTimer = window.setTimeout(() => {
+              panel.classList.remove("pointer-active");
+            }, 560);
+          };
+
+          const move = (event: PointerEvent) => {
+            if (scrolling) return;
+            const rect = panel.getBoundingClientRect();
+            const x = 2 * ((event.clientX - rect.left) / rect.width - 0.5);
+            const y = 2 * ((event.clientY - rect.top) / rect.height - 0.5);
+            panel.classList.add("pointer-active");
+            window.clearTimeout(settleTimer);
+
+            // Wickret's envelope motion: the body moves opposite the pointer
+            // inside a shallow 3D perspective, while surrounding marks travel
+            // slightly farther. rotationY creates the perceived left/right
+            // size change without reflowing or scaling individual glyphs.
+            titleX(-20 * x);
+            titleY(-10 * y);
+            titleRotateY(2 * x);
+            orbitX?.(-30 * x);
+            orbitY?.(-20 * y);
           };
 
           panel.addEventListener("pointermove", move, { passive: true });
-          panel.addEventListener("pointerleave", leave, { passive: true });
+          panel.addEventListener("pointerleave", reset, { passive: true });
+          panel.addEventListener("pointercancel", reset, { passive: true });
+          resets.push(reset);
           cleanups.push(() => {
             panel.removeEventListener("pointermove", move);
-            panel.removeEventListener("pointerleave", leave);
+            panel.removeEventListener("pointerleave", reset);
+            panel.removeEventListener("pointercancel", reset);
+            window.clearTimeout(settleTimer);
             gsap.killTweensOf(orbit ? [title, orbit] : title);
           });
         });
 
+        resetPointerMotion = () => resets.forEach((reset) => reset());
         removePointerMotion = () => cleanups.forEach((cleanup) => cleanup());
       });
     }
 
+    const hero = document.querySelector<HTMLElement>(".hero-screen");
+    let heroObserver: IntersectionObserver | null = null;
+    if (hero && "IntersectionObserver" in window && !reducedMotion) {
+      heroObserver = new IntersectionObserver(
+        ([entry]) => hero.classList.toggle("motion-active", entry.isIntersecting),
+        { threshold: 0.02 },
+      );
+      heroObserver.observe(hero);
+    } else {
+      hero?.classList.add("motion-active");
+    }
+
+    window.addEventListener("scroll", handleScrollActivity, { passive: true });
     window.addEventListener("resize", syncViewportHeight, { passive: true });
     window.visualViewport?.addEventListener("resize", syncViewportHeight);
 
     return () => {
       pointerDisposed = true;
       removePointerMotion();
+      heroObserver?.disconnect();
+      window.clearTimeout(scrollIdleTimer);
+      root.classList.remove("is-scrolling");
       settleTimers.forEach((timer) => window.clearTimeout(timer));
       revealObserver?.disconnect();
       titleObserver?.disconnect();
+      window.removeEventListener("scroll", handleScrollActivity);
       window.removeEventListener("resize", syncViewportHeight);
       window.visualViewport?.removeEventListener("resize", syncViewportHeight);
       toggles.forEach((toggle) =>

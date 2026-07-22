@@ -13,6 +13,7 @@
     "lint": "eslint app next.config.ts"
   },
   "dependencies": {
+    "chiron-go-round-tc-webfont-truetype": "^1.0.11",
     "gsap": "^3.13.0",
     "next": "16.2.6",
     "react": "19.2.6",

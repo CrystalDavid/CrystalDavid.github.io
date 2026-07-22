@@ -1,14 +1,21 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
 const readOutput = (route = "") =>
   readFile(new URL(`../out/${route ? `${route}/` : ""}index.html`, import.meta.url), "utf8");
 
+const readExportedCss = async () => {
+  const chunks = new URL("../out/_next/static/chunks/", import.meta.url);
+  const files = (await readdir(chunks)).filter((file) => file.endsWith(".css"));
+  return (await Promise.all(files.map((file) => readFile(new URL(file, chunks), "utf8")))).join("\n");
+};
+
 test("homepage exports the intended typography and motion hooks", async () => {
-  const html = await readOutput();
+  const [html, css] = await Promise.all([readOutput(), readExportedCss()]);
 
   assert.match(html, /\/fonts\/nunito-latin\.woff2/);
+  assert.match(css, /Chiron GoRound TC WS/);
   assert.ok(
     (html.match(/data-wickret-pointer/g) ?? []).length >= 3,
     "Experience, Agent and Article should all expose the pointer-motion hook",
@@ -21,11 +28,11 @@ test("homepage exports the intended typography and motion hooks", async () => {
 test("article gallery stays simple and title-only", async () => {
   const html = await readOutput();
 
-  assert.equal((html.match(/<a class="article-work-card"/g) ?? []).length, 6);
+  assert.equal((html.match(/<a class="article-work-card"/g) ?? []).length, 2);
   assert.doesNotMatch(html, /article-work-meta/);
   assert.doesNotMatch(html, /gallery-motion-active/);
-  assert.match(html, /PPT-Agent Technical Report/);
-  assert.match(html, /Evidence-Chain Tracker Technical Report/);
+  assert.match(html, /PPT-Agent Report/);
+  assert.match(html, /Research Evidence Tracker: Implementation and Evolution/);
 });
 
 test("the two PDF reports export as bilingual canonical articles", async () => {
@@ -36,12 +43,17 @@ test("the two PDF reports export as bilingual canonical articles", async () => {
 
   for (const html of [pptAgent, evidenceTracker]) {
     assert.match(html, /article-language-toggle/);
+    assert.match(html, /article-back/);
     assert.match(html, /lang-en/);
     assert.match(html, /lang-zh/);
+    assert.doesNotMatch(html, /Read more articles/);
+    assert.doesNotMatch(html, /class="[^"]*eyebrow/);
   }
 
-  assert.match(pptAgent, /content-first agent workflow/i);
-  assert.match(evidenceTracker, /auditable, traceable and reproducible/i);
+  assert.match(pptAgent, /Content-driven, not template-driven/i);
+  assert.match(pptAgent, /research_brief/);
+  assert.match(evidenceTracker, /IDENTITY_CONFLICT/);
+  assert.match(evidenceTracker, /24\.06%/);
 });
 
 test("both Agent motion comparison pages are exported", async () => {

@@ -83,7 +83,7 @@ export default function StyleLab() {
                       />
                     </span>
                     <span className="lab-card-copy">
-                      <small>{article.metaEn}</small>
+                      <small>{article.sourceLabelEn}</small>
                       <b>{article.titleEn}</b>
                       <i>↗</i>
                     </span>

@@ -18,6 +18,14 @@ function LanguagePair({ zh, en, as: Tag = "span", className }: { zh: string; en:
   return <><Tag className={`lang lang-en ${className ?? ""}`}>{en}</Tag><Tag className={`lang lang-zh ${className ?? ""}`}>{zh}</Tag></>;
 }
 
+function BackArrow() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M10.3 5.2 3.5 12l6.8 6.8 1.4-1.4-4.4-4.4H21v-2H7.3l4.4-4.4-1.4-1.4Z" />
+    </svg>
+  );
+}
+
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const article = getArticle(slug);
@@ -26,31 +34,53 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   return (
     <main className="article-page">
       <header className="article-page-header">
-        <Link href="/" className="article-brand">David</Link>
-        <nav aria-label="Article navigation">
-          <Link href="/#articles"><span className="lang lang-en">Articles</span><span className="lang lang-zh">文章</span></Link>
+        <Link href="/#articles" className="article-back" aria-label="Back to the article list">
+          <BackArrow />
+          <span className="lang lang-en">Article</span>
+          <span className="lang lang-zh">文章</span>
+        </Link>
+        <nav aria-label="Article preferences">
           <ArticleLanguageToggle />
         </nav>
       </header>
 
       <article>
-        <LanguagePair zh={article.metaZh} en={article.metaEn} as="p" className="eyebrow" />
         <LanguagePair zh={article.titleZh} en={article.titleEn} as="h1" />
         <LanguagePair zh={article.summaryZh} en={article.summaryEn} as="p" className="article-lede" />
+        <LanguagePair zh={article.sourceLabelZh} en={article.sourceLabelEn} as="p" className="article-source" />
 
         <div className="article-body">
           {article.sections.map((section, index) => (
             <section key={section.headingEn}>
               <p className="section-number">{String(index + 1).padStart(2, "0")}</p>
               <LanguagePair zh={section.headingZh} en={section.headingEn} as="h2" />
-              <LanguagePair zh={section.bodyZh} en={section.bodyEn} as="p" />
+              <div className="article-section-content">
+                {section.blocks.map((block, blockIndex) => {
+                  if (block.type === "code") {
+                    return <pre className="article-code" data-language={block.language} key={`${block.language}-${blockIndex}`}><code>{block.code}</code></pre>;
+                  }
+                  if (block.type === "list") {
+                    const List = block.ordered ? "ol" : "ul";
+                    return (
+                      <List key={`list-${blockIndex}`}>
+                        {block.items.map((item) => (
+                          <li key={item.zh}><LanguagePair zh={item.zh} en={item.en} /></li>
+                        ))}
+                      </List>
+                    );
+                  }
+                  if (block.type === "subheading") {
+                    return <LanguagePair zh={block.zh} en={block.en} as="h2" className="article-subheading" key={block.zh} />;
+                  }
+                  return <LanguagePair zh={block.zh} en={block.en} as="p" key={block.zh} />;
+                })}
+              </div>
             </section>
           ))}
         </div>
       </article>
 
       <footer className="article-page-footer">
-        <Link href="/#articles"><span className="lang lang-en">Read more articles</span><span className="lang lang-zh">阅读更多文章</span></Link>
         <span>© 2026 DAVID</span>
       </footer>
     </main>
