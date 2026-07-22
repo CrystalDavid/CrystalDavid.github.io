@@ -754,7 +754,6 @@ html[data-lang="en"] .hero-title > .lang-en.center-magnet-ready .magnet-word {
 }
 
 .article-gallery-section {
-  --article-grid-y: 0px;
   position: relative;
   z-index: 4;
   min-height: 100vh;
@@ -763,11 +762,6 @@ html[data-lang="en"] .hero-title > .lang-en.center-magnet-ready .magnet-word {
   overflow: clip;
   border-radius: var(--radius-screen);
   background: var(--sky);
-}
-
-.article-gallery-section.gallery-motion-active .article-gallery-motion {
-  transform: translate3d(0, var(--article-grid-y), 0);
-  will-change: transform;
 }
 
 .article-gallery-inner {

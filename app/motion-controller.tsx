@@ -255,30 +255,17 @@ export function MotionController() {
     const featurePanel = document.querySelector<HTMLElement>(
       "[data-feature-parallax]",
     );
-    const articleGalleryPanel = document.querySelector<HTMLElement>(
-      ".article-gallery-section",
-    );
     let scrollMotionFrame = 0;
     let resizeFrame = 0;
     let featureTop = 0;
     let featureHeight = 0;
-    let articleGalleryTop = 0;
-    let articleGalleryHeight = 0;
     let featureWasActive = false;
-    let articleGalleryWasActive = false;
 
     const measureFeaturePanel = () => {
       if (!featurePanel) return;
       const rect = featurePanel.getBoundingClientRect();
       featureTop = window.scrollY + rect.top;
       featureHeight = rect.height;
-    };
-
-    const measureArticleGallery = () => {
-      if (!articleGalleryPanel) return;
-      const rect = articleGalleryPanel.getBoundingClientRect();
-      articleGalleryTop = window.scrollY + rect.top;
-      articleGalleryHeight = rect.height;
     };
 
     const snapToDevicePixel = (value: number) => {
@@ -323,33 +310,6 @@ export function MotionController() {
         }
       }
 
-      if (articleGalleryPanel) {
-        if (reducedMotion || compactLayout) {
-          articleGalleryPanel.style.setProperty("--article-grid-y", "0px");
-          articleGalleryPanel.classList.remove("gallery-motion-active");
-          articleGalleryWasActive = false;
-        } else {
-          const panelTop = articleGalleryTop - window.scrollY;
-          const panelBottom = panelTop + articleGalleryHeight;
-          const isActive =
-            panelBottom > -viewportHeight * 0.2 &&
-            panelTop < viewportHeight * 1.2;
-
-          if (isActive || articleGalleryWasActive) {
-            const progress = clamp(panelTop / viewportHeight, -1, 1);
-            const offset = snapToDevicePixel(progress * 24);
-            articleGalleryPanel.style.setProperty(
-              "--article-grid-y",
-              `${offset}px`,
-            );
-            articleGalleryPanel.classList.toggle(
-              "gallery-motion-active",
-              isActive,
-            );
-            articleGalleryWasActive = isActive;
-          }
-        }
-      }
     };
 
     const requestScrollMotion = () => {
@@ -364,14 +324,12 @@ export function MotionController() {
         resizeFrame = 0;
         syncViewportHeight();
         measureFeaturePanel();
-        measureArticleGallery();
         restageMagneticLines();
         updateScrollMotion();
       });
     };
 
     measureFeaturePanel();
-    measureArticleGallery();
     requestScrollMotion();
 
     const pointerPanels = Array.from(
@@ -460,7 +418,6 @@ export function MotionController() {
     window.visualViewport?.addEventListener("resize", syncViewportHeight);
     document.fonts?.ready.then(() => {
       measureFeaturePanel();
-      measureArticleGallery();
       requestScrollMotion();
     });
 
