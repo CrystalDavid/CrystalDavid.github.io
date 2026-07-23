@@ -3,6 +3,10 @@
 import { type ReactNode, useEffect, useRef } from "react";
 import type { Scrollbar as ScrollbarInstance } from "smooth-scrollbar/scrollbar";
 
+type VirtualScrollStatus = {
+  offset: { x: number; y: number };
+};
+
 export function SmoothScroll({ children }: { children: ReactNode }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -11,15 +15,39 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     );
-    const desktop = window.matchMedia("(min-width: 721px)");
+    const compactLayout = window.matchMedia("(max-width: 720px)");
+    const coarsePointer = window.matchMedia(
+      "(hover: none) and (pointer: coarse)",
+    );
+    const navigatorWithHints = navigator as Navigator & {
+      userAgentData?: { mobile?: boolean };
+    };
+    const mobileUserAgent =
+      navigatorWithHints.userAgentData?.mobile === true ||
+      /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    const useNativeScroll =
+      reducedMotion.matches ||
+      compactLayout.matches ||
+      coarsePointer.matches ||
+      mobileUserAgent;
     const container = containerRef.current;
     let scrollbar: ScrollbarInstance | null = null;
     let disposed = false;
+    let previousVirtualY = 0;
 
-    const dispatchVirtualScroll = (y: number) => {
+    const dispatchVirtualScroll = (y: number, deltaY = 0) => {
       window.dispatchEvent(
-        new CustomEvent("david:virtual-scroll", { detail: { y } }),
+        new CustomEvent("david:virtual-scroll", {
+          detail: { y, deltaY },
+        }),
       );
+    };
+
+    const handleVirtualScroll = (status: VirtualScrollStatus) => {
+      const y = status.offset.y;
+      const deltaY = y - previousVirtualY;
+      previousVirtualY = y;
+      dispatchVirtualScroll(y, deltaY);
     };
 
     const scrollToHash = (
@@ -67,7 +95,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     document.addEventListener("click", handleAnchor);
 
     const initialize = async () => {
-      if (!container || reducedMotion.matches || !desktop.matches) {
+      if (!container || useNativeScroll) {
         root.classList.add("native-scroll");
         restoreInitialAnchor();
         void document.fonts?.ready.then(restoreInitialAnchor);
@@ -78,18 +106,19 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       if (disposed) return;
 
       scrollbar = Scrollbar.init(container, {
-        damping: 0.1,
-        renderByPixels: true,
-        continuousScrolling: true,
+        // Wickret's actual runtime overrides. Its bundled library defaults
+        // are different, but the live site uses these values.
+        damping: 0.06,
+        renderByPixels: false,
+        continuousScrolling: false,
         alwaysShowTracks: false,
+        delegateTo: container,
       });
-      const handleVirtualScroll = (status: { offset: { y: number } }) => {
-        dispatchVirtualScroll(status.offset.y);
-      };
+      previousVirtualY = scrollbar.offset.y;
       scrollbar.addListener(handleVirtualScroll);
       root.classList.remove("native-scroll");
       root.classList.add("virtual-scroll");
-      dispatchVirtualScroll(scrollbar.offset.y);
+      dispatchVirtualScroll(previousVirtualY);
       restoreInitialAnchor();
 
       void document.fonts?.ready.then(() => {
@@ -103,6 +132,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
 
     return () => {
       disposed = true;
+      scrollbar?.removeListener(handleVirtualScroll);
       scrollbar?.destroy();
       scrollbar = null;
       root.classList.remove("native-scroll", "virtual-scroll");

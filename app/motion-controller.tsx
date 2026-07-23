@@ -10,12 +10,17 @@ export function MotionController() {
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
+    const desktopLayout = window.matchMedia("(min-width: 721px)");
     root.classList.add("js");
 
     const syncViewportHeight = () => {
+      if (!desktopLayout.matches) {
+        root.style.removeProperty("--app-viewport-height");
+        return;
+      }
       root.style.setProperty(
         "--app-viewport-height",
-        `${Math.ceil(window.visualViewport?.height ?? window.innerHeight)}px`,
+        `${document.documentElement.clientHeight}px`,
       );
     };
     syncViewportHeight();
@@ -232,13 +237,17 @@ export function MotionController() {
     let waveSkew = 0;
     let pendingScrollDelta = 0;
     let scrollEffectsFrame = 0;
+    const lastCharProgress = new WeakMap<HTMLElement, string>();
+    let lastFeatureMediaY = "";
+    let lastWaveSkew = "";
 
     const renderScrollEffects = () => {
       scrollEffectsFrame = 0;
-      const viewportHeight =
-        window.visualViewport?.height ?? window.innerHeight;
+      const viewportHeight = document.documentElement.clientHeight;
 
-      charRevealStories.forEach((target) => {
+      // Read every layout value first, then write styles. This keeps the
+      // scroll frame to one layout pass instead of alternating reads/writes.
+      const charUpdates = charRevealStories.map((target) => {
         const rect = target.getBoundingClientRect();
         const progress = reducedMotion
           ? 1
@@ -248,9 +257,10 @@ export function MotionController() {
             0,
             1,
           );
-        target.style.setProperty("--char-progress", progress.toFixed(4));
+        return { target, progress: progress.toFixed(4) };
       });
 
+      let featureMediaY: string | null = null;
       if (featureScroll) {
         const rect = featureScroll.getBoundingClientRect();
         const progress = reducedMotion || window.innerWidth <= 720
@@ -260,31 +270,45 @@ export function MotionController() {
             0,
             1,
           );
-        featureScroll.style.setProperty("--feature-progress", progress.toFixed(4));
-        featureScroll.style.setProperty(
-          "--feature-media-y",
-          `${(-80 + progress * 160).toFixed(2)}px`,
-        );
+        featureMediaY = `${(-80 + progress * 160).toFixed(2)}px`;
       }
 
       if (!reducedMotion && window.innerWidth > 720) {
-        // Smooth Scrollbar has already damped the input into a per-frame,
-        // integer-pixel offset. This is Wickret's exact skew formula.
+        // Wickret derives each frame directly from the current damped offset.
+        // With no new delta on the following frame, the skew returns to zero
+        // immediately instead of adding a second inertial tail.
         const visualTarget = clamp(pendingScrollDelta * 0.15, -5, 5);
         pendingScrollDelta = 0;
-        waveSkew = Math.abs(visualTarget) > 0.001
-          ? visualTarget
-          : waveSkew * 0.45;
+        waveSkew = visualTarget;
       } else {
         waveSkew = 0;
         pendingScrollDelta = 0;
       }
 
-      scrollWaveTargets.forEach((target) => {
-        target.style.setProperty("--scroll-wave-skew", `${waveSkew.toFixed(3)}deg`);
+      charUpdates.forEach(({ target, progress }) => {
+        if (lastCharProgress.get(target) === progress) return;
+        target.style.setProperty("--char-progress", progress);
+        lastCharProgress.set(target, progress);
       });
 
-      if (Math.abs(waveSkew) > 0.012 || Math.abs(pendingScrollDelta) > 0.01) {
+      if (
+        featureScroll &&
+        featureMediaY !== null &&
+        lastFeatureMediaY !== featureMediaY
+      ) {
+        featureScroll.style.setProperty("--feature-media-y", featureMediaY);
+        lastFeatureMediaY = featureMediaY;
+      }
+
+      const nextWaveSkew = `${waveSkew.toFixed(3)}deg`;
+      if (lastWaveSkew !== nextWaveSkew) {
+        scrollWaveTargets.forEach((target) => {
+          target.style.setProperty("--scroll-wave-skew", nextWaveSkew);
+        });
+        lastWaveSkew = nextWaveSkew;
+      }
+
+      if (Math.abs(waveSkew) > 0.001 || Math.abs(pendingScrollDelta) > 0.001) {
         root.classList.add("scroll-wave-settling");
         scrollEffectsFrame = window.requestAnimationFrame(renderScrollEffects);
       } else {
@@ -298,12 +322,16 @@ export function MotionController() {
     };
 
     const handleScrollActivity = (event: Event) => {
-      const virtualScrollY = (
-        event as CustomEvent<{ y?: number }>
-      ).detail?.y;
+      const virtualDetail = (
+        event as CustomEvent<{ y?: number; deltaY?: number }>
+      ).detail;
+      const virtualScrollY = virtualDetail?.y;
       const currentScrollY =
         typeof virtualScrollY === "number" ? virtualScrollY : window.scrollY;
-      const scrollDelta = currentScrollY - lastScrollY;
+      const scrollDelta =
+        typeof virtualDetail?.deltaY === "number"
+          ? virtualDetail.deltaY
+          : currentScrollY - lastScrollY;
       lastScrollY = currentScrollY;
       if (!reducedMotion && window.innerWidth > 720) {
         pendingScrollDelta = scrollDelta;
@@ -426,7 +454,6 @@ export function MotionController() {
       scheduleScrollEffects();
     };
     window.addEventListener("resize", handleResize, { passive: true });
-    window.visualViewport?.addEventListener("resize", handleResize);
 
     return () => {
       pointerDisposed = true;
@@ -446,7 +473,6 @@ export function MotionController() {
       );
       window.removeEventListener("david:layout", scheduleScrollEffects);
       window.removeEventListener("resize", handleResize);
-      window.visualViewport?.removeEventListener("resize", handleResize);
       toggles.forEach((toggle) =>
         toggle.removeEventListener("click", toggleLanguage),
       );

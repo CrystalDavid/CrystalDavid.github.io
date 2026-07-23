@@ -36,7 +36,7 @@
   --page-gutter: 50px;
   --radius-screen: 12px;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --app-viewport-height: 100dvh;
+  --app-viewport-height: 100svh;
 }
 
 * {
@@ -44,12 +44,16 @@
 }
 
 html {
+  width: 100%;
   min-height: 100%;
   scroll-behavior: auto;
   background: #e7edfb;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
+  width: 100%;
   min-height: 100%;
   margin: 0;
   color: var(--ink);
@@ -97,12 +101,14 @@ html.virtual-scroll .smooth-scroll-content {
   overflow: hidden;
 }
 
-html.virtual-scroll .smooth-scroll-content > .scroll-content {
-  will-change: transform;
-}
-
 html.virtual-scroll .scrollbar-track {
   background: transparent;
+}
+
+@media (min-width: 721px) {
+  :root {
+    --app-viewport-height: 100vh;
+  }
 }
 
 html.virtual-scroll .scrollbar-track-y {
@@ -729,7 +735,6 @@ html.is-scrolling [data-wickret-pointer] {
 }
 
 .feature-screen {
-  --feature-progress: 0;
   --feature-media-y: 0px;
   position: relative;
   z-index: 3;

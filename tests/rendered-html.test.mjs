@@ -5,6 +5,9 @@ import test from "node:test";
 const readOutput = (route = "") =>
   readFile(new URL(`../out/${route ? `${route}/` : ""}index.html`, import.meta.url), "utf8");
 
+const readSource = (path) =>
+  readFile(new URL(`../${path}`, import.meta.url), "utf8");
+
 const readExportedCss = async () => {
   const chunks = new URL("../out/_next/static/chunks/", import.meta.url);
   const files = (await readdir(chunks)).filter((file) => file.endsWith(".css"));
@@ -16,6 +19,14 @@ test("homepage exports the intended typography and motion hooks", async () => {
 
   assert.match(html, /\/fonts\/nunito-latin\.woff2/);
   assert.match(css, /Chiron GoRound TC WS/);
+  assert.match(html, /maximum-scale=2/);
+  assert.match(html, /david-site-language-v2/);
+  assert.ok(
+    html.indexOf("david-site-language-v2") < html.indexOf("</head><body>"),
+    "saved language must be restored before the body is painted",
+  );
+  assert.match(css, /text-size-adjust:100%/);
+  assert.match(css, /--app-viewport-height:100svh/);
   assert.ok((html.match(/data-wickret-pointer/g) ?? []).length >= 1);
   assert.ok((html.match(/data-char-story/g) ?? []).length >= 2);
   assert.match(html, /data-feature-scroll/);
@@ -26,6 +37,19 @@ test("homepage exports the intended typography and motion hooks", async () => {
   assert.match(html, />About me</);
   assert.doesNotMatch(html, />Experience</);
   assert.doesNotMatch(html, /Explore my GitHub projects/);
+});
+
+test("desktop scrolling uses Wickret's live fractional runtime settings", async () => {
+  const [smoothScroll, motionController] = await Promise.all([
+    readSource("app/smooth-scroll.tsx"),
+    readSource("app/motion-controller.tsx"),
+  ]);
+
+  assert.match(smoothScroll, /damping:\s*0\.06/);
+  assert.match(smoothScroll, /renderByPixels:\s*false/);
+  assert.match(smoothScroll, /continuousScrolling:\s*false/);
+  assert.match(smoothScroll, /delegateTo:\s*container/);
+  assert.doesNotMatch(motionController, /waveSkew \* 0\.45/);
 });
 
 test("article gallery stays simple and title-only", async () => {

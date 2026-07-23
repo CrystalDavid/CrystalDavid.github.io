@@ -26,6 +26,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  maximumScale: 2,
   themeColor: "#ffffff",
   colorScheme: "light",
 };
@@ -34,6 +35,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" data-lang="en">
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{var l=localStorage.getItem('david-site-language-v2')==='zh'?'zh':'en';document.documentElement.dataset.lang=l;document.documentElement.lang=l==='zh'?'zh-CN':'en'}catch(e){}",
+          }}
+        />
         <link rel="preload" href="/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body>{children}</body>
