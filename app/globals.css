@@ -85,6 +85,36 @@ html[lang="zh-CN"] body,
   min-height: 100%;
 }
 
+html.virtual-scroll,
+html.virtual-scroll body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+html.virtual-scroll .smooth-scroll-content {
+  height: var(--app-viewport-height);
+  overflow: hidden;
+}
+
+html.virtual-scroll .smooth-scroll-content > .scroll-content {
+  will-change: transform;
+}
+
+html.virtual-scroll .scrollbar-track {
+  background: transparent;
+}
+
+html.virtual-scroll .scrollbar-track-y {
+  right: 2px;
+  width: 8px;
+}
+
+html.virtual-scroll .scrollbar-thumb {
+  border-radius: 999px;
+  background: rgb(35 45 194 / 42%);
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -700,28 +730,28 @@ html.is-scrolling [data-wickret-pointer] {
 
 .feature-screen {
   --feature-progress: 0;
-  --feature-copy-y: 0px;
   --feature-media-y: 0px;
   position: relative;
   z-index: 3;
-  min-height: 138vh;
-  min-height: calc(var(--app-viewport-height) * 1.38);
+  min-height: 100vh;
+  min-height: var(--app-viewport-height);
+  display: grid;
+  place-items: center;
+  padding: 110px 0 80px;
   border-radius: var(--radius-screen);
   background: var(--cream);
 }
 
 .feature-grid {
-  position: sticky;
-  top: 0;
-  min-height: 100vh;
-  min-height: var(--app-viewport-height);
+  position: relative;
+  min-height: 0;
   width: min(1080px, calc(100vw - 100px));
   margin: 0 auto;
   display: grid;
   grid-template-columns: minmax(0, 0.94fr) minmax(330px, 0.8fr);
   align-items: center;
   gap: 90px;
-  padding: 110px 0 80px;
+  padding: 0;
 }
 
 .feature-media-motion {
@@ -729,13 +759,11 @@ html.is-scrolling [data-wickret-pointer] {
 }
 
 .feature-copy-motion {
-  transform: translate3d(0, var(--feature-copy-y), 0);
+  transform: none;
 }
 
 html.is-scrolling .feature-media-motion,
-html.is-scrolling .feature-copy-motion,
-html.scroll-wave-settling .feature-media-motion,
-html.scroll-wave-settling .feature-copy-motion {
+html.scroll-wave-settling .feature-media-motion {
   will-change: transform;
 }
 
@@ -1891,7 +1919,7 @@ html.scroll-wave-settling .feature-copy-motion {
 
   .feature-screen {
     min-height: auto;
-    padding: 0;
+    padding: 108px 0 68px;
   }
 
   .feature-grid {
@@ -1901,7 +1929,7 @@ html.scroll-wave-settling .feature-copy-motion {
     width: calc(100vw - 40px);
     grid-template-columns: 1fr;
     gap: 48px;
-    padding: 108px 0 68px;
+    padding: 0;
   }
 
   .feature-media-motion,

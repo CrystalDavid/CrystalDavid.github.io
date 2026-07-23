@@ -178,7 +178,7 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="article-gallery-section" id="article" data-reveal-section aria-labelledby="article-title">
+          <section className="article-gallery-section" id="article" data-reveal-section data-reveal-repeat aria-labelledby="article-title">
             <div className="article-gallery-inner">
               <header className="article-gallery-header">
                 <h2 id="article-title" data-scroll-wave><span className="lang lang-zh">文章</span><span className="lang lang-en">Article</span></h2>

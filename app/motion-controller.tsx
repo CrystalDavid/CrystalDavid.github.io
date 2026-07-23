@@ -46,7 +46,9 @@ export function MotionController() {
 
     const toggleLanguage = () => {
       applyLanguage(root.dataset.lang === "en" ? "zh" : "en");
-      window.requestAnimationFrame(() => window.dispatchEvent(new Event("scroll")));
+      window.requestAnimationFrame(() =>
+        window.dispatchEvent(new Event("david:layout")),
+      );
     };
     toggles.forEach((toggle) => toggle.addEventListener("click", toggleLanguage));
 
@@ -136,9 +138,15 @@ export function MotionController() {
     }
 
     const revealTargets = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-reveal-section]"),
+      document.querySelectorAll<HTMLElement>(
+        "[data-reveal-section]:not([data-reveal-repeat])",
+      ),
+    );
+    const repeatRevealTargets = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-reveal-repeat]"),
     );
     let revealObserver: IntersectionObserver | null = null;
+    let repeatRevealObserver: IntersectionObserver | null = null;
     let titleObserver: IntersectionObserver | null = null;
 
     if ("IntersectionObserver" in window && !reducedMotion) {
@@ -153,6 +161,18 @@ export function MotionController() {
         { rootMargin: "0px 0px -8% 0px", threshold: 0.06 },
       );
       revealTargets.forEach((target) => revealObserver?.observe(target));
+
+      repeatRevealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            entry.target.classList.toggle("is-visible", entry.isIntersecting);
+          });
+        },
+        { rootMargin: "0px 0px -8% 0px", threshold: 0.06 },
+      );
+      repeatRevealTargets.forEach((target) =>
+        repeatRevealObserver?.observe(target),
+      );
 
       titleObserver = new IntersectionObserver(
         (entries) => {
@@ -184,6 +204,9 @@ export function MotionController() {
       topFlipTitles.forEach((title) => titleObserver?.observe(title));
     } else {
       revealTargets.forEach((target) => target.classList.add("is-visible"));
+      repeatRevealTargets.forEach((target) =>
+        target.classList.add("is-visible"),
+      );
       topFlipTitles.forEach((title) => title.classList.add("text-motion-entered"));
     }
 
@@ -230,28 +253,28 @@ export function MotionController() {
 
       if (featureScroll) {
         const rect = featureScroll.getBoundingClientRect();
-        const travel = Math.max(1, rect.height - viewportHeight);
         const progress = reducedMotion || window.innerWidth <= 720
           ? 0.5
-          : clamp(-rect.top / travel, 0, 1);
+          : clamp(
+            (viewportHeight - rect.top) / Math.max(1, viewportHeight * 2),
+            0,
+            1,
+          );
         featureScroll.style.setProperty("--feature-progress", progress.toFixed(4));
         featureScroll.style.setProperty(
-          "--feature-copy-y",
-          `${(56 - progress * 112).toFixed(2)}px`,
-        );
-        featureScroll.style.setProperty(
           "--feature-media-y",
-          `${(-36 + progress * 72).toFixed(2)}px`,
+          `${(-80 + progress * 160).toFixed(2)}px`,
         );
       }
 
       if (!reducedMotion && window.innerWidth > 720) {
-        // Wickret calculates skew from its already-damped, per-frame scroll
-        // position. Native scroll events can jump by hundreds of pixels, so
-        // normalize them to the same visual range before applying the skew.
-        const visualTarget = clamp(pendingScrollDelta * 0.026, -1.1, 1.1);
+        // Smooth Scrollbar has already damped the input into a per-frame,
+        // integer-pixel offset. This is Wickret's exact skew formula.
+        const visualTarget = clamp(pendingScrollDelta * 0.15, -5, 5);
         pendingScrollDelta = 0;
-        waveSkew += (visualTarget - waveSkew) * 0.64;
+        waveSkew = Math.abs(visualTarget) > 0.001
+          ? visualTarget
+          : waveSkew * 0.45;
       } else {
         waveSkew = 0;
         pendingScrollDelta = 0;
@@ -274,16 +297,16 @@ export function MotionController() {
       scrollEffectsFrame = window.requestAnimationFrame(renderScrollEffects);
     };
 
-    const handleScrollActivity = () => {
-      const currentScrollY = window.scrollY;
+    const handleScrollActivity = (event: Event) => {
+      const virtualScrollY = (
+        event as CustomEvent<{ y?: number }>
+      ).detail?.y;
+      const currentScrollY =
+        typeof virtualScrollY === "number" ? virtualScrollY : window.scrollY;
       const scrollDelta = currentScrollY - lastScrollY;
       lastScrollY = currentScrollY;
       if (!reducedMotion && window.innerWidth > 720) {
-        pendingScrollDelta = clamp(
-          pendingScrollDelta + clamp(scrollDelta, -42, 42),
-          -42,
-          42,
-        );
+        pendingScrollDelta = scrollDelta;
       }
       scheduleScrollEffects();
       scrolling = true;
@@ -390,9 +413,16 @@ export function MotionController() {
 
     scheduleScrollEffects();
     window.addEventListener("scroll", handleScrollActivity, { passive: true });
+    window.addEventListener(
+      "david:virtual-scroll",
+      handleScrollActivity as EventListener,
+    );
+    window.addEventListener("david:layout", scheduleScrollEffects);
     const handleResize = () => {
       syncViewportHeight();
-      lastScrollY = window.scrollY;
+      if (!root.classList.contains("virtual-scroll")) {
+        lastScrollY = window.scrollY;
+      }
       scheduleScrollEffects();
     };
     window.addEventListener("resize", handleResize, { passive: true });
@@ -407,8 +437,14 @@ export function MotionController() {
       root.classList.remove("is-scrolling", "scroll-wave-settling");
       settleTimers.forEach((timer) => window.clearTimeout(timer));
       revealObserver?.disconnect();
+      repeatRevealObserver?.disconnect();
       titleObserver?.disconnect();
       window.removeEventListener("scroll", handleScrollActivity);
+      window.removeEventListener(
+        "david:virtual-scroll",
+        handleScrollActivity as EventListener,
+      );
+      window.removeEventListener("david:layout", scheduleScrollEffects);
       window.removeEventListener("resize", handleResize);
       window.visualViewport?.removeEventListener("resize", handleResize);
       toggles.forEach((toggle) =>
