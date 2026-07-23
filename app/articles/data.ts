@@ -1,3 +1,5 @@
+import { pptAgentReport } from "./ppt-agent-report";
+
 export type ArticleText = {
   zh: string;
   en: string;
@@ -23,12 +25,16 @@ export type Article = {
   summaryEn: string;
   sourceLabelZh: string;
   sourceLabelEn: string;
+  sourceHref: string;
+  coverImage: string;
+  coverAltZh: string;
+  coverAltEn: string;
   sections: ArticleSection[];
 };
 
 const pair = (zh: string, en: string): ArticleText => ({ zh, en });
 
-export const articles: Article[] = [
+const legacyArticles: Article[] = [
   {
     slug: "ppt-agent-report",
     titleZh: "PPT-Agent 报告",
@@ -37,8 +43,12 @@ export const articles: Article[] = [
       "内容驱动而非模板驱动：从需求澄清、资料调研到大纲、策划、渲染和导出，每个阶段都有可审核的交付物。",
     summaryEn:
       "Content-driven rather than template-driven: every stage from discovery and research to outlining, planning, rendering and export produces a reviewable deliverable.",
-    sourceLabelZh: "依据《PPT-Agent技术报告.pdf》完整整理",
-    sourceLabelEn: "Adapted in full from PPT-Agent技术报告.pdf",
+    sourceLabelZh: "GitHub：CrystalDavid/PPT-Agent.git",
+    sourceLabelEn: "GitHub: CrystalDavid/PPT-Agent.git",
+    sourceHref: "https://github.com/CrystalDavid/PPT-Agent.git",
+    coverImage: "/media/ppt-agent-report.png",
+    coverAltZh: "PPT-Agent 页面渲染与 AI 输出日志界面",
+    coverAltEn: "PPT-Agent page rendering and AI output log interface",
     sections: [
       {
         headingZh: "核心设计理念",
@@ -348,8 +358,12 @@ html, body { width: 1280px; height: 720px; overflow: hidden; }
       "为 OpenClaw 科研 Agent 增加可检查、可追踪、可复现的全文证据审计能力，并透明保留失败与阻塞。",
     summaryEn:
       "A full-text evidence audit layer for OpenClaw research agents that remains inspectable, traceable and reproducible while preserving failures and blockers.",
-    sourceLabelZh: "依据《技术细节.pdf》完整整理",
-    sourceLabelEn: "Adapted in full from 技术细节.pdf",
+    sourceLabelZh: "GitHub：CrystalDavid/OpenClaw-Evidence-Tracker.git",
+    sourceLabelEn: "GitHub: CrystalDavid/OpenClaw-Evidence-Tracker.git",
+    sourceHref: "https://github.com/CrystalDavid/OpenClaw-Evidence-Tracker.git",
+    coverImage: "/media/evidence-tracker-report.png",
+    coverAltZh: "科研证据链插件能力演进对比图",
+    coverAltEn: "Research evidence tracker capability evolution comparison",
     sections: [
       {
         headingZh: "项目目标与职责边界",
@@ -651,6 +665,8 @@ html, body { width: 1280px; height: 720px; overflow: hidden; }
     ],
   },
 ];
+
+export const articles: Article[] = [pptAgentReport, legacyArticles[1]];
 
 export function getArticle(slug: string) {
   return articles.find((article) => article.slug === slug);

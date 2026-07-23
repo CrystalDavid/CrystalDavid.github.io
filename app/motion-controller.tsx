@@ -51,20 +51,34 @@ export function MotionController() {
     const topFlipTitles = Array.from(
       document.querySelectorAll<HTMLElement>("[data-top-flip]"),
     );
+    const flipTargets = new Map<HTMLElement, HTMLElement[]>();
+    const settleTimers: number[] = [];
+
     topFlipTitles.forEach((title) => {
-      const text = title.textContent?.trim() ?? "";
-      title.setAttribute("aria-label", text);
-      title.replaceChildren();
-      Array.from(text).forEach((character, index) => {
-        const mask = document.createElement("span");
-        const inner = document.createElement("span");
-        mask.className =
-          character === " " ? "flip-char-mask flip-char-space" : "flip-char-mask";
-        mask.setAttribute("aria-hidden", "true");
-        inner.textContent = character === " " ? "\u00a0" : character;
-        inner.style.setProperty("--flip-delay", `${index * 14 + 20}ms`);
-        mask.append(inner);
-        title.append(mask);
+      const bilingualTargets = Array.from(
+        title.querySelectorAll<HTMLElement>("[data-flip-label]"),
+      );
+      const targets = bilingualTargets.length ? bilingualTargets : [title];
+      flipTargets.set(title, targets);
+
+      targets.forEach((target) => {
+        const text =
+          target.dataset.flipLabel ?? target.textContent?.trim() ?? "";
+        target.dataset.flipLabel = text;
+        target.replaceChildren();
+        Array.from(text).forEach((character, index) => {
+          const mask = document.createElement("span");
+          const inner = document.createElement("span");
+          mask.className =
+            character === " "
+              ? "flip-char-mask flip-char-space"
+              : "flip-char-mask";
+          mask.setAttribute("aria-hidden", "true");
+          inner.textContent = character === " " ? "\u00a0" : character;
+          inner.style.setProperty("--flip-delay", `${index * 14 + 20}ms`);
+          mask.append(inner);
+          target.append(mask);
+        });
       });
       title.classList.add("top-flip-ready");
     });
@@ -72,14 +86,58 @@ export function MotionController() {
     const magneticLines = Array.from(
       document.querySelectorAll<HTMLElement>("[data-center-magnet]"),
     );
-    magneticLines.forEach((line) => line.classList.add("text-motion-entered"));
+    const magnetOffsets = [
+      { x: "-72px", y: "42px", rotate: "-8deg" },
+      { x: "64px", y: "-40px", rotate: "7deg" },
+      { x: "-46px", y: "-54px", rotate: "-6deg" },
+    ];
+    magneticLines.forEach((line, lineIndex) => {
+      const text = line.textContent?.trim() ?? "";
+      const words = text.split(/\s+/).filter(Boolean);
+      line.replaceChildren();
+      words.forEach((word, wordIndex) => {
+        const span = document.createElement("span");
+        const offset = magnetOffsets[(lineIndex + wordIndex) % magnetOffsets.length];
+        span.className = "magnet-word";
+        span.textContent = word;
+        span.style.setProperty("--magnet-x", offset.x);
+        span.style.setProperty("--magnet-y", offset.y);
+        span.style.setProperty("--magnet-rotate", offset.rotate);
+        span.style.setProperty(
+          "--magnet-delay",
+          `${70 + lineIndex * 55 + wordIndex * 80}ms`,
+        );
+        line.append(span);
+      });
+      line.classList.add("center-magnet-ready");
+    });
+
+    if (reducedMotion) {
+      magneticLines.forEach((line) =>
+        line.classList.add("text-motion-entered", "motion-settled"),
+      );
+    } else {
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          magneticLines.forEach((line) =>
+            line.classList.add("text-motion-entered"),
+          );
+          settleTimers.push(
+            window.setTimeout(() => {
+              magneticLines.forEach((line) =>
+                line.classList.add("motion-settled"),
+              );
+            }, 1180),
+          );
+        });
+      });
+    }
 
     const revealTargets = Array.from(
       document.querySelectorAll<HTMLElement>("[data-reveal-section]"),
     );
     let revealObserver: IntersectionObserver | null = null;
     let titleObserver: IntersectionObserver | null = null;
-    const settleTimers: number[] = [];
 
     if ("IntersectionObserver" in window && !reducedMotion) {
       revealObserver = new IntersectionObserver(
@@ -90,7 +148,7 @@ export function MotionController() {
             revealObserver?.unobserve(entry.target);
           });
         },
-        { rootMargin: "42% 0px 42%", threshold: 0.001 },
+        { rootMargin: "0px 0px -8% 0px", threshold: 0.06 },
       );
       revealTargets.forEach((target) => revealObserver?.observe(target));
 
@@ -105,8 +163,12 @@ export function MotionController() {
 
             settleTimers.push(
               window.setTimeout(() => {
-                const label = title.getAttribute("aria-label");
-                if (label) title.replaceChildren(document.createTextNode(label));
+                flipTargets.get(title)?.forEach((target) => {
+                  const label = target.dataset.flipLabel;
+                  if (label) {
+                    target.replaceChildren(document.createTextNode(label));
+                  }
+                });
                 title.classList.remove("top-flip-ready");
                 title.classList.add("motion-settled");
                 chapter?.classList.add("motion-settled");
@@ -115,7 +177,7 @@ export function MotionController() {
             titleObserver?.unobserve(title);
           });
         },
-        { rootMargin: "46% 0px 46%", threshold: 0.001 },
+        { rootMargin: "0px 0px -12% 0px", threshold: 0.18 },
       );
       topFlipTitles.forEach((title) => titleObserver?.observe(title));
     } else {

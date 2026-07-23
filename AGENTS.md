@@ -13,9 +13,9 @@
 
 每篇文章使用 `app/articles/data.ts` 中的统一数据模型，并由 `app/articles/[slug]/page.tsx` 渲染：
 
-1. 顶栏左侧只显示“左箭头 + Article / 文章”，链接固定返回 `/#articles`。
+1. 顶栏左侧只显示“左箭头 + Article / 文章”，链接固定返回 `/#article-card-<slug>`，准确定位到主页中当前文章的卡片。
 2. 顶栏右侧只保留语言切换按钮；不得出现 David 品牌字样或第二个 Articles 链接。
-3. 首屏按顺序显示：文章标题、摘要、来源说明。
+3. 首屏按顺序显示：文章标题、摘要、可点击的项目 GitHub 来源链接。
 4. 不显示 `AGENT · PRESENTATION · WORKFLOW`、`OPENCLAW · EVIDENCE · RESEARCH` 或其他 eyebrow / 分类标签。
 5. 正文使用编号章节；章节内部可使用段落、小标题、有序或无序列表、代码块。
 6. 页脚只保留版权信息；不得出现 “Read more articles / 阅读更多文章”。
@@ -25,6 +25,7 @@
 - 所有可见文章字段同时提供 `zh` 与 `en` 版本；代码块保持原始内容，不做无意义翻译。
 - 中文版本优先忠实于原文，英文版本是对应翻译，不得扩写为另一篇文章。
 - 语言状态继续使用 `html[data-lang]` 与 `david-site-language-v2`，同一时间只显示一种语言。
+- 每篇文章必须提供真实封面图、双语替代文本和对应项目 GitHub 链接；主页卡片不得使用空白占位图。
 
 ## 字体与渲染
 

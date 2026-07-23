@@ -9,9 +9,6 @@ import {
   siDeepseek,
   siGithub,
   siNvidia,
-  siQq,
-  siReddit,
-  siTiktok,
 } from "simple-icons";
 import { articles } from "./articles/data";
 import { FloatingDecor } from "./floating-decor";
@@ -38,14 +35,20 @@ const agentMarks: Mark[] = [
 ];
 
 const socialLinks = [
-  { label: "QQ", href: "https://wpa.qq.com/msgrd?v=3&uin=2811459442&site=qq&menu=yes", icon: siQq, kind: "qq" },
   { label: "GitHub", href: "https://github.com/CrystalDavid", icon: siGithub, kind: "github" },
-  { label: "Reddit", href: "https://www.reddit.com/", icon: siReddit, kind: "reddit" },
-  { label: "抖音", href: "https://www.douyin.com/", icon: siTiktok, kind: "douyin" },
 ];
 
-function Bilingual({ zh, en, as: Tag = "span" }: { zh: string; en: string; as?: "span" | "p" }) {
+function Bilingual({ zh, en, as: Tag = "span" }: { zh: string; en: string; as?: "span" | "p" | "h2" }) {
   return <><Tag className="lang lang-zh">{zh}</Tag><Tag className="lang lang-en">{en}</Tag></>;
+}
+
+function ChapterTitle({ id, zh, en }: { id: string; zh: string; en: string }) {
+  return (
+    <h2 id={id} className="chapter-title" data-top-flip>
+      <span className="lang lang-zh" data-flip-label={zh}>{zh}</span>
+      <span className="lang lang-en" data-flip-label={en}>{en}</span>
+    </h2>
+  );
 }
 
 function IconPath({ icon }: { icon: SimpleIcon }) {
@@ -76,7 +79,9 @@ export default function Home() {
       <header className="site-header" aria-label="Site navigation">
         <a className="brand" href="#home" aria-label="David home">David</a>
         <nav className="site-nav" aria-label="Primary navigation">
-          <a href="#experience">Experience</a><a href="#agent">Agent</a><a href="#article">Article</a>
+          <a href="#experience"><Bilingual zh="经历" en="Experience" /></a>
+          <a href="#agent"><Bilingual zh="智能体" en="Agent" /></a>
+          <a href="#article"><Bilingual zh="文章" en="Article" /></a>
           <button type="button" data-lang-toggle aria-label="切换语言"><span className="lang lang-en">中文</span><span className="lang lang-zh">EN</span></button>
         </nav>
       </header>
@@ -93,12 +98,37 @@ export default function Home() {
           </section>
 
           <section className="screen chapter-screen experience-chapter" id="experience" data-reveal-section data-wickret-pointer aria-labelledby="experience-title">
-            <h2 id="experience-title" className="chapter-title" data-top-flip>Experience</h2>
+            <ChapterTitle id="experience-title" zh="经历" en="Experience" />
+          </section>
+
+          <section className="experience-profile-section" id="about" data-reveal-section aria-labelledby="about-title">
+            <div className="experience-profile-inner">
+              <Bilingual as="h2" zh="关于我" en="About me" />
+              <div className="experience-profile-copy">
+                <Bilingual
+                  as="p"
+                  zh="我叫 David，是深圳南方科技大学数据科学与大数据技术专业的大四学生。目前我专注于智能体开发，喜欢把复杂流程整理成清晰、精美而高效的产品。"
+                  en="I’m David, a senior studying Data Science and Big Data Technology at Southern University of Science and Technology in Shenzhen. I currently focus on building AI agents and turning complex workflows into clear, polished and efficient products."
+                />
+                <Bilingual
+                  as="p"
+                  zh="我希望自己制作的每一个智能体都能带来耳目一新的体验，也真正帮助人们减少重复劳动、提高工作效率。你可以在我的 GitHub 上看到这些想法如何逐渐变成可以使用的开源项目。"
+                  en="I want every agent I build to feel fresh while genuinely reducing repetitive work and improving how people get things done. My GitHub is where those ideas gradually become practical open-source projects."
+                />
+                <p>
+                  <span className="lang lang-zh">离开屏幕后，我喜欢跑步和打羽毛球。我的 1000 米个人最好成绩是 3 分 5 秒。对我来说，写代码和训练很像：都需要持续打磨、保持节奏，也都让每一点进步变得清晰可见。</span>
+                  <span className="lang lang-en">Away from the screen, I run and play badminton. My personal best for 1,000 metres is 3:05. Coding and training feel similar to me: both reward steady practice, good rhythm and small improvements that become visible over time.</span>
+                </p>
+                <a className="experience-profile-link" href="https://github.com/CrystalDavid" target="_blank" rel="noreferrer">
+                  <Bilingual zh="查看我的 GitHub 项目" en="Explore my GitHub projects" />
+                </a>
+              </div>
+            </div>
           </section>
 
           <section className="screen chapter-screen agent-chapter" id="agent" data-reveal-section data-wickret-pointer aria-labelledby="agent-title">
             <div className="chapter-orbit agent-orbit" aria-label="Leading AI company logos">{agentMarks.map((mark) => <OrbitMark key={mark.name} mark={mark} />)}</div>
-            <h2 id="agent-title" className="chapter-title" data-top-flip>Agent</h2>
+            <ChapterTitle id="agent-title" zh="智能体" en="Agent" />
           </section>
 
           <section className="screen feature-screen ppt-screen" id="ppt-agent" data-reveal-section aria-labelledby="ppt-title">
@@ -109,20 +139,23 @@ export default function Home() {
               </div><span className="visual-dot visual-dot-one" aria-hidden="true" /><span className="visual-dot visual-dot-two" aria-hidden="true" /></div></div>
               <div className="feature-copy-motion"><div className="feature-copy">
                 <h2 id="ppt-title" className="feature-title">PPT-Agent</h2>
-                <Bilingual as="p" zh="从需求到可编辑的演示文稿。" en="From brief to polished, fully editable slides." />
-                <a className="outline-button" href="https://github.com/CrystalDavid" target="_blank" rel="noreferrer"><Bilingual zh="使用 PPT-Agent" en="Try PPT-Agent" /><span aria-hidden="true">↗</span></a>
+                <Bilingual as="p" zh="从需求到可编辑的演示文稿" en="From brief to polished, fully editable slides" />
+                <a className="outline-button" href="https://lambent-zabaione-8eab6b.netlify.app/" target="_blank" rel="noreferrer"><Bilingual zh="使用 PPT-Agent" en="Try PPT-Agent" /></a>
               </div></div>
             </div>
           </section>
 
           <section className="screen chapter-screen article-chapter" id="article" data-reveal-section data-wickret-pointer aria-labelledby="article-title">
-            <h2 id="article-title" className="chapter-title" data-top-flip>Article</h2>
+            <ChapterTitle id="article-title" zh="文章" en="Article" />
           </section>
 
           <section className="article-gallery-section" id="articles" data-reveal-section aria-label="Articles">
             <div className="article-gallery-inner"><div className="article-gallery">
-              {articles.map((article) => <Link className="article-work-card" href={`/articles/${article.slug}`} key={article.slug} prefetch={false}>
-                <span className="article-work-placeholder" aria-hidden="true"><span className="article-work-placeholder-inner" /></span>
+              {articles.map((article) => <Link className="article-work-card" id={`article-card-${article.slug}`} href={`/articles/${article.slug}`} key={article.slug} prefetch={false}>
+                <span className="article-work-placeholder">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={article.coverImage} alt={article.coverAltEn} width="1280" height="720" loading="lazy" decoding="async" />
+                </span>
                 <span className="article-work-copy"><strong><Bilingual zh={article.titleZh} en={article.titleEn} /></strong></span>
               </Link>)}
             </div></div>
@@ -130,13 +163,18 @@ export default function Home() {
         </main>
 
         <footer className="site-footer" aria-label="Footer"><div className="footer-grid">
-          <section><h2>Sitemap</h2><nav className="footer-nav sitemap-nav" aria-label="Sitemap">
-            {[["Home", "#home"], ["Experience", "#experience"], ["Agent", "#agent"], ["Article", "#article"]].map(([label, href]) => <a href={href} key={label}><span className="sitemap-arrow" aria-hidden="true">↗</span><span className="sitemap-label">{label}</span></a>)}
+          <section><Bilingual as="h2" zh="网站地图" en="Sitemap" /><nav className="footer-nav sitemap-nav" aria-label="Sitemap">
+            {[
+              { en: "Home", zh: "首页", href: "#home" },
+              { en: "Experience", zh: "经历", href: "#experience" },
+              { en: "Agent", zh: "智能体", href: "#agent" },
+              { en: "Article", zh: "文章", href: "#article" },
+            ].map((item) => <a href={item.href} key={item.en}><span className="sitemap-arrow" aria-hidden="true">↗</span><span className="sitemap-label"><Bilingual zh={item.zh} en={item.en} /></span></a>)}
           </nav></section>
-          <section><h2>Follow me</h2><nav className="footer-nav social-nav" aria-label="Social links">
+          <section><Bilingual as="h2" zh="关注我" en="Follow me" /><nav className="footer-nav social-nav" aria-label="Social links">
             {socialLinks.map((social) => <a href={social.href} key={social.label} target="_blank" rel="noreferrer"><span>{social.label}</span><SocialBrand icon={social.icon} kind={social.kind} /></a>)}
           </nav></section>
-          <section className="footer-contact"><h2>Work with me</h2><a href="mailto:g2811459442@mail.com">g2811459442@mail.com</a></section>
+          <section className="footer-contact"><Bilingual as="h2" zh="联系合作" en="Work with me" /><a href="mailto:h2811459442@gmail.com">h2811459442@gmail.com</a></section>
         </div></footer>
       </SmoothScroll>
     </>

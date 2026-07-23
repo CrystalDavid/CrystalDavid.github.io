@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArticleLanguageToggle } from "../article-language-toggle";
 import { articles, getArticle } from "../data";
@@ -34,11 +33,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   return (
     <main className="article-page">
       <header className="article-page-header">
-        <Link href="/#articles" className="article-back" aria-label="Back to the article list">
+        <a href={`/#article-card-${article.slug}`} className="article-back" aria-label="Back to this article in the article list">
           <BackArrow />
           <span className="lang lang-en">Article</span>
           <span className="lang lang-zh">文章</span>
-        </Link>
+        </a>
         <nav aria-label="Article preferences">
           <ArticleLanguageToggle />
         </nav>
@@ -47,7 +46,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       <article>
         <LanguagePair zh={article.titleZh} en={article.titleEn} as="h1" />
         <LanguagePair zh={article.summaryZh} en={article.summaryEn} as="p" className="article-lede" />
-        <LanguagePair zh={article.sourceLabelZh} en={article.sourceLabelEn} as="p" className="article-source" />
+        <p className="article-source">
+          <a className="article-source-link" href={article.sourceHref} target="_blank" rel="noreferrer">
+            <span className="lang lang-en">{article.sourceLabelEn}</span>
+            <span className="lang lang-zh">{article.sourceLabelZh}</span>
+          </a>
+        </p>
 
         <div className="article-body">
           {article.sections.map((section, index) => (
