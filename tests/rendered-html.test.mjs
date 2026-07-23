@@ -16,13 +16,16 @@ test("homepage exports the intended typography and motion hooks", async () => {
 
   assert.match(html, /\/fonts\/nunito-latin\.woff2/);
   assert.match(css, /Chiron GoRound TC WS/);
-  assert.ok(
-    (html.match(/data-wickret-pointer/g) ?? []).length >= 3,
-    "Experience, Agent and Article should all expose the pointer-motion hook",
-  );
+  assert.ok((html.match(/data-wickret-pointer/g) ?? []).length >= 1);
+  assert.match(html, /data-char-reveal/);
+  assert.match(html, /data-feature-scroll/);
+  assert.match(html, /data-scroll-wave/);
   assert.match(html, /ppt-agent-mac-composite\.webp/);
   assert.match(html, />Agent</);
   assert.match(html, />Article</);
+  assert.match(html, />About me</);
+  assert.doesNotMatch(html, />Experience</);
+  assert.doesNotMatch(html, /Explore my GitHub projects/);
 });
 
 test("article gallery stays simple and title-only", async () => {

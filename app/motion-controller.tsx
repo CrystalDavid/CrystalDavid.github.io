@@ -44,8 +44,10 @@ export function MotionController() {
     }
     applyLanguage(preferred);
 
-    const toggleLanguage = () =>
+    const toggleLanguage = () => {
       applyLanguage(root.dataset.lang === "en" ? "zh" : "en");
+      window.requestAnimationFrame(() => window.dispatchEvent(new Event("scroll")));
+    };
     toggles.forEach((toggle) => toggle.addEventListener("click", toggleLanguage));
 
     const topFlipTitles = Array.from(
@@ -194,8 +196,91 @@ export function MotionController() {
     let resetPointerMotion = () => {};
     let scrolling = false;
     let scrollIdleTimer = 0;
+    const charRevealTargets = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-char-reveal]"),
+    );
+    const featureScroll = document.querySelector<HTMLElement>("[data-feature-scroll]");
+    const scrollWaveTargets = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-scroll-wave]"),
+    );
+    const clamp = (value: number, minimum: number, maximum: number) =>
+      Math.min(maximum, Math.max(minimum, value));
+    let lastScrollY = window.scrollY;
+    let waveSkew = 0;
+    let waveTarget = 0;
+    let scrollEffectsFrame = 0;
+
+    const renderScrollEffects = () => {
+      scrollEffectsFrame = 0;
+      const viewportHeight =
+        window.visualViewport?.height ?? window.innerHeight;
+
+      charRevealTargets.forEach((target) => {
+        const rect = target.getBoundingClientRect();
+        const progress = reducedMotion
+          ? 1
+          : clamp(
+            (viewportHeight * 0.8 - rect.top) /
+              Math.max(1, rect.height + viewportHeight * 0.6),
+            0,
+            1,
+          );
+        target.style.setProperty("--char-progress", progress.toFixed(4));
+      });
+
+      if (featureScroll) {
+        const rect = featureScroll.getBoundingClientRect();
+        const travel = Math.max(1, rect.height - viewportHeight);
+        const progress = reducedMotion || window.innerWidth <= 720
+          ? 0.5
+          : clamp(-rect.top / travel, 0, 1);
+        featureScroll.style.setProperty("--feature-progress", progress.toFixed(4));
+        featureScroll.style.setProperty(
+          "--feature-copy-y",
+          `${(150 - progress * 300).toFixed(2)}px`,
+        );
+        featureScroll.style.setProperty(
+          "--feature-media-y",
+          `${(-80 + progress * 160).toFixed(2)}px`,
+        );
+      }
+
+      if (!reducedMotion && window.innerWidth > 720) {
+        waveSkew += (waveTarget - waveSkew) * 0.34;
+        waveTarget *= 0.68;
+      } else {
+        waveSkew = 0;
+        waveTarget = 0;
+      }
+
+      scrollWaveTargets.forEach((target) => {
+        target.style.setProperty("--scroll-wave-skew", `${waveSkew.toFixed(3)}deg`);
+      });
+
+      if (Math.abs(waveSkew) > 0.015 || Math.abs(waveTarget) > 0.015) {
+        root.classList.add("scroll-wave-settling");
+        scrollEffectsFrame = window.requestAnimationFrame(renderScrollEffects);
+      } else {
+        root.classList.remove("scroll-wave-settling");
+      }
+    };
+
+    const scheduleScrollEffects = () => {
+      if (scrollEffectsFrame) return;
+      scrollEffectsFrame = window.requestAnimationFrame(renderScrollEffects);
+    };
 
     const handleScrollActivity = () => {
+      const currentScrollY = window.scrollY;
+      const scrollDelta = currentScrollY - lastScrollY;
+      lastScrollY = currentScrollY;
+      if (!reducedMotion && window.innerWidth > 720) {
+        // Wickret uses 0.15 × scroll delta, clamped to ±5 degrees.
+        // Keeping the transform on content groups (instead of the whole page)
+        // preserves the same left-leading wave without softening every glyph.
+        waveTarget = clamp(scrollDelta * 0.15, -5, 5);
+      }
+      scheduleScrollEffects();
       scrolling = true;
       root.classList.add("is-scrolling");
       resetPointerMotion();
@@ -298,22 +383,29 @@ export function MotionController() {
       hero?.classList.add("motion-active");
     }
 
+    scheduleScrollEffects();
     window.addEventListener("scroll", handleScrollActivity, { passive: true });
-    window.addEventListener("resize", syncViewportHeight, { passive: true });
-    window.visualViewport?.addEventListener("resize", syncViewportHeight);
+    const handleResize = () => {
+      syncViewportHeight();
+      lastScrollY = window.scrollY;
+      scheduleScrollEffects();
+    };
+    window.addEventListener("resize", handleResize, { passive: true });
+    window.visualViewport?.addEventListener("resize", handleResize);
 
     return () => {
       pointerDisposed = true;
       removePointerMotion();
       heroObserver?.disconnect();
+      window.cancelAnimationFrame(scrollEffectsFrame);
       window.clearTimeout(scrollIdleTimer);
-      root.classList.remove("is-scrolling");
+      root.classList.remove("is-scrolling", "scroll-wave-settling");
       settleTimers.forEach((timer) => window.clearTimeout(timer));
       revealObserver?.disconnect();
       titleObserver?.disconnect();
       window.removeEventListener("scroll", handleScrollActivity);
-      window.removeEventListener("resize", syncViewportHeight);
-      window.visualViewport?.removeEventListener("resize", syncViewportHeight);
+      window.removeEventListener("resize", handleResize);
+      window.visualViewport?.removeEventListener("resize", handleResize);
       toggles.forEach((toggle) =>
         toggle.removeEventListener("click", toggleLanguage),
       );
