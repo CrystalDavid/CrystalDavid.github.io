@@ -2,6 +2,7 @@
 
 import { type ReactNode, useEffect, useRef } from "react";
 import type { Scrollbar as ScrollbarInstance } from "smooth-scrollbar/scrollbar";
+import type { ScrollRuntimeReadyDetail } from "./scroll-runtime-events";
 
 type VirtualScrollStatus = {
   offset: { x: number; y: number };
@@ -39,6 +40,15 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       window.dispatchEvent(
         new CustomEvent("david:virtual-scroll", {
           detail: { y, deltaY },
+        }),
+      );
+    };
+
+    const dispatchRuntimeReady = (detail: ScrollRuntimeReadyDetail) => {
+      window.__davidScrollRuntimeReady = detail;
+      window.dispatchEvent(
+        new CustomEvent<ScrollRuntimeReadyDetail>("david:scroll-ready", {
+          detail,
         }),
       );
     };
@@ -97,6 +107,9 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     const initialize = async () => {
       if (!container || useNativeScroll) {
         root.classList.add("native-scroll");
+        if (container) {
+          dispatchRuntimeReady({ mode: "native", container });
+        }
         restoreInitialAnchor();
         void document.fonts?.ready.then(restoreInitialAnchor);
         return;
@@ -119,12 +132,14 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       root.classList.remove("native-scroll");
       root.classList.add("virtual-scroll");
       dispatchVirtualScroll(previousVirtualY);
+      dispatchRuntimeReady({ mode: "virtual", container });
       restoreInitialAnchor();
 
       void document.fonts?.ready.then(() => {
         if (!scrollbar || disposed) return;
         scrollbar.update();
         restoreInitialAnchor();
+        window.dispatchEvent(new Event("david:layout"));
       });
     };
 
@@ -135,6 +150,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       scrollbar?.removeListener(handleVirtualScroll);
       scrollbar?.destroy();
       scrollbar = null;
+      delete window.__davidScrollRuntimeReady;
       root.classList.remove("native-scroll", "virtual-scroll");
       document.removeEventListener("click", handleAnchor);
     };

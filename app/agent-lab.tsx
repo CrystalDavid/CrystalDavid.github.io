@@ -100,26 +100,37 @@ export function AgentLab({ mode }: { mode: AgentLabMode }) {
     let disposed = false;
     let removeWickretListeners = () => {};
 
-    void import("gsap").then(({ gsap }) => {
+    void import("gsap").then((module) => {
       if (disposed) return;
+      const moduleRecord = module as unknown as Record<string, unknown>;
+      const gsapRuntime = [
+        module,
+        moduleRecord.default,
+        moduleRecord["module.exports"],
+      ].find(
+        (candidate) =>
+          typeof (
+            candidate as { TweenLite?: { to?: unknown } }
+          )?.TweenLite?.to === "function",
+      ) as typeof import("gsap") | undefined;
+      if (!gsapRuntime) return;
+      const { TweenLite, Power1 } = gsapRuntime;
 
       const tweenToPointer = () => {
         frame = 0;
-        gsap.to(title, {
+        TweenLite.to(title, 0.3, {
           x: pointerX * 28,
           y: pointerY * 18,
-          duration: 0.3,
           overwrite: true,
           force3D: true,
-          ease: "power1.out",
+          ease: Power1.easeOut,
         });
-        gsap.to(orbit, {
+        TweenLite.to(orbit, 0.3, {
           x: pointerX * 46,
           y: pointerY * 28,
-          duration: 0.3,
           overwrite: true,
           force3D: true,
-          ease: "power1.out",
+          ease: Power1.easeOut,
         });
       };
 
@@ -134,13 +145,12 @@ export function AgentLab({ mode }: { mode: AgentLabMode }) {
         if (frame) cancelAnimationFrame(frame);
         frame = requestAnimationFrame(() => {
           frame = 0;
-          gsap.to([title, orbit], {
+          TweenLite.to([title, orbit], 0.7, {
             x: 0,
             y: 0,
-            duration: 0.7,
             overwrite: true,
             force3D: true,
-            ease: "power1.out",
+            ease: Power1.easeOut,
           });
         });
       };
@@ -152,7 +162,7 @@ export function AgentLab({ mode }: { mode: AgentLabMode }) {
         stage.removeEventListener("pointermove", onMove);
         stage.removeEventListener("pointerleave", onLeave);
         if (frame) cancelAnimationFrame(frame);
-        gsap.killTweensOf([title, orbit]);
+        TweenLite.killTweensOf([title, orbit]);
       };
     });
 

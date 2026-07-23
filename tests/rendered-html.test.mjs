@@ -40,16 +40,29 @@ test("homepage exports the intended typography and motion hooks", async () => {
 });
 
 test("desktop scrolling uses Wickret's live fractional runtime settings", async () => {
-  const [smoothScroll, motionController] = await Promise.all([
+  const [smoothScroll, wickretRuntime, globalCss, packageJson] = await Promise.all([
     readSource("app/smooth-scroll.tsx"),
-    readSource("app/motion-controller.tsx"),
+    readSource("app/wickret-runtime.tsx"),
+    readSource("app/globals.css"),
+    readSource("package.json"),
   ]);
 
   assert.match(smoothScroll, /damping:\s*0\.06/);
   assert.match(smoothScroll, /renderByPixels:\s*false/);
   assert.match(smoothScroll, /continuousScrolling:\s*false/);
   assert.match(smoothScroll, /delegateTo:\s*container/);
-  assert.doesNotMatch(motionController, /waveSkew \* 0\.45/);
+  assert.match(wickretRuntime, /new ScrollMagic\.Controller/);
+  assert.match(wickretRuntime, /refreshInterval:\s*virtual \? 0 : 80/);
+  assert.match(wickretRuntime, /controller\.scrollPos\(\(\) => currentScrollY\)/);
+  assert.match(wickretRuntime, /TweenLite\.set/);
+  assert.match(wickretRuntime, /triggerHook:\s*0\.88/);
+  assert.doesNotMatch(globalCss, /--char-progress/);
+  assert.doesNotMatch(globalCss, /--char-offset/);
+  assert.doesNotMatch(globalCss, /--feature-media-y/);
+  const dependencies = JSON.parse(packageJson).dependencies;
+  assert.equal(dependencies["smooth-scrollbar"], "8.4.0");
+  assert.equal(dependencies.scrollmagic, "2.0.6");
+  assert.equal(dependencies.gsap, "2.1.3");
 });
 
 test("article gallery stays simple and title-only", async () => {

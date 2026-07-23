@@ -14,6 +14,7 @@ import { articles } from "./articles/data";
 import { FloatingDecor } from "./floating-decor";
 import { MotionController } from "./motion-controller";
 import { SmoothScroll } from "./smooth-scroll";
+import { WickretRuntime } from "./wickret-runtime";
 
 export const metadata: Metadata = {
   title: "David — Independent Developer",
@@ -44,11 +45,6 @@ function Bilingual({ zh, en, as: Tag = "span" }: { zh: string; en: string; as?: 
 
 function CharacterStory({ paragraphs, language }: { paragraphs: string[]; language: "zh" | "en" }) {
   let characterIndex = 0;
-  const totalCharacters = paragraphs.reduce(
-    (total, paragraph) =>
-      total + Array.from(paragraph).filter((character) => !/\s/.test(character)).length,
-    0,
-  );
   const renderCharacters = (value: string) => Array.from(value).map((character) => {
     const index = characterIndex++;
     return (
@@ -56,7 +52,6 @@ function CharacterStory({ paragraphs, language }: { paragraphs: string[]; langua
         className="char-reveal-glyph"
         aria-hidden="true"
         key={`${character}-${index}`}
-        style={{ "--char-offset": totalCharacters > 1 ? (index / (totalCharacters - 1)) * 0.56 : 0 } as CSSVars}
       >
         {character}
       </span>
@@ -82,7 +77,7 @@ function CharacterStory({ paragraphs, language }: { paragraphs: string[]; langua
 
 function ChapterTitle({ id, zh, en }: { id: string; zh: string; en: string }) {
   return (
-    <h2 id={id} className="chapter-title" data-top-flip>
+    <h2 id={id} className="chapter-title" data-top-flip data-scroll-wave>
       <span className="lang lang-zh" data-flip-label={zh}>{zh}</span>
       <span className="lang lang-en" data-flip-label={en}>{en}</span>
     </h2>
@@ -113,6 +108,7 @@ export default function Home() {
   return (
     <>
       <MotionController />
+      <WickretRuntime />
       <a className="skip-link" href="#main">Skip to content</a>
       <header className="site-header" aria-label="Site navigation">
         <a className="brand" href="#home" aria-label="David home">David</a>
@@ -128,7 +124,7 @@ export default function Home() {
         <main id="main">
           <section className="screen hero-screen is-visible" id="home" data-reveal-section aria-labelledby="hero-title">
             <FloatingDecor />
-            <h1 id="hero-title" className="hero-title">
+            <h1 id="hero-title" className="hero-title" data-scroll-wave>
               <span className="hero-line hero-name" data-center-magnet>David</span>
               <span className="lang lang-zh" data-center-magnet>个人开发者</span>
               <span className="lang lang-en" data-center-magnet>Independent Developer</span>
@@ -136,8 +132,8 @@ export default function Home() {
           </section>
 
           <section className="experience-profile-section" id="about" data-reveal-section aria-labelledby="about-title">
-            <div className="experience-profile-inner">
-              <h2 id="about-title" data-scroll-wave><span className="lang lang-zh">关于我</span><span className="lang lang-en">About me</span></h2>
+            <div className="experience-profile-inner" data-scroll-wave>
+              <h2 id="about-title"><span className="lang lang-zh">关于我</span><span className="lang lang-en">About me</span></h2>
               <div className="experience-profile-copy">
                 <CharacterStory
                   language="zh"
@@ -165,12 +161,12 @@ export default function Home() {
           </section>
 
           <section className="feature-screen ppt-screen" id="ppt-agent" data-reveal-section data-feature-scroll aria-labelledby="ppt-title">
-            <div className="feature-grid">
+            <div className="feature-grid" data-scroll-wave>
               <div className="feature-media-motion"><div className="product-visual reveal-visual"><div className="product-backdrop">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/media/ppt-agent-mac-composite.webp" alt="Two overlapping Mac browser windows showing the PPT-Agent interfaces" width="1536" height="1024" loading="lazy" decoding="async" />
               </div><span className="visual-dot visual-dot-one" aria-hidden="true" /><span className="visual-dot visual-dot-two" aria-hidden="true" /></div></div>
-              <div className="feature-copy-motion"><div className="feature-copy" data-scroll-wave>
+              <div className="feature-copy-motion"><div className="feature-copy">
                 <h2 id="ppt-title" className="feature-title">PPT-Agent</h2>
                 <Bilingual as="p" zh="从需求到可编辑的演示文稿" en="From brief to polished, fully editable slides" />
                 <a className="outline-button" href="https://lambent-zabaione-8eab6b.netlify.app/" target="_blank" rel="noreferrer"><Bilingual zh="使用 PPT-Agent" en="Try PPT-Agent" /></a>
@@ -179,9 +175,9 @@ export default function Home() {
           </section>
 
           <section className="article-gallery-section" id="article" data-reveal-section data-reveal-repeat aria-labelledby="article-title">
-            <div className="article-gallery-inner">
+            <div className="article-gallery-inner" data-scroll-wave>
               <header className="article-gallery-header">
-                <h2 id="article-title" data-scroll-wave><span className="lang lang-zh">文章</span><span className="lang lang-en">Article</span></h2>
+                <h2 id="article-title"><span className="lang lang-zh">文章</span><span className="lang lang-en">Article</span></h2>
               </header>
               <div className="article-gallery">
               {articles.map((article, index) => <Link className="article-work-card" id={`article-card-${article.slug}`} href={`/articles/${article.slug}`} key={article.slug} prefetch={false} style={{ "--card-index": index } as CSSVars}>
