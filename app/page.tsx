@@ -42,9 +42,13 @@ function Bilingual({ zh, en, as: Tag = "span" }: { zh: string; en: string; as?: 
   return <><Tag className="lang lang-zh">{zh}</Tag><Tag className="lang lang-en">{en}</Tag></>;
 }
 
-function CharacterParagraph({ text, language }: { text: string; language: "zh" | "en" }) {
+function CharacterStory({ paragraphs, language }: { paragraphs: string[]; language: "zh" | "en" }) {
   let characterIndex = 0;
-  const totalCharacters = Array.from(text).filter((character) => !/\s/.test(character)).length;
+  const totalCharacters = paragraphs.reduce(
+    (total, paragraph) =>
+      total + Array.from(paragraph).filter((character) => !/\s/.test(character)).length,
+    0,
+  );
   const renderCharacters = (value: string) => Array.from(value).map((character) => {
     const index = characterIndex++;
     return (
@@ -52,7 +56,7 @@ function CharacterParagraph({ text, language }: { text: string; language: "zh" |
         className="char-reveal-glyph"
         aria-hidden="true"
         key={`${character}-${index}`}
-        style={{ "--char-offset": totalCharacters > 1 ? (index / (totalCharacters - 1)) * 0.68 : 0 } as CSSVars}
+        style={{ "--char-offset": totalCharacters > 1 ? (index / (totalCharacters - 1)) * 0.56 : 0 } as CSSVars}
       >
         {character}
       </span>
@@ -60,15 +64,19 @@ function CharacterParagraph({ text, language }: { text: string; language: "zh" |
   });
 
   return (
-    <p className={`lang lang-${language} char-reveal`} data-char-reveal aria-label={text}>
-      {language === "en"
-        ? text.split(/(\s+)/).map((part, index) => (
-          /\s/.test(part)
-            ? <span aria-hidden="true" key={`space-${index}`}>{part}</span>
-            : <span className="char-reveal-word" aria-hidden="true" key={`${part}-${index}`}>{renderCharacters(part)}</span>
-        ))
-        : renderCharacters(text)}
-    </p>
+    <div className={`lang lang-${language} char-reveal-story`} data-char-story>
+      {paragraphs.map((text, paragraphIndex) => (
+        <p aria-label={text} key={text}>
+          {language === "en"
+            ? text.split(/(\s+)/).map((part, partIndex) => (
+              /\s/.test(part)
+                ? <span aria-hidden="true" key={`space-${paragraphIndex}-${partIndex}`}>{part}</span>
+                : <span className="char-reveal-word" aria-hidden="true" key={`${part}-${paragraphIndex}-${partIndex}`}>{renderCharacters(part)}</span>
+            ))
+            : renderCharacters(text)}
+        </p>
+      ))}
+    </div>
   );
 }
 
@@ -128,32 +136,24 @@ export default function Home() {
           </section>
 
           <section className="experience-profile-section" id="about" data-reveal-section aria-labelledby="about-title">
-            <div className="experience-profile-inner" data-scroll-wave>
-              <h2 id="about-title"><span className="lang lang-zh">关于我</span><span className="lang lang-en">About me</span></h2>
+            <div className="experience-profile-inner">
+              <h2 id="about-title" data-scroll-wave><span className="lang lang-zh">关于我</span><span className="lang lang-en">About me</span></h2>
               <div className="experience-profile-copy">
-                <CharacterParagraph
+                <CharacterStory
                   language="zh"
-                  text="我叫 David，是深圳南方科技大学数据科学与大数据技术专业的大四学生。目前我专注于智能体开发，喜欢把复杂流程整理成清晰、精美而高效的产品。"
+                  paragraphs={[
+                    "我叫 David，是深圳南方科技大学数据科学与大数据技术专业的大四学生。目前我专注于智能体开发，喜欢把复杂流程整理成清晰、精美而高效的产品。",
+                    "我希望自己制作的每一个智能体都能带来耳目一新的体验，也真正帮助人们减少重复劳动、提高工作效率。我的 GitHub 记录着这些想法如何逐渐变成可以使用的开源项目。",
+                    "离开屏幕后，我喜欢跑步和打羽毛球。我的 1000 米个人最好成绩是 3 分 5 秒。对我来说，写代码和训练很像：都需要持续打磨、保持节奏，也都让每一点进步变得清晰可见。",
+                  ]}
                 />
-                <CharacterParagraph
+                <CharacterStory
                   language="en"
-                  text="I’m David, a senior studying Data Science and Big Data Technology at Southern University of Science and Technology in Shenzhen. I currently focus on building AI agents and turning complex workflows into clear, polished and efficient products."
-                />
-                <CharacterParagraph
-                  language="zh"
-                  text="我希望自己制作的每一个智能体都能带来耳目一新的体验，也真正帮助人们减少重复劳动、提高工作效率。我的 GitHub 记录着这些想法如何逐渐变成可以使用的开源项目。"
-                />
-                <CharacterParagraph
-                  language="en"
-                  text="I want every agent I build to feel fresh while genuinely reducing repetitive work and improving how people get things done. My GitHub is where those ideas gradually become practical open-source projects."
-                />
-                <CharacterParagraph
-                  language="zh"
-                  text="离开屏幕后，我喜欢跑步和打羽毛球。我的 1000 米个人最好成绩是 3 分 5 秒。对我来说，写代码和训练很像：都需要持续打磨、保持节奏，也都让每一点进步变得清晰可见。"
-                />
-                <CharacterParagraph
-                  language="en"
-                  text="Away from the screen, I run and play badminton. My personal best for 1,000 metres is 3:05. Coding and training feel similar to me: both reward steady practice, good rhythm and small improvements that become visible over time."
+                  paragraphs={[
+                    "I’m David, a senior studying Data Science and Big Data Technology at Southern University of Science and Technology in Shenzhen. I currently focus on building AI agents and turning complex workflows into clear, polished and efficient products.",
+                    "I want every agent I build to feel fresh while genuinely reducing repetitive work and improving how people get things done. My GitHub is where those ideas gradually become practical open-source projects.",
+                    "Away from the screen, I run and play badminton. My personal best for 1,000 metres is 3:05. Coding and training feel similar to me: both reward steady practice, good rhythm and small improvements that become visible over time.",
+                  ]}
                 />
               </div>
             </div>
@@ -179,9 +179,9 @@ export default function Home() {
           </section>
 
           <section className="article-gallery-section" id="article" data-reveal-section aria-labelledby="article-title">
-            <div className="article-gallery-inner" data-scroll-wave>
+            <div className="article-gallery-inner">
               <header className="article-gallery-header">
-                <h2 id="article-title"><span className="lang lang-zh">文章</span><span className="lang lang-en">Article</span></h2>
+                <h2 id="article-title" data-scroll-wave><span className="lang lang-zh">文章</span><span className="lang lang-en">Article</span></h2>
               </header>
               <div className="article-gallery">
               {articles.map((article, index) => <Link className="article-work-card" id={`article-card-${article.slug}`} href={`/articles/${article.slug}`} key={article.slug} prefetch={false} style={{ "--card-index": index } as CSSVars}>

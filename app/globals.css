@@ -439,8 +439,6 @@ html.scroll-wave-settling [data-scroll-wave] {
 .experience-profile-copy {
   --char-progress: 0;
   width: min(800px, 100%);
-  display: grid;
-  gap: 27px;
 }
 
 .experience-profile-copy p {
@@ -452,12 +450,16 @@ html.scroll-wave-settling [data-scroll-wave] {
   letter-spacing: 0.018em;
 }
 
+.experience-profile-copy p + p {
+  margin-top: 27px;
+}
+
 .experience-profile-section.is-visible .experience-profile-inner > h2 {
   opacity: 1;
   transform: translate3d(0, 0, 0);
 }
 
-.char-reveal {
+.char-reveal-story {
   --char-progress: 0;
   font-variant-ligatures: none;
 }
@@ -471,10 +473,9 @@ html.scroll-wave-settling [data-scroll-wave] {
   display: inline;
   opacity: clamp(
     0.2,
-    calc(0.2 + (var(--char-progress) - var(--char-offset)) * 3.2),
+    calc(0.2 + (var(--char-progress) - var(--char-offset)) * 4.2),
     1
   );
-  transition: opacity 70ms linear;
 }
 
 .agent-chapter {
@@ -703,8 +704,8 @@ html.is-scrolling [data-wickret-pointer] {
   --feature-media-y: 0px;
   position: relative;
   z-index: 3;
-  min-height: 190vh;
-  min-height: calc(var(--app-viewport-height) * 1.9);
+  min-height: 138vh;
+  min-height: calc(var(--app-viewport-height) * 1.38);
   border-radius: var(--radius-screen);
   background: var(--cream);
 }

@@ -196,8 +196,8 @@ export function MotionController() {
     let resetPointerMotion = () => {};
     let scrolling = false;
     let scrollIdleTimer = 0;
-    const charRevealTargets = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-char-reveal]"),
+    const charRevealStories = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-char-story]"),
     );
     const featureScroll = document.querySelector<HTMLElement>("[data-feature-scroll]");
     const scrollWaveTargets = Array.from(
@@ -207,7 +207,7 @@ export function MotionController() {
       Math.min(maximum, Math.max(minimum, value));
     let lastScrollY = window.scrollY;
     let waveSkew = 0;
-    let waveTarget = 0;
+    let pendingScrollDelta = 0;
     let scrollEffectsFrame = 0;
 
     const renderScrollEffects = () => {
@@ -215,12 +215,12 @@ export function MotionController() {
       const viewportHeight =
         window.visualViewport?.height ?? window.innerHeight;
 
-      charRevealTargets.forEach((target) => {
+      charRevealStories.forEach((target) => {
         const rect = target.getBoundingClientRect();
         const progress = reducedMotion
           ? 1
           : clamp(
-            (viewportHeight * 0.8 - rect.top) /
+            (viewportHeight * 0.95 - rect.top) /
               Math.max(1, rect.height + viewportHeight * 0.6),
             0,
             1,
@@ -237,27 +237,31 @@ export function MotionController() {
         featureScroll.style.setProperty("--feature-progress", progress.toFixed(4));
         featureScroll.style.setProperty(
           "--feature-copy-y",
-          `${(150 - progress * 300).toFixed(2)}px`,
+          `${(56 - progress * 112).toFixed(2)}px`,
         );
         featureScroll.style.setProperty(
           "--feature-media-y",
-          `${(-80 + progress * 160).toFixed(2)}px`,
+          `${(-36 + progress * 72).toFixed(2)}px`,
         );
       }
 
       if (!reducedMotion && window.innerWidth > 720) {
-        waveSkew += (waveTarget - waveSkew) * 0.34;
-        waveTarget *= 0.68;
+        // Wickret calculates skew from its already-damped, per-frame scroll
+        // position. Native scroll events can jump by hundreds of pixels, so
+        // normalize them to the same visual range before applying the skew.
+        const visualTarget = clamp(pendingScrollDelta * 0.026, -1.1, 1.1);
+        pendingScrollDelta = 0;
+        waveSkew += (visualTarget - waveSkew) * 0.64;
       } else {
         waveSkew = 0;
-        waveTarget = 0;
+        pendingScrollDelta = 0;
       }
 
       scrollWaveTargets.forEach((target) => {
         target.style.setProperty("--scroll-wave-skew", `${waveSkew.toFixed(3)}deg`);
       });
 
-      if (Math.abs(waveSkew) > 0.015 || Math.abs(waveTarget) > 0.015) {
+      if (Math.abs(waveSkew) > 0.012 || Math.abs(pendingScrollDelta) > 0.01) {
         root.classList.add("scroll-wave-settling");
         scrollEffectsFrame = window.requestAnimationFrame(renderScrollEffects);
       } else {
@@ -275,10 +279,11 @@ export function MotionController() {
       const scrollDelta = currentScrollY - lastScrollY;
       lastScrollY = currentScrollY;
       if (!reducedMotion && window.innerWidth > 720) {
-        // Wickret uses 0.15 × scroll delta, clamped to ±5 degrees.
-        // Keeping the transform on content groups (instead of the whole page)
-        // preserves the same left-leading wave without softening every glyph.
-        waveTarget = clamp(scrollDelta * 0.15, -5, 5);
+        pendingScrollDelta = clamp(
+          pendingScrollDelta + clamp(scrollDelta, -42, 42),
+          -42,
+          42,
+        );
       }
       scheduleScrollEffects();
       scrolling = true;

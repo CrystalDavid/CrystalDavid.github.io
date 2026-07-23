@@ -17,7 +17,7 @@ test("homepage exports the intended typography and motion hooks", async () => {
   assert.match(html, /\/fonts\/nunito-latin\.woff2/);
   assert.match(css, /Chiron GoRound TC WS/);
   assert.ok((html.match(/data-wickret-pointer/g) ?? []).length >= 1);
-  assert.match(html, /data-char-reveal/);
+  assert.ok((html.match(/data-char-story/g) ?? []).length >= 2);
   assert.match(html, /data-feature-scroll/);
   assert.match(html, /data-scroll-wave/);
   assert.match(html, /ppt-agent-mac-composite\.webp/);
