@@ -132,7 +132,7 @@ export default function Home() {
           </section>
 
           <section className="experience-profile-section" id="about" data-reveal-section aria-labelledby="about-title">
-            <div className="experience-profile-inner" data-scroll-wave>
+            <div className="experience-profile-inner">
               <h2 id="about-title"><span className="lang lang-zh">关于我</span><span className="lang lang-en">About me</span></h2>
               <div className="experience-profile-copy">
                 <CharacterStory
@@ -161,7 +161,7 @@ export default function Home() {
           </section>
 
           <section className="feature-screen ppt-screen" id="ppt-agent" data-reveal-section data-feature-scroll aria-labelledby="ppt-title">
-            <div className="feature-grid" data-scroll-wave>
+            <div className="feature-grid">
               <div className="feature-media-motion"><div className="product-visual reveal-visual"><div className="product-backdrop">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/media/ppt-agent-mac-composite.webp" alt="Two overlapping Mac browser windows showing the PPT-Agent interfaces" width="1536" height="1024" loading="lazy" decoding="async" />
@@ -175,7 +175,7 @@ export default function Home() {
           </section>
 
           <section className="article-gallery-section" id="article" data-reveal-section data-reveal-repeat aria-labelledby="article-title">
-            <div className="article-gallery-inner" data-scroll-wave>
+            <div className="article-gallery-inner">
               <header className="article-gallery-header">
                 <h2 id="article-title"><span className="lang lang-zh">文章</span><span className="lang lang-en">Article</span></h2>
               </header>

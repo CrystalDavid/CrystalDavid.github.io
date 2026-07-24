@@ -40,9 +40,10 @@ test("homepage exports the intended typography and motion hooks", async () => {
 });
 
 test("desktop scrolling uses Wickret's live fractional runtime settings", async () => {
-  const [smoothScroll, wickretRuntime, globalCss, packageJson] = await Promise.all([
+  const [smoothScroll, wickretRuntime, articleScrollRuntime, globalCss, packageJson] = await Promise.all([
     readSource("app/smooth-scroll.tsx"),
     readSource("app/wickret-runtime.tsx"),
+    readSource("app/articles/article-scroll-runtime.tsx"),
     readSource("app/globals.css"),
     readSource("package.json"),
   ]);
@@ -55,7 +56,12 @@ test("desktop scrolling uses Wickret's live fractional runtime settings", async 
   assert.match(wickretRuntime, /refreshInterval:\s*virtual \? 0 : 80/);
   assert.match(wickretRuntime, /controller\.scrollPos\(\(\) => currentScrollY\)/);
   assert.match(wickretRuntime, /TweenLite\.set/);
-  assert.match(wickretRuntime, /triggerHook:\s*0\.88/);
+  assert.match(wickretRuntime, /triggerHook:\s*0\.82/);
+  assert.match(wickretRuntime, /TweenLite\.to\(aboutTweenState,\s*1\.05/);
+  assert.match(wickretRuntime, /rect\.bottom > 0 && rect\.top < window\.innerHeight/);
+  assert.match(articleScrollRuntime, /Math\.pow\(0\.94,\s*elapsed \/ 16\.667\)/);
+  assert.match(articleScrollRuntime, /window\.scrollTo\(0,\s*currentY\)/);
+  assert.doesNotMatch(articleScrollRuntime, /translate3d|style\.transform/);
   assert.doesNotMatch(globalCss, /--char-progress/);
   assert.doesNotMatch(globalCss, /--char-offset/);
   assert.doesNotMatch(globalCss, /--feature-media-y/);

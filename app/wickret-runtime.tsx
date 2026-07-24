@@ -10,7 +10,7 @@ import type {
 } from "scrollmagic";
 import type { ScrollRuntimeReadyDetail } from "./scroll-runtime-events";
 
-type TweenTarget = Element | Element[];
+type TweenTarget = Element | Element[] | Record<string, number>;
 type TweenVars = Record<string, unknown>;
 type TweenLiteRuntime = {
   set: (target: TweenTarget, vars: TweenVars) => unknown;
@@ -119,7 +119,11 @@ export function WickretRuntime() {
       });
       controller.scrollPos(() => currentScrollY);
 
-      const updateController = () => controller?.update(true);
+      let syncArticleVisibility = () => {};
+      const updateController = () => {
+        controller?.update(true);
+        syncArticleVisibility();
+      };
 
       const resetAboutGlyphs = (opacity: number) => {
         document
@@ -133,6 +137,7 @@ export function WickretRuntime() {
       let activeGlyphs: HTMLElement[] = [];
       let glyphOpacity = new Float32Array();
       let aboutProgress = 0;
+      const aboutTweenState = { progress: 0 };
 
       const selectActiveStory = () => {
         const language = root.dataset.lang === "zh" ? "zh" : "en";
@@ -173,6 +178,25 @@ export function WickretRuntime() {
         }
       };
 
+      const playAbout = (reset = true) => {
+        selectActiveStory();
+        TweenLite.killTweensOf(aboutTweenState);
+        if (reset) {
+          aboutTweenState.progress = 0;
+          renderAbout(0);
+        }
+        TweenLite.to(aboutTweenState, 1.05, {
+          progress: 1,
+          ease: Power2.easeOut,
+          overwrite: true,
+          onUpdate: () => renderAbout(aboutTweenState.progress),
+          onComplete: () => {
+            aboutTweenState.progress = 1;
+            renderAbout(1);
+          },
+        });
+      };
+
       resetAboutGlyphs(reducedMotion ? 1 : 0.2);
       const aboutSection = document.querySelector<HTMLElement>(
         ".experience-profile-section",
@@ -180,19 +204,31 @@ export function WickretRuntime() {
       if (aboutSection) {
         const aboutScene = new ScrollMagic.Scene({
           triggerElement: aboutSection,
-          triggerHook: 0.88,
+          triggerHook: 0.82,
           duration: () =>
-            Math.max(
-              window.innerHeight * 0.9,
-              aboutSection.offsetHeight + window.innerHeight * 0.42,
-            ),
+            aboutSection.offsetHeight + window.innerHeight,
         })
-          .on<ProgressEvent>("progress", (event) =>
-            renderAbout(event.progress),
-          )
+          .on<EnterEvent>("enter", () => playAbout(true))
+          .on<LeaveEvent>("leave", (event) => {
+            TweenLite.killTweensOf(aboutTweenState);
+            if (event.state === "BEFORE") {
+              aboutTweenState.progress = 0;
+              renderAbout(0);
+            } else {
+              aboutTweenState.progress = 1;
+              renderAbout(1);
+            }
+          })
           .addTo(controller);
         scenes.push(aboutScene);
-        renderAbout(aboutScene.progress());
+        if (reducedMotion || aboutScene.state() === "AFTER") {
+          aboutTweenState.progress = 1;
+          renderAbout(1);
+        } else if (aboutScene.state() === "DURING") {
+          playAbout(true);
+        } else {
+          renderAbout(0);
+        }
       }
 
       const featureSection = document.querySelector<HTMLElement>(
@@ -229,9 +265,9 @@ export function WickretRuntime() {
       if (articleSection) {
         const articleScene = new ScrollMagic.Scene({
           triggerElement: articleSection,
-          triggerHook: 0.9,
+          triggerHook: 1,
           duration: () =>
-            articleSection.offsetHeight + window.innerHeight * 0.15,
+            articleSection.offsetHeight + window.innerHeight,
         })
           .on<EnterEvent>("enter", () =>
             articleSection.classList.add("is-visible"),
@@ -241,6 +277,14 @@ export function WickretRuntime() {
           )
           .addTo(controller);
         scenes.push(articleScene);
+        syncArticleVisibility = () => {
+          const rect = articleSection.getBoundingClientRect();
+          articleSection.classList.toggle(
+            "is-visible",
+            rect.bottom > 0 && rect.top < window.innerHeight,
+          );
+        };
+        syncArticleVisibility();
       }
 
       const waveTargets = Array.from(
@@ -380,7 +424,7 @@ export function WickretRuntime() {
         selectActiveStory();
         renderAbout(aboutProgress);
         scenes.forEach((scene) => scene.refresh());
-        controller?.update(true);
+        updateController();
       };
       const handleResize = () => handleLayout();
 
@@ -398,6 +442,7 @@ export function WickretRuntime() {
       window.addEventListener("resize", handleResize, { passive: true });
 
       pointerCleanups.push(() => {
+        TweenLite.killTweensOf(aboutTweenState);
         if (virtual) {
           window.removeEventListener(
             "david:virtual-scroll",

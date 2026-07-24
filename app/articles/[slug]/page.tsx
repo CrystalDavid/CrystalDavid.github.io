@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArticleLanguageToggle } from "../article-language-toggle";
+import { ArticleScrollRuntime } from "../article-scroll-runtime";
 import { articles, getArticle } from "../data";
 
 export function generateStaticParams() {
@@ -32,6 +33,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
   return (
     <main className="article-page">
+      <ArticleScrollRuntime />
       <header className="article-page-header">
         <a href={`/#article-card-${article.slug}`} className="article-back" aria-label="Back to this article in the article list">
           <BackArrow />
