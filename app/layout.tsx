@@ -34,10 +34,38 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" data-lang="en">
       <head>
+        <link
+          rel="preload"
+          href="/fonts/nunito-latin.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/david-yuan-round-400.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/david-yuan-round-500.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/david-yuan-round-700.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{var l=localStorage.getItem('david-site-language-v2')==='zh'?'zh':'en';document.documentElement.dataset.lang=l;document.documentElement.lang=l==='zh'?'zh-CN':'en'}catch(e){}",
+              "try{var r=document.documentElement;r.classList.add('fonts-loading');var l=localStorage.getItem('david-site-language-v2')==='zh'?'zh':'en';r.dataset.lang=l;r.lang=l==='zh'?'zh-CN':'en';var d=function(){r.classList.remove('fonts-loading');r.classList.add('fonts-ready')};var t=setTimeout(d,3000);addEventListener('DOMContentLoaded',function(){if(!document.fonts){clearTimeout(t);d();return}Promise.all([document.fonts.load('400 1em Nunito'),document.fonts.load('700 1em Nunito'),document.fonts.load('400 1em \\\"David Yuan Round Web\\\"'),document.fonts.load('500 1em \\\"David Yuan Round Web\\\"'),document.fonts.load('700 1em \\\"David Yuan Round Web\\\"')]).then(function(){return document.fonts.ready}).then(function(){clearTimeout(t);d()},function(){clearTimeout(t);d()})})}catch(e){document.documentElement.classList.remove('fonts-loading')}",
           }}
         />
       </head>

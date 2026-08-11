@@ -21,14 +21,19 @@ test("homepage exports the intended typography and motion hooks", async () => {
     readSource("package.json"),
   ]);
 
-  assert.doesNotMatch(html, /rel="preload"[^>]+\/fonts\//);
+  assert.match(html, /rel="preload"[^>]+\/fonts\/nunito-latin\.woff2/);
+  assert.match(html, /rel="preload"[^>]+\/fonts\/david-yuan-round-400\.woff2/);
+  assert.match(html, /rel="preload"[^>]+\/fonts\/david-yuan-round-500\.woff2/);
+  assert.match(html, /rel="preload"[^>]+\/fonts\/david-yuan-round-700\.woff2/);
+  assert.match(css, /font-family:\s*(?:"Nunito"|Nunito)/);
+  assert.match(css, /David Yuan Round Web/);
   assert.match(css, /PingFang SC/);
-  assert.match(css, /HarmonyOS Sans SC/);
   assert.ok(
-    css.indexOf("PingFang SC") < css.indexOf("HarmonyOS Sans SC"),
-    "PingFang SC must be the first Chinese interface font",
+    css.indexOf("Nunito") < css.indexOf("David Yuan Round Web"),
+    "Nunito must precede the Chinese interface font",
   );
-  assert.doesNotMatch(css, /Chiron GoRound TC WS|font-display:swap|@font-face/);
+  assert.doesNotMatch(css, /Chiron GoRound TC WS|font-display:swap|fonts\.googleapis\.com|fonts\.gstatic\.com/);
+  assert.match(css, /font-display:block/);
   assert.equal(
     JSON.parse(packageJson).dependencies["chiron-go-round-tc-webfont-truetype"],
     undefined,
@@ -54,10 +59,10 @@ test("homepage exports the intended typography and motion hooks", async () => {
 });
 
 test("desktop scrolling uses Wickret's live fractional runtime settings", async () => {
-  const [smoothScroll, wickretRuntime, articleScrollRuntime, globalCss, packageJson] = await Promise.all([
+  const [smoothScroll, wickretRuntime, articlePage, globalCss, packageJson] = await Promise.all([
     readSource("app/smooth-scroll.tsx"),
     readSource("app/wickret-runtime.tsx"),
-    readSource("app/articles/article-scroll-runtime.tsx"),
+    readSource("app/articles/[slug]/page.tsx"),
     readSource("app/globals.css"),
     readSource("package.json"),
   ]);
@@ -72,10 +77,11 @@ test("desktop scrolling uses Wickret's live fractional runtime settings", async 
   assert.match(wickretRuntime, /TweenLite\.set/);
   assert.match(wickretRuntime, /triggerHook:\s*0\.82/);
   assert.match(wickretRuntime, /TweenLite\.to\(aboutTweenState,\s*1\.05/);
+  assert.match(wickretRuntime, /aboutProgress\s*>=\s*1\s*\?\s*1/);
   assert.match(wickretRuntime, /rect\.bottom > 0 && rect\.top < window\.innerHeight/);
-  assert.match(articleScrollRuntime, /Math\.pow\(0\.94,\s*elapsed \/ 16\.667\)/);
-  assert.match(articleScrollRuntime, /window\.scrollTo\(0,\s*currentY\)/);
-  assert.doesNotMatch(articleScrollRuntime, /translate3d|style\.transform/);
+  assert.doesNotMatch(articlePage, /ArticleScrollRuntime|window\.scrollTo|preventDefault/);
+  assert.doesNotMatch(globalCss, /article-scroll-active/);
+  assert.doesNotMatch(globalCss, /html\.is-scrolling \[data-scroll-wave\][^{]*\{[^}]*will-change/s);
   assert.doesNotMatch(globalCss, /--char-progress/);
   assert.doesNotMatch(globalCss, /--char-offset/);
   assert.doesNotMatch(globalCss, /--feature-media-y/);

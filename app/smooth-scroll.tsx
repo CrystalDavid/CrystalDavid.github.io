@@ -105,6 +105,12 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     document.addEventListener("click", handleAnchor);
 
     const initialize = async () => {
+      // Wickret measures one transformed scroll surface. Wait until the
+      // self-hosted faces have settled so the virtual limit is never built
+      // from fallback-font line breaks and corrected a frame later.
+      await document.fonts?.ready;
+      if (disposed) return;
+
       if (!container || useNativeScroll) {
         root.classList.add("native-scroll");
         if (container) {
@@ -134,13 +140,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       dispatchVirtualScroll(previousVirtualY);
       dispatchRuntimeReady({ mode: "virtual", container });
       restoreInitialAnchor();
-
-      void document.fonts?.ready.then(() => {
-        if (!scrollbar || disposed) return;
-        scrollbar.update();
-        restoreInitialAnchor();
-        window.dispatchEvent(new Event("david:layout"));
-      });
+      window.dispatchEvent(new Event("david:layout"));
     };
 
     void initialize();

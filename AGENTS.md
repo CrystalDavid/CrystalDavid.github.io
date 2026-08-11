@@ -29,8 +29,8 @@
 
 ## 字体与渲染
 
-1. 全站界面统一使用系统字体栈 `PingFang SC`、`HarmonyOS Sans SC`、`HarmonyOS Sans`，再回退到 `Microsoft YaHei UI`、`Microsoft YaHei` 与通用无衬线字体；不得恢复异步中文 WebFont，以免首屏发生字形、字宽或换行跳变。
-2. 字体不得引用开发机绝对路径或运行时第三方字体 CDN；若未来确需 WebFont，必须由构建产物自托管、提前加载，并通过首屏布局稳定性验收。
+1. 全站英文统一使用 `Nunito`，中文统一使用霞鹜 975 圆体 SC 的站点子集版本 `David Yuan Round Web`；字体栈顺序固定为英文在前、中文在后，再回退到 `PingFang SC`、`Microsoft YaHei UI`、`Microsoft YaHei` 与通用无衬线字体。
+2. 两套字体必须由 `public/fonts` 自托管并在首屏提前加载，不得引用开发机绝对路径或运行时第三方字体 CDN；中文子集需要覆盖所有发布内容，并保留霞鹜 975 圆体的 OFL 许可证。字体不得使用 `font-display: swap`，发布前必须验证冷启动没有字形、字宽或换行跳变。
 3. 长文章正文不得进入逐帧动画，不得永久设置 `will-change`，不得套用滚动容器 transform。
 4. 保持 `font-synthesis: none`、抗锯齿与全站相同的字体回退逻辑；避免 `text-rendering: geometricPrecision` 造成长页面重绘压力。
 

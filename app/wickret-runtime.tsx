@@ -171,8 +171,13 @@ export function WickretRuntime() {
         const cursor = aboutProgress * (count + fadeWindow);
         for (let index = 0; index < count; index += 1) {
           const reveal = clamp((cursor - index) / fadeWindow, 0, 1);
-          const opacity = 0.2 + reveal * 0.8;
-          if (Math.abs(glyphOpacity[index] - opacity) < 0.015) continue;
+          const opacity = aboutProgress >= 1 ? 1 : 0.2 + reveal * 0.8;
+          if (
+            opacity < 1 &&
+            Math.abs(glyphOpacity[index] - opacity) < 0.015
+          ) {
+            continue;
+          }
           activeGlyphs[index].style.opacity = opacity.toFixed(3);
           glyphOpacity[index] = opacity;
         }
