@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import "chiron-go-round-tc-webfont-truetype/css/vf.t1.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -41,7 +40,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               "try{var l=localStorage.getItem('david-site-language-v2')==='zh'?'zh':'en';document.documentElement.dataset.lang=l;document.documentElement.lang=l==='zh'?'zh-CN':'en'}catch(e){}",
           }}
         />
-        <link rel="preload" href="/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body>{children}</body>
     </html>

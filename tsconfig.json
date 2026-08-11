@@ -31,13 +31,5 @@
     ".next/dev/types/**/*.ts",
     "app/**/*.mts"
   ],
-  "exclude": [
-    "node_modules",
-    "cloudfunctions",
-    "comment-api-deno",
-    "PPT-Agent",
-    "scripts",
-    "source",
-    "themes"
-  ]
+  "exclude": ["node_modules"]
 }

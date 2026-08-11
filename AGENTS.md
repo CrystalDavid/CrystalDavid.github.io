@@ -29,8 +29,8 @@
 
 ## 字体与渲染
 
-1. 拉丁文字使用本地 Nunito；中文使用官方包 `chiron-go-round-tc-webfont-truetype` 提供的 `Chiron GoRound TC WS`（昭源環方），并通过 Unicode range 子集按需加载。
-2. 字体必须由构建产物自托管，不得引用开发机绝对路径或运行时第三方字体 CDN。
+1. 全站界面统一使用系统字体栈 `PingFang SC`、`HarmonyOS Sans SC`、`HarmonyOS Sans`，再回退到 `Microsoft YaHei UI`、`Microsoft YaHei` 与通用无衬线字体；不得恢复异步中文 WebFont，以免首屏发生字形、字宽或换行跳变。
+2. 字体不得引用开发机绝对路径或运行时第三方字体 CDN；若未来确需 WebFont，必须由构建产物自托管、提前加载，并通过首屏布局稳定性验收。
 3. 长文章正文不得进入逐帧动画，不得永久设置 `will-change`，不得套用滚动容器 transform。
 4. 保持 `font-synthesis: none`、抗锯齿与全站相同的字体回退逻辑；避免 `text-rendering: geometricPrecision` 造成长页面重绘压力。
 

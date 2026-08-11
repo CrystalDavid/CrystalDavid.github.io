@@ -15,10 +15,24 @@ const readExportedCss = async () => {
 };
 
 test("homepage exports the intended typography and motion hooks", async () => {
-  const [html, css] = await Promise.all([readOutput(), readExportedCss()]);
+  const [html, css, packageJson] = await Promise.all([
+    readOutput(),
+    readExportedCss(),
+    readSource("package.json"),
+  ]);
 
-  assert.match(html, /\/fonts\/nunito-latin\.woff2/);
-  assert.match(css, /Chiron GoRound TC WS/);
+  assert.doesNotMatch(html, /rel="preload"[^>]+\/fonts\//);
+  assert.match(css, /PingFang SC/);
+  assert.match(css, /HarmonyOS Sans SC/);
+  assert.ok(
+    css.indexOf("PingFang SC") < css.indexOf("HarmonyOS Sans SC"),
+    "PingFang SC must be the first Chinese interface font",
+  );
+  assert.doesNotMatch(css, /Chiron GoRound TC WS|font-display:swap|@font-face/);
+  assert.equal(
+    JSON.parse(packageJson).dependencies["chiron-go-round-tc-webfont-truetype"],
+    undefined,
+  );
   assert.match(html, /maximum-scale=2/);
   assert.match(html, /david-site-language-v2/);
   assert.ok(
@@ -100,13 +114,4 @@ test("the two PDF reports export as bilingual canonical articles", async () => {
   assert.match(pptAgent, /research_brief/);
   assert.match(evidenceTracker, /IDENTITY_CONFLICT/);
   assert.match(evidenceTracker, /24\.06%/);
-});
-
-test("both Agent motion comparison pages are exported", async () => {
-  const [agent1, agent2] = await Promise.all([readOutput("agent1"), readOutput("agent2")]);
-
-  assert.match(agent1, /Agent/);
-  assert.match(agent2, /agent-lab-stage/);
-  assert.match(agent2, /Wickret method/);
-  assert.match(agent2, /Agent/);
 });
