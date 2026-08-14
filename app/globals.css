@@ -28,8 +28,8 @@
      The unmodified license is published at /fonts/harmonyos-sans-license.txt. */
   font-family: "HarmonyOS Sans SC";
   font-style: normal;
-  font-weight: 100 900;
-  font-display: block;
+  font-weight: 400;
+  font-display: swap;
   src: url("/fonts/harmonyos-sans-sc-regular.ttf") format("truetype");
 }
 
@@ -48,9 +48,9 @@
     var(--font-latin), var(--font-cjk), "PingFang SC", "Microsoft YaHei UI",
     "Microsoft YaHei", sans-serif;
   --cjk-body-weight: 400;
-  --cjk-ui-weight: 400;
-  --cjk-heading-weight: 400;
-  --cjk-strong-weight: 400;
+  --cjk-ui-weight: 700;
+  --cjk-heading-weight: 700;
+  --cjk-strong-weight: 700;
   --paper: #fffefe;
   --cream: #fdf0e5;
   --sky: #eefbff;
@@ -71,10 +71,10 @@ html[data-font="harmony"] {
 
 html[data-font="mi"] {
   --font-cjk: "MiSans VF";
-  --cjk-body-weight: 330;
-  --cjk-ui-weight: 400;
-  --cjk-heading-weight: 450;
-  --cjk-strong-weight: 500;
+  --cjk-body-weight: 500;
+  --cjk-ui-weight: 700;
+  --cjk-heading-weight: 700;
+  --cjk-strong-weight: 700;
 }
 
 * {
@@ -108,6 +108,10 @@ body {
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+html[data-font="harmony"] body {
+  font-synthesis: weight;
 }
 
 html[lang="zh-CN"] body,
@@ -1395,44 +1399,45 @@ html.is-scrolling .feature-media-motion {
   letter-spacing: 0.035em;
 }
 
-/* Chinese typography is calibrated independently from Nunito. The smaller
-   display scale and moderate weights keep dense CJK strokes open at speed. */
+/* CJK glyphs are wider and visually lighter than Nunito at the same CSS size.
+   Give Chinese its own scale and tracking while keeping display/UI weight
+   aligned with the 700-weight English hierarchy. */
 html[data-lang="zh"] body {
-  letter-spacing: 0.026em;
+  letter-spacing: 0.04em;
 }
 
 html[data-lang="zh"] .site-nav {
   font-size: 14px;
   font-weight: var(--cjk-ui-weight);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.065em;
 }
 
 html[data-lang="zh"] .hero-title > .lang-zh {
-  font-size: 0.61em;
+  font-size: 0.69em;
   font-weight: var(--cjk-heading-weight);
-  line-height: 1.12;
-  letter-spacing: 0.055em;
+  line-height: 1.08;
+  letter-spacing: 0.085em;
 }
 
 html[data-lang="zh"] .experience-profile-inner > h2 {
-  font-size: clamp(48px, 5.4vw, 76px);
+  font-size: clamp(52px, 6vw, 82px);
   font-weight: var(--cjk-heading-weight);
-  line-height: 1.08;
-  letter-spacing: 0.025em;
+  line-height: 1.06;
+  letter-spacing: 0.05em;
 }
 
 html[data-lang="zh"] .experience-profile-copy p {
-  font-size: clamp(18px, 1.55vw, 21px);
+  font-size: clamp(19px, 1.65vw, 22px);
   font-weight: var(--cjk-body-weight);
-  line-height: 1.9;
-  letter-spacing: 0.035em;
+  line-height: 1.92;
+  letter-spacing: 0.055em;
 }
 
 html[data-lang="zh"] .chapter-title {
-  font-size: clamp(72px, 6.8vw, 104px);
+  font-size: clamp(80px, 7.4vw, 114px);
   font-weight: var(--cjk-heading-weight);
-  line-height: 1.08;
-  letter-spacing: 0.035em;
+  line-height: 1.06;
+  letter-spacing: 0.055em;
 }
 
 html[data-lang="zh"] .feature-title {
@@ -1444,27 +1449,27 @@ html[data-lang="zh"] .feature-copy > p {
   font-size: 23px;
   font-weight: var(--cjk-body-weight);
   line-height: 1.7;
-  letter-spacing: 0.035em;
+  letter-spacing: 0.055em;
 }
 
 html[data-lang="zh"] .outline-button {
   font-size: 13px;
   font-weight: var(--cjk-ui-weight);
-  letter-spacing: 0.035em;
+  letter-spacing: 0.055em;
 }
 
 html[data-lang="zh"] .article-gallery-header h2 {
-  font-size: clamp(58px, 5.6vw, 84px);
+  font-size: clamp(64px, 6vw, 92px);
   font-weight: var(--cjk-heading-weight);
-  line-height: 1.04;
-  letter-spacing: 0.025em;
+  line-height: 1.02;
+  letter-spacing: 0.05em;
 }
 
 html[data-lang="zh"] .article-work-copy strong {
-  font-size: 18px;
+  font-size: 19px;
   font-weight: var(--cjk-heading-weight);
   line-height: 1.4;
-  letter-spacing: 0.025em;
+  letter-spacing: 0.045em;
 }
 
 html[data-lang="zh"] .footer-grid h2 {
@@ -1476,7 +1481,7 @@ html[data-lang="zh"] .footer-grid h2 {
 html[data-lang="zh"] .footer-nav a {
   font-size: 15px;
   font-weight: var(--cjk-body-weight);
-  letter-spacing: 0.035em;
+  letter-spacing: 0.05em;
 }
 
 html[data-lang="zh"] .article-page-header {
@@ -1487,7 +1492,7 @@ html[data-lang="zh"] .article-page-header {
 html[data-lang="zh"] .article-back {
   font-size: 14px;
   font-weight: var(--cjk-heading-weight);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.065em;
 }
 
 html[data-lang="zh"] .section-number {
@@ -1495,10 +1500,10 @@ html[data-lang="zh"] .section-number {
 }
 
 html[data-lang="zh"] .article-page h1 {
-  font-size: clamp(42px, 6vw, 74px);
+  font-size: clamp(48px, 7vw, 86px);
   font-weight: var(--cjk-heading-weight);
-  line-height: 1.12;
-  letter-spacing: 0.02em;
+  line-height: 1.08;
+  letter-spacing: 0.04em;
 }
 
 html[data-lang="zh"] .article-english-title {
@@ -1507,39 +1512,39 @@ html[data-lang="zh"] .article-english-title {
 }
 
 html[data-lang="zh"] .article-lede {
-  font-size: 20px;
+  font-size: 21px;
   font-weight: var(--cjk-body-weight);
   line-height: 1.9;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.05em;
 }
 
 html[data-lang="zh"] .article-source {
   font-size: 13px;
   font-weight: var(--cjk-body-weight);
   line-height: 1.8;
-  letter-spacing: 0.035em;
+  letter-spacing: 0.05em;
 }
 
 html[data-lang="zh"] .article-body h2 {
-  font-size: 33px;
+  font-size: 36px;
   font-weight: var(--cjk-heading-weight);
   line-height: 1.35;
-  letter-spacing: 0.025em;
+  letter-spacing: 0.045em;
 }
 
 html[data-lang="zh"] .article-body p,
 html[data-lang="zh"] .article-body li {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: var(--cjk-body-weight);
   line-height: 2.05;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.045em;
 }
 
 html[data-lang="zh"] .article-body .article-subheading {
-  font-size: 23px;
+  font-size: 24px;
   font-weight: var(--cjk-heading-weight);
   line-height: 1.5;
-  letter-spacing: 0.025em;
+  letter-spacing: 0.045em;
 }
 
 html[data-lang="zh"] .article-body strong {
@@ -1900,27 +1905,28 @@ html[data-lang="zh"] .article-body strong {
 
   html[data-lang="zh"] .site-nav {
     font-size: 9.5px;
-    letter-spacing: 0.025em;
+    letter-spacing: 0.04em;
   }
 
   html[data-lang="zh"] .hero-title > .lang-zh {
-    font-size: 0.5em;
-    line-height: 1.18;
-    letter-spacing: 0.045em;
+    font-size: 0.56em;
+    line-height: 1.14;
+    letter-spacing: 0.06em;
   }
 
   html[data-lang="zh"] .chapter-title {
-    font-size: clamp(47px, 13.5vw, 64px);
+    font-size: clamp(53px, 15vw, 72px);
   }
 
   html[data-lang="zh"] .experience-profile-inner > h2 {
     margin-bottom: 34px;
-    font-size: 44px;
+    font-size: 48px;
   }
 
   html[data-lang="zh"] .experience-profile-copy p {
-    font-size: 16.5px;
+    font-size: 17px;
     line-height: 1.95;
+    letter-spacing: 0.045em;
   }
 
   html[data-lang="zh"] .feature-title {
@@ -1933,7 +1939,7 @@ html[data-lang="zh"] .article-body strong {
   }
 
   html[data-lang="zh"] .article-gallery-header h2 {
-    font-size: 43px;
+    font-size: 48px;
   }
 
   html[data-lang="zh"] .article-work-copy strong {
@@ -1953,7 +1959,7 @@ html[data-lang="zh"] .article-body strong {
   }
 
   html[data-lang="zh"] .article-page h1 {
-    font-size: 40px;
+    font-size: 46px;
   }
 
   html[data-lang="zh"] .article-lede {
@@ -1961,13 +1967,14 @@ html[data-lang="zh"] .article-body strong {
   }
 
   html[data-lang="zh"] .article-body h2 {
-    font-size: 27px;
+    font-size: 29px;
   }
 
   html[data-lang="zh"] .article-body p,
   html[data-lang="zh"] .article-body li {
-    font-size: 16px;
+    font-size: 16.5px;
     line-height: 2;
+    letter-spacing: 0.04em;
   }
 
   html[data-lang="zh"] .article-body .article-subheading {

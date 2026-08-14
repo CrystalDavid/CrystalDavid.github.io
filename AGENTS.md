@@ -30,9 +30,9 @@
 ## 字体与渲染
 
 1. 全站英文统一使用 `Nunito`；中文提供两个 URL 对比版本：`?font=harmony` 使用 `HarmonyOS Sans SC`，`?font=mi` 使用 `MiSans VF`。由于 HarmonyOS Sans 的官方原始 SC 文件体积较大，无参数时默认使用轻量的 MiSans 版，HarmonyOS Sans 作为显式对比入口；当前标签页内通过 `sessionStorage` 保持选择。字体栈顺序固定为英文在前、所选中文字体在后，再回退到 `PingFang SC`、`Microsoft YaHei UI`、`Microsoft YaHei` 与通用无衬线字体。
-2. 字体必须由 `public/fonts` 自托管并在首屏提前加载，不得引用开发机绝对路径或运行时第三方字体 CDN。HarmonyOS Sans 的许可禁止修改字体，因此必须使用官方原始 SC Regular 文件并保留原始许可文件，不得转换或裁剪；MiSans 使用覆盖全部发布内容的可变 WOFF2 站点子集。每次只预载和解码当前 URL 选择的中文字体，禁止同时加载两个对比版本。字体不得使用 `font-display: swap`，发布前必须分别验证两版冷启动没有字形、字宽或换行跳变。
+2. 字体必须由 `public/fonts` 自托管，不得引用开发机绝对路径或运行时第三方字体 CDN。HarmonyOS Sans 的许可禁止修改字体，因此必须使用官方原始 SC Regular 文件并保留原始许可文件，不得转换或裁剪；MiSans 使用覆盖全部发布内容的可变 WOFF2 站点子集。每次只预载和解码当前 URL 选择的中文字体，禁止同时加载两个对比版本。MiSans 保持首屏显示门控；HarmonyOS Sans 的官方原文件较大，显式对比入口必须用 `font-display: swap` 非阻塞加载，不得在字体下载期间隐藏整个页面。
 3. 长文章正文不得进入逐帧动画，不得永久设置 `will-change`，不得套用滚动容器 transform。
-4. 中文排版使用独立的字号、字距和字重标尺：HarmonyOS Sans 使用官方原始 Regular 并通过字号、字距和颜色建立层级；MiSans 正文使用 330、常规界面 400、标题 450、强调文字最高 500。不得恢复此前 700/800 的整页粗重效果。保持 `font-synthesis: none`、抗锯齿与全站相同的字体回退逻辑；避免 `text-rendering: geometricPrecision` 造成长页面重绘压力。
+4. 中文排版使用独立的字号、字距和字重标尺：中文标题、导航与强调文字使用 700，与 Nunito 英文界面的视觉重量对齐；MiSans 正文使用 500，HarmonyOS Sans 正文使用官方 Regular 400。HarmonyOS Sans 只提供未修改的 Regular 文件，允许浏览器仅对 700 级界面文字合成粗体，避免额外下载另一个大字体文件。中文字距使用独立放宽标尺，不得压缩为 Nunito 英文字距。MiSans 及其他字体保持 `font-synthesis: none`；避免 `text-rendering: geometricPrecision` 造成长页面重绘压力。
 
 ## 性能与验收
 

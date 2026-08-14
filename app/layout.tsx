@@ -19,6 +19,9 @@ const fontBootstrapScript = String.raw`
         : "mi";
 
     root.dataset.font = fontVersion;
+    if (fontVersion === "harmony") {
+      root.classList.remove("fonts-loading");
+    }
     if (fontParameter === "mi" || fontParameter === "harmony") {
       sessionStorage.setItem("david-site-font-v1", fontVersion);
     }
@@ -54,9 +57,9 @@ const fontBootstrapScript = String.raw`
       Promise.all([
         document.fonts.load('400 1em Nunito'),
         document.fonts.load('700 1em Nunito'),
-        document.fonts.load('330 1em "' + cjkFamily + '"', '中文字体测试'),
         document.fonts.load('400 1em "' + cjkFamily + '"', '中文字体测试'),
-        document.fonts.load('500 1em "' + cjkFamily + '"', '中文字体测试')
+        document.fonts.load('500 1em "' + cjkFamily + '"', '中文字体测试'),
+        document.fonts.load('700 1em "' + cjkFamily + '"', '中文字体测试')
       ]).then(function () {
         return document.fonts.ready;
       }).then(function () {

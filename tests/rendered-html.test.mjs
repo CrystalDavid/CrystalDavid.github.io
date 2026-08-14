@@ -31,15 +31,18 @@ test("homepage exports the intended typography and motion hooks", async () => {
     css.indexOf("Nunito") < css.indexOf("HarmonyOS Sans SC"),
     "Nunito must precede both Chinese comparison fonts",
   );
-  assert.doesNotMatch(css, /OPPO Sans|David Yuan Round Web|Chiron GoRound TC WS|font-display:swap|fonts\.googleapis\.com|fonts\.gstatic\.com/);
+  assert.doesNotMatch(css, /OPPO Sans|David Yuan Round Web|Chiron GoRound TC WS|fonts\.googleapis\.com|fonts\.gstatic\.com/);
+  assert.match(css, /font-family:\s*(?:"HarmonyOS Sans SC"|HarmonyOS Sans SC)[^}]*font-weight:400[^}]*font-display:swap/);
   assert.match(css, /font-display:block/);
   assert.match(html, /data-font="mi"/);
   assert.match(html, /david-site-font-v1/);
   assert.match(html, /fontParameter === "mi" \|\| fontParameter === "harmony"/);
+  assert.match(html, /fontVersion === "harmony"[^}]+classList\.remove\("fonts-loading"\)/);
   assert.match(html, /\/fonts\/harmonyos-sans-sc-regular\.ttf/);
   assert.match(html, /\/fonts\/misans-site\.woff2/);
   assert.doesNotMatch(html, /rel="preload"[^>]+(?:harmonyos-sans-sc-regular\.ttf|misans-site\.woff2)/);
-  assert.match(css, /html\[data-font=(?:"mi"|mi)\][^{]*\{[^}]*--cjk-body-weight:330[^}]*--cjk-heading-weight:450[^}]*--cjk-strong-weight:500/);
+  assert.match(css, /html\[data-font=(?:"mi"|mi)\][^{]*\{[^}]*--cjk-body-weight:500[^}]*--cjk-ui-weight:700[^}]*--cjk-heading-weight:700[^}]*--cjk-strong-weight:700/);
+  assert.match(css, /html\[data-font=(?:"harmony"|harmony)\] body[^}]*font-synthesis:weight/);
   assert.match(css, /html\[data-lang=(?:"zh"|zh)\] \.article-body p/);
   assert.equal(
     JSON.parse(packageJson).dependencies["chiron-go-round-tc-webfont-truetype"],
