@@ -18,7 +18,7 @@ const fontBootstrapScript = String.raw`
       root.classList.remove("fonts-loading");
       root.classList.add("fonts-ready");
     };
-    var fallback = setTimeout(reveal, 8000);
+    var fallback = setTimeout(reveal, 4000);
 
     addEventListener("DOMContentLoaded", function () {
       if (!document.fonts) {
@@ -31,7 +31,8 @@ const fontBootstrapScript = String.raw`
         document.fonts.load('400 1em Nunito'),
         document.fonts.load('700 1em Nunito'),
         document.fonts.load('400 1em "Noto Sans SC"', '中文字体测试'),
-        document.fonts.load('600 1em "Noto Sans SC"', '中文字体测试')
+        document.fonts.load('500 1em "Noto Sans SC"', '中文字体测试'),
+        document.fonts.load('700 1em "Noto Sans SC"', '中文字体测试')
       ]).then(function () {
         return document.fonts.ready;
       }).then(function () {

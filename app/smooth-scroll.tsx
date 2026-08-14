@@ -34,15 +34,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     const container = containerRef.current;
     let scrollbar: ScrollbarInstance | null = null;
     let disposed = false;
-    let previousVirtualY = 0;
-
-    const dispatchVirtualScroll = (y: number, deltaY = 0) => {
-      window.dispatchEvent(
-        new CustomEvent("david:virtual-scroll", {
-          detail: { y, deltaY },
-        }),
-      );
-    };
+    const virtualScrollListeners = new Set<(y: number) => void>();
 
     const dispatchRuntimeReady = (detail: ScrollRuntimeReadyDetail) => {
       window.__davidScrollRuntimeReady = detail;
@@ -54,10 +46,9 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     };
 
     const handleVirtualScroll = (status: VirtualScrollStatus) => {
-      const y = status.offset.y;
-      const deltaY = y - previousVirtualY;
-      previousVirtualY = y;
-      dispatchVirtualScroll(y, deltaY);
+      virtualScrollListeners.forEach((listener) =>
+        listener(status.offset.y),
+      );
     };
 
     const scrollToHash = (
@@ -120,7 +111,11 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       if (!container || useNativeScroll) {
         root.classList.add("native-scroll");
         if (container) {
-          dispatchRuntimeReady({ mode: "native", container });
+          dispatchRuntimeReady({
+            mode: "native",
+            container,
+            getScrollY: () => window.scrollY,
+          });
         }
         restoreInitialAnchor();
         void document.fonts?.ready.then(restoreInitialAnchor);
@@ -139,12 +134,18 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
         alwaysShowTracks: false,
         delegateTo: container,
       });
-      previousVirtualY = scrollbar.offset.y;
       scrollbar.addListener(handleVirtualScroll);
       root.classList.remove("native-scroll");
       root.classList.add("virtual-scroll");
-      dispatchVirtualScroll(previousVirtualY);
-      dispatchRuntimeReady({ mode: "virtual", container });
+      dispatchRuntimeReady({
+        mode: "virtual",
+        container,
+        getScrollY: () => scrollbar?.offset.y ?? 0,
+        subscribe: (listener) => {
+          virtualScrollListeners.add(listener);
+          return () => virtualScrollListeners.delete(listener);
+        },
+      });
       restoreInitialAnchor();
       window.dispatchEvent(new Event("david:layout"));
     };
@@ -156,6 +157,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       scrollbar?.removeListener(handleVirtualScroll);
       scrollbar?.destroy();
       scrollbar = null;
+      virtualScrollListeners.clear();
       delete window.__davidScrollRuntimeReady;
       root.classList.remove("native-scroll", "virtual-scroll");
       document.removeEventListener("click", handleAnchor);

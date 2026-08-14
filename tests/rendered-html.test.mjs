@@ -36,7 +36,7 @@ test("homepage exports the intended typography and motion hooks", async () => {
   assert.match(html, /data-font="noto"/);
   assert.match(html, /article-anchor-return/);
   assert.doesNotMatch(html, /david-site-font-v1|fontParameter|fontVersion|harmonyos-sans|misans-site/);
-  assert.match(css, /:root[^}]*--font-cjk:"Noto Sans SC"[^}]*--cjk-body-weight:400[^}]*--cjk-ui-weight:600[^}]*--cjk-heading-weight:600[^}]*--cjk-strong-weight:600/);
+  assert.match(css, /:root[^}]*--font-cjk:"Noto Sans SC"[^}]*--cjk-body-weight:500[^}]*--cjk-ui-weight:700[^}]*--cjk-heading-weight:700[^}]*--cjk-strong-weight:700/);
   assert.match(css, /html\[data-lang=(?:"zh"|zh)\] \.article-body p/);
   assert.equal(
     JSON.parse(packageJson).dependencies["chiron-go-round-tc-webfont-truetype"],
@@ -52,6 +52,12 @@ test("homepage exports the intended typography and motion hooks", async () => {
   assert.match(css, /--app-viewport-height:100svh/);
   assert.ok((html.match(/data-wickret-pointer/g) ?? []).length >= 1);
   assert.ok((html.match(/data-char-story/g) ?? []).length >= 2);
+  assert.match(html, /story-reveal-beat/);
+  assert.doesNotMatch(html, /char-reveal-glyph/);
+  assert.ok(
+    Buffer.byteLength(html, "utf8") < 200_000,
+    "homepage HTML must stay below 200 KB so text motion does not delay parsing",
+  );
   assert.match(html, /data-feature-scroll/);
   assert.doesNotMatch(html, /data-scroll-wave/);
   assert.match(html, /ppt-agent-mac-composite\.webp/);
@@ -102,11 +108,15 @@ test("desktop scrolling uses Wickret's live fractional runtime settings", async 
   assert.match(wickretRuntime, /TweenLite\.set/);
   assert.match(wickretRuntime, /triggerHook:\s*0\.82/);
   assert.match(wickretRuntime, /if \(!scrolling\)/);
-  assert.match(wickretRuntime, /setAbout\(true, true\)/);
+  assert.match(wickretRuntime, /setAbout\(true\)/);
+  assert.match(wickretRuntime, /ready\.subscribe\(handleVirtualScroll\)/);
   assert.match(wickretRuntime, /currentScrollY \+ window\.innerHeight > articleTop/);
   assert.match(globalCss, /html\.article-anchor-return \.article-work-card/);
-  assert.doesNotMatch(wickretRuntime, /glyph\.style\.opacity|data-scroll-wave|renderWave|activeWaveTargets/);
-  assert.match(globalCss, /\.char-reveal-story\.is-revealed \.char-reveal-glyph/);
+  assert.doesNotMatch(wickretRuntime, /glyph\.style\.opacity|offsetWidth|aboutPending|data-scroll-wave|renderWave|activeWaveTargets/);
+  assert.match(globalCss, /\.char-reveal-story\.is-revealed \.story-reveal-beat/);
+  assert.doesNotMatch(globalCss, /char-reveal-glyph/);
+  assert.match(smoothScroll, /virtualScrollListeners/);
+  assert.doesNotMatch(smoothScroll, /david:virtual-scroll|new CustomEvent\("david:virtual-scroll"/);
   assert.match(globalCss, /contain:\s*layout style/);
   assert.doesNotMatch(articlePage, /ArticleScrollRuntime|window\.scrollTo|preventDefault/);
   assert.doesNotMatch(globalCss, /article-scroll-active/);

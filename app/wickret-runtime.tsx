@@ -76,9 +76,9 @@ export function WickretRuntime() {
     let scenes: ScrollMagicScene[] = [];
     let currentScrollY = window.scrollY;
     let scrollIdleTimer = 0;
+    let lastScrollAt = 0;
     let articleReturnFrame = 0;
     let scrolling = false;
-    let handleScrollIdle = () => {};
     const pointerCleanups: Array<() => void> = [];
     const pointerResets: Array<() => void> = [];
 
@@ -90,18 +90,27 @@ export function WickretRuntime() {
       gsap: resolveGsap(gsapModule),
     }));
 
+    const finishScrolling = () => {
+      const remaining = 140 - (Date.now() - lastScrollAt);
+      if (remaining > 0) {
+        scrollIdleTimer = window.setTimeout(finishScrolling, remaining);
+        return;
+      }
+      scrollIdleTimer = 0;
+      scrolling = false;
+      root.classList.remove("is-scrolling");
+    };
+
     const markScrolling = () => {
+      lastScrollAt = Date.now();
       if (!scrolling) {
         scrolling = true;
         root.classList.add("is-scrolling");
         pointerResets.forEach((reset) => reset());
       }
-      window.clearTimeout(scrollIdleTimer);
-      scrollIdleTimer = window.setTimeout(() => {
-        scrolling = false;
-        root.classList.remove("is-scrolling");
-        handleScrollIdle();
-      }, 140);
+      if (!scrollIdleTimer) {
+        scrollIdleTimer = window.setTimeout(finishScrolling, 140);
+      }
     };
 
     const startRuntime = async (ready: ScrollRuntimeReadyDetail) => {
@@ -113,6 +122,7 @@ export function WickretRuntime() {
       const { TweenLite, Power2 } = gsap;
       const virtual = ready.mode === "virtual";
       const desktopEffects = virtual && window.innerWidth > 720 && !reducedMotion;
+      currentScrollY = ready.getScrollY();
 
       controller = new ScrollMagic.Controller({
         ...(virtual ? { container: ready.container } : {}),
@@ -129,7 +139,6 @@ export function WickretRuntime() {
 
       let activeStory: HTMLElement | null = null;
       let aboutRevealed = reducedMotion;
-      let aboutPending = false;
 
       const selectActiveStory = () => {
         const language = root.dataset.lang === "zh" ? "zh" : "en";
@@ -142,30 +151,17 @@ export function WickretRuntime() {
         activeStory?.classList.toggle("is-revealed", aboutRevealed);
       };
 
-      const setAbout = (revealed: boolean, restart = false) => {
+      const setAbout = (revealed: boolean) => {
         selectActiveStory();
-        aboutPending = false;
         aboutRevealed = reducedMotion || revealed;
         if (diagnostics) {
           root.dataset.qaAboutProgress = aboutRevealed ? "1.0000" : "0.0000";
         }
         if (!activeStory) return;
-        if (restart && aboutRevealed && !reducedMotion) {
-          activeStory.classList.remove("is-revealed");
-          void activeStory.offsetWidth;
-        }
         activeStory.classList.toggle("is-revealed", aboutRevealed);
       };
 
-      const playAbout = () => {
-        if (scrolling) {
-          aboutPending = true;
-          setAbout(false);
-          aboutPending = true;
-          return;
-        }
-        setAbout(true, true);
-      };
+      const playAbout = () => setAbout(true);
 
       const aboutSection = document.querySelector<HTMLElement>(
         ".experience-profile-section",
@@ -187,11 +183,6 @@ export function WickretRuntime() {
           })
           .addTo(controller);
         scenes.push(aboutScene);
-        handleScrollIdle = () => {
-          if (aboutPending && aboutScene.state() === "DURING") {
-            setAbout(true, true);
-          }
-        };
         if (reducedMotion || aboutScene.state() === "AFTER") {
           setAbout(true);
         } else if (aboutScene.state() === "DURING") {
@@ -235,6 +226,7 @@ export function WickretRuntime() {
       if (articleSection) {
         let articleTop = 0;
         let articleBottom = 0;
+        let articleVisible = false;
         measureArticle = () => {
           const rect = articleSection.getBoundingClientRect();
           articleTop = currentScrollY + rect.top;
@@ -246,19 +238,24 @@ export function WickretRuntime() {
           duration: () =>
             articleSection.offsetHeight + window.innerHeight,
         })
-          .on<EnterEvent>("enter", () =>
-            articleSection.classList.add("is-visible"),
-          )
-          .on<LeaveEvent>("leave", () =>
-            articleSection.classList.remove("is-visible"),
-          )
+          .on<EnterEvent>("enter", () => {
+            articleVisible = true;
+            articleSection.classList.add("is-visible");
+          })
+          .on<LeaveEvent>("leave", () => {
+            articleVisible = false;
+            articleSection.classList.remove("is-visible");
+          })
           .addTo(controller);
         scenes.push(articleScene);
         syncArticleVisibility = () => {
           const visible =
             currentScrollY + window.innerHeight > articleTop &&
             currentScrollY < articleBottom;
-          articleSection.classList.toggle("is-visible", visible);
+          if (visible !== articleVisible) {
+            articleVisible = visible;
+            articleSection.classList.toggle("is-visible", visible);
+          }
           if (
             visible &&
             root.classList.contains("article-anchor-return") &&
@@ -352,12 +349,8 @@ export function WickretRuntime() {
           });
       }
 
-      const handleVirtualScroll = (event: Event) => {
-        const detail = (
-          event as CustomEvent<{ y?: number }>
-        ).detail;
-        if (typeof detail?.y !== "number") return;
-        currentScrollY = detail.y;
+      const handleVirtualScroll = (y: number) => {
+        currentScrollY = y;
         if (diagnostics) {
           root.dataset.qaScrollY = currentScrollY.toFixed(3);
         }
@@ -379,10 +372,7 @@ export function WickretRuntime() {
       const handleResize = () => handleLayout();
 
       if (virtual) {
-        window.addEventListener(
-          "david:virtual-scroll",
-          handleVirtualScroll as EventListener,
-        );
+        pointerCleanups.push(ready.subscribe(handleVirtualScroll));
       } else {
         window.addEventListener("scroll", handleNativeScroll, {
           passive: true,
@@ -392,12 +382,7 @@ export function WickretRuntime() {
       window.addEventListener("resize", handleResize, { passive: true });
 
       pointerCleanups.push(() => {
-        if (virtual) {
-          window.removeEventListener(
-            "david:virtual-scroll",
-            handleVirtualScroll as EventListener,
-          );
-        } else {
+        if (!virtual) {
           window.removeEventListener("scroll", handleNativeScroll);
         }
         window.removeEventListener("david:layout", handleLayout);

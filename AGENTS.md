@@ -30,10 +30,10 @@
 ## 字体与渲染
 
 1. 全站字体组合固定为英文 `Nunito`、中文 `Noto Sans SC`，不再提供 URL 字体对比参数或用 `sessionStorage` 记忆字体版本。字体栈顺序固定为英文在前、中文在后，再回退到 `PingFang SC`、`Microsoft YaHei UI`、`Microsoft YaHei` 与通用无衬线字体。
-2. 两套字体必须由 `public/fonts` 自托管并在首屏预载，不得引用开发机绝对路径或运行时第三方字体 CDN。Noto Sans SC 使用 Google Fonts CSS2 API 按本站全部发布字符生成的 400–700 可变 WOFF2 子集，并保留 OFL 许可证。页面必须等待 Nunito 与 Noto Sans SC 完成首次解码后再显示文字，避免回退字体切换造成字宽、换行和滚动范围跳变；字体失败兜底不得超过 8 秒。
+2. 两套字体必须由 `public/fonts` 自托管并在首屏预载，不得引用开发机绝对路径或运行时第三方字体 CDN。Noto Sans SC 使用 Google Fonts CSS2 API 按本站全部发布字符生成的 400–700 可变 WOFF2 子集，并保留 OFL 许可证。页面必须等待 Nunito 与 Noto Sans SC 完成首次解码后再显示文字，避免回退字体切换造成字宽、换行和滚动范围跳变；字体失败兜底不得超过 4 秒。
 3. 长文章正文不得进入逐帧动画，不得永久设置 `will-change`，不得套用滚动容器 transform。
-4. 中文排版使用独立标尺：Noto Sans SC 正文 400、导航与界面 600、标题及强调 600；不要把中文标题机械设置成 Nunito 的 700/800。中文正文标准字距约 `0.025em`，大标题约 `0.035em–0.055em`，以保持笔画分离。全站保持 `font-synthesis: none` 与抗锯齿；只有超大展示标题使用 `text-rendering: optimizeSpeed` 和 `contain: layout style`，长文章正文不得使用。
-5. Wickret 实测桌面滚动参数固定为 smooth-scrollbar 8.x、`damping: 0.06`、`renderByPixels: false`、`continuousScrolling: false`、`delegateTo: container`。滚动内容只能有一个永久合成层；禁止给文字附加持续运行的滚动 skew/wave，禁止在滚动帧内逐字写入内联样式或无条件重启指针 GSAP tween。
+4. 中文排版使用独立标尺：Noto Sans SC 正文 500、导航与界面 700、标题及强调 700；字号需要与对应的 Nunito 层级保持相同的视觉份量，不得为了容纳内容而整体缩小中文。中文正文标准字距约 `0.025em`，大标题约 `0.035em–0.055em`，以保持笔画分离。全站保持 `font-synthesis: none` 与抗锯齿；只有超大展示标题使用 `text-rendering: optimizeSpeed` 和 `contain: layout style`，长文章正文不得使用。
+5. Wickret 实测桌面滚动参数固定为 smooth-scrollbar 8.x、`damping: 0.06`、`renderByPixels: false`、`continuousScrolling: false`、`delegateTo: container`。滚动内容只能有一个永久合成层；虚拟滚动帧通过直接订阅传递位置，禁止每帧创建和派发 `CustomEvent`；禁止给文字附加持续运行的滚动 skew/wave，禁止在滚动帧内逐字写入内联样式、为数百个单字同时创建 CSS transition 或无条件重启指针 GSAP tween。
 
 ## 性能与验收
 
