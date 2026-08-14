@@ -34,6 +34,7 @@ test("homepage exports the intended typography and motion hooks", async () => {
   assert.doesNotMatch(css, /HarmonyOS Sans|MiSans|OPPO Sans|David Yuan Round Web|Chiron GoRound TC WS|font-display:swap|fonts\.googleapis\.com|fonts\.gstatic\.com/);
   assert.match(css, /font-display:block/);
   assert.match(html, /data-font="noto"/);
+  assert.match(html, /article-anchor-return/);
   assert.doesNotMatch(html, /david-site-font-v1|fontParameter|fontVersion|harmonyos-sans|misans-site/);
   assert.match(css, /:root[^}]*--font-cjk:"Noto Sans SC"[^}]*--cjk-body-weight:400[^}]*--cjk-ui-weight:600[^}]*--cjk-heading-weight:600[^}]*--cjk-strong-weight:600/);
   assert.match(css, /html\[data-lang=(?:"zh"|zh)\] \.article-body p/);
@@ -103,6 +104,7 @@ test("desktop scrolling uses Wickret's live fractional runtime settings", async 
   assert.match(wickretRuntime, /if \(!scrolling\)/);
   assert.match(wickretRuntime, /setAbout\(true, true\)/);
   assert.match(wickretRuntime, /currentScrollY \+ window\.innerHeight > articleTop/);
+  assert.match(globalCss, /html\.article-anchor-return \.article-work-card/);
   assert.doesNotMatch(wickretRuntime, /glyph\.style\.opacity|data-scroll-wave|renderWave|activeWaveTargets/);
   assert.match(globalCss, /\.char-reveal-story\.is-revealed \.char-reveal-glyph/);
   assert.match(globalCss, /contain:\s*layout style/);

@@ -966,6 +966,17 @@ html.is-scrolling .feature-media-motion {
   transform: translate3d(0, 0, 0);
 }
 
+/* A return link can arrive before the deferred scroll runtime has loaded.
+   Keep the target gallery painted from the first frame, then the runtime
+   releases this class once its cached bounds and repeatable reveal agree. */
+html.article-anchor-return .article-gallery-header h2,
+html.article-anchor-return .article-work-card {
+  opacity: 1;
+  filter: none;
+  transform: none;
+  transition: none;
+}
+
 .article-work-placeholder {
   position: relative;
   aspect-ratio: 1.55 / 1;

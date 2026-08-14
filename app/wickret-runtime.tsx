@@ -76,6 +76,7 @@ export function WickretRuntime() {
     let scenes: ScrollMagicScene[] = [];
     let currentScrollY = window.scrollY;
     let scrollIdleTimer = 0;
+    let articleReturnFrame = 0;
     let scrolling = false;
     let handleScrollIdle = () => {};
     const pointerCleanups: Array<() => void> = [];
@@ -254,11 +255,22 @@ export function WickretRuntime() {
           .addTo(controller);
         scenes.push(articleScene);
         syncArticleVisibility = () => {
-          articleSection.classList.toggle(
-            "is-visible",
+          const visible =
             currentScrollY + window.innerHeight > articleTop &&
-              currentScrollY < articleBottom,
-          );
+            currentScrollY < articleBottom;
+          articleSection.classList.toggle("is-visible", visible);
+          if (
+            visible &&
+            root.classList.contains("article-anchor-return") &&
+            !articleReturnFrame
+          ) {
+            articleReturnFrame = window.requestAnimationFrame(() => {
+              articleReturnFrame = 0;
+              if (articleSection.classList.contains("is-visible")) {
+                root.classList.remove("article-anchor-return");
+              }
+            });
+          }
         };
         measureArticle();
         syncArticleVisibility();
@@ -409,6 +421,7 @@ export function WickretRuntime() {
       disposed = true;
       window.removeEventListener("david:scroll-ready", handleReady);
       window.clearTimeout(scrollIdleTimer);
+      window.cancelAnimationFrame(articleReturnFrame);
       pointerCleanups.forEach((cleanup) => cleanup());
       scenes.forEach((scene) => scene.destroy(true));
       scenes = [];

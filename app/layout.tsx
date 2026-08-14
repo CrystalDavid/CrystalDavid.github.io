@@ -6,6 +6,9 @@ const fontBootstrapScript = String.raw`
     var root = document.documentElement;
     root.classList.add("fonts-loading");
     root.dataset.font = "noto";
+    if (/^#article-card-/.test(location.hash)) {
+      root.classList.add("article-anchor-return");
+    }
 
     var language = localStorage.getItem("david-site-language-v2") === "zh" ? "zh" : "en";
     root.dataset.lang = language;
