@@ -1,5 +1,6 @@
 "use client";
 
+import { SCROLL_WAVE } from "@david/site-contract";
 import { useEffect } from "react";
 import type {
   Controller as ScrollMagicController,
@@ -8,7 +9,9 @@ import type {
   ProgressEvent,
   Scene as ScrollMagicScene,
 } from "scrollmagic";
-import type { ScrollRuntimeReadyDetail } from "./scroll-runtime-events";
+import type {
+  ScrollRuntimeReadyDetail,
+} from "./scroll-runtime-events";
 
 type TweenTarget = Element | Element[] | Record<string, number>;
 type TweenVars = Record<string, unknown>;
@@ -78,9 +81,11 @@ export function WickretRuntime() {
     let controller: ScrollMagicController | null = null;
     let scenes: ScrollMagicScene[] = [];
     let currentScrollY = window.scrollY;
-    let previousWaveY = currentScrollY;
+    let pendingWaveDelta = 0;
+    let renderedWaveSkew = 0;
     let waveFrame = 0;
-    let scrollIdleTimer = 0;
+    let scrollIdleFrame = 0;
+    let lastScrollActivity = 0;
     let waveObserver: IntersectionObserver | null = null;
     const activeWaveTargets = new Set<HTMLElement>();
     const pointerCleanups: Array<() => void> = [];
@@ -94,13 +99,30 @@ export function WickretRuntime() {
       gsap: resolveGsap(gsapModule),
     }));
 
+    const finishScrolling = (timestamp: number) => {
+      if (disposed) {
+        scrollIdleFrame = 0;
+        return;
+      }
+      if (timestamp - lastScrollActivity < 140) {
+        scrollIdleFrame = window.requestAnimationFrame(finishScrolling);
+        return;
+      }
+      root.classList.remove("is-scrolling");
+      scrollIdleFrame = 0;
+    };
+
     const markScrolling = () => {
-      root.classList.add("is-scrolling");
-      pointerResets.forEach((reset) => reset());
-      window.clearTimeout(scrollIdleTimer);
-      scrollIdleTimer = window.setTimeout(() => {
-        root.classList.remove("is-scrolling");
-      }, 140);
+      lastScrollActivity = performance.now();
+      if (!root.classList.contains("is-scrolling")) {
+        root.classList.add("is-scrolling");
+        // A pointer reset creates GSAP tweens. Run it once at the start of a
+        // scroll burst rather than rebuilding the same tweens on every frame.
+        pointerResets.forEach((reset) => reset());
+      }
+      if (!scrollIdleFrame) {
+        scrollIdleFrame = window.requestAnimationFrame(finishScrolling);
+      }
     };
 
     const startRuntime = async (ready: ScrollRuntimeReadyDetail) => {
@@ -112,6 +134,7 @@ export function WickretRuntime() {
       const { TweenLite, Power2 } = gsap;
       const virtual = ready.mode === "virtual";
       const desktopEffects = virtual && window.innerWidth > 720 && !reducedMotion;
+      currentScrollY = ready.getScrollY();
 
       controller = new ScrollMagic.Controller({
         ...(virtual ? { container: ready.container } : {}),
@@ -122,7 +145,6 @@ export function WickretRuntime() {
       let syncArticleVisibility = () => {};
       const updateController = () => {
         controller?.update(true);
-        syncArticleVisibility();
       };
 
       const resetAboutGlyphs = (opacity: number) => {
@@ -136,6 +158,8 @@ export function WickretRuntime() {
       let activeStory: HTMLElement | null = null;
       let activeGlyphs: HTMLElement[] = [];
       let glyphOpacity = new Float32Array();
+      let completedGlyphIndex = -1;
+      let previousAboutProgress = -1;
       let aboutProgress = 0;
       const aboutTweenState = { progress: 0 };
 
@@ -152,7 +176,28 @@ export function WickretRuntime() {
             )
           : [];
         glyphOpacity = new Float32Array(activeGlyphs.length);
-        glyphOpacity.fill(-1);
+        activeGlyphs.forEach((glyph, index) => {
+          glyph.style.opacity = "0.2";
+          glyphOpacity[index] = 0.2;
+        });
+        completedGlyphIndex = -1;
+        previousAboutProgress = -1;
+      };
+
+      const writeGlyphOpacity = (index: number, opacity: number) => {
+        if (Math.abs(glyphOpacity[index] - opacity) < 0.005) return;
+        activeGlyphs[index].style.opacity = opacity.toFixed(3);
+        glyphOpacity[index] = opacity;
+      };
+
+      const resetActiveGlyphs = () => {
+        activeGlyphs.forEach((glyph, index) => {
+          if (Math.abs(glyphOpacity[index] - 0.2) >= 0.005) {
+            glyph.style.opacity = "0.2";
+            glyphOpacity[index] = 0.2;
+          }
+        });
+        completedGlyphIndex = -1;
       };
 
       const renderAbout = (progress: number) => {
@@ -164,23 +209,55 @@ export function WickretRuntime() {
         const count = activeGlyphs.length;
         if (!count) return;
 
-        // One continuous reveal for all three paragraphs. Only the small
-        // moving frontier receives style writes; completed characters are not
-        // recalculated through a parent CSS variable on every scroll frame.
+        if (
+          previousAboutProgress >= 0 &&
+          aboutProgress + 0.0001 < previousAboutProgress
+        ) {
+          resetActiveGlyphs();
+        }
+        if (aboutProgress <= 0) {
+          resetActiveGlyphs();
+          previousAboutProgress = 0;
+          return;
+        }
+        if (aboutProgress >= 1) {
+          for (
+            let index = completedGlyphIndex + 1;
+            index < count;
+            index += 1
+          ) {
+            writeGlyphOpacity(index, 1);
+          }
+          completedGlyphIndex = count - 1;
+          previousAboutProgress = 1;
+          return;
+        }
+
+        // English contains substantially more glyph nodes than Chinese. Move
+        // only the reveal frontier on each tick; completed and future glyphs
+        // are written once instead of scanning the whole story every frame.
         const fadeWindow = Math.max(12, Math.round(count * 0.035));
         const cursor = aboutProgress * (count + fadeWindow);
-        for (let index = 0; index < count; index += 1) {
-          const reveal = clamp((cursor - index) / fadeWindow, 0, 1);
-          const opacity = aboutProgress >= 1 ? 1 : 0.2 + reveal * 0.8;
-          if (
-            opacity < 1 &&
-            Math.abs(glyphOpacity[index] - opacity) < 0.015
-          ) {
-            continue;
-          }
-          activeGlyphs[index].style.opacity = opacity.toFixed(3);
-          glyphOpacity[index] = opacity;
+        const completeThrough = Math.max(
+          -1,
+          Math.min(count - 1, Math.floor(cursor - fadeWindow)),
+        );
+        for (
+          let index = completedGlyphIndex + 1;
+          index <= completeThrough;
+          index += 1
+        ) {
+          writeGlyphOpacity(index, 1);
         }
+        completedGlyphIndex = completeThrough;
+
+        const frontierStart = Math.max(0, completeThrough + 1);
+        const frontierEnd = Math.min(count - 1, Math.ceil(cursor));
+        for (let index = frontierStart; index <= frontierEnd; index += 1) {
+          const reveal = clamp((cursor - index) / fadeWindow, 0, 1);
+          writeGlyphOpacity(index, 0.2 + reveal * 0.8);
+        }
+        previousAboutProgress = aboutProgress;
       };
 
       const playAbout = (reset = true) => {
@@ -298,18 +375,36 @@ export function WickretRuntime() {
       const renderWave = () => {
         waveFrame = 0;
         if (disposed || !activeWaveTargets.size) return;
-        const delta = currentScrollY - previousWaveY;
-        const skew = desktopEffects ? clamp(delta * 0.15, -5, 5) : 0;
+        const delta = pendingWaveDelta;
+        pendingWaveDelta = 0;
+        const targetSkew = desktopEffects
+          ? clamp(
+              delta * SCROLL_WAVE.deltaToDegrees,
+              -SCROLL_WAVE.maxDegrees,
+              SCROLL_WAVE.maxDegrees,
+            )
+          : 0;
+        const response =
+          Math.abs(targetSkew) > Math.abs(renderedWaveSkew)
+            ? SCROLL_WAVE.attack
+            : SCROLL_WAVE.release;
+        renderedWaveSkew += (targetSkew - renderedWaveSkew) * response;
+        if (
+          Math.abs(targetSkew) < SCROLL_WAVE.epsilon &&
+          Math.abs(renderedWaveSkew) < SCROLL_WAVE.epsilon
+        ) {
+          renderedWaveSkew = 0;
+        }
         TweenLite.set(Array.from(activeWaveTargets), {
-          skewY: skew,
-          force3D: true,
+          skewY: renderedWaveSkew,
+          force3D: renderedWaveSkew !== 0,
         });
-        previousWaveY = currentScrollY;
-        waveFrame = window.requestAnimationFrame(renderWave);
+        if (targetSkew !== 0 || renderedWaveSkew !== 0) {
+          waveFrame = window.requestAnimationFrame(renderWave);
+        }
       };
       const beginWave = () => {
         if (waveFrame || !activeWaveTargets.size) return;
-        previousWaveY = currentScrollY;
         waveFrame = window.requestAnimationFrame(renderWave);
       };
 
@@ -323,10 +418,15 @@ export function WickretRuntime() {
             const target = entry.target as HTMLElement;
             if (entry.isIntersecting) {
               activeWaveTargets.add(target);
-              beginWave();
             } else {
               activeWaveTargets.delete(target);
-              TweenLite.set(target, { skewY: 0, force3D: true });
+              TweenLite.set(target, { skewY: 0, force3D: false });
+              if (!activeWaveTargets.size) {
+                window.cancelAnimationFrame(waveFrame);
+                waveFrame = 0;
+                pendingWaveDelta = 0;
+                renderedWaveSkew = 0;
+              }
             }
           });
         });
@@ -408,16 +508,15 @@ export function WickretRuntime() {
           });
       }
 
-      const handleVirtualScroll = (event: Event) => {
-        const detail = (
-          event as CustomEvent<{ y?: number }>
-        ).detail;
-        if (typeof detail?.y !== "number") return;
-        currentScrollY = detail.y;
+      const handleVirtualScroll = (y: number, deltaY: number) => {
+        currentScrollY = y;
+        if (Math.abs(deltaY) < 0.001) return;
+        pendingWaveDelta += deltaY;
         if (diagnostics) {
           root.dataset.qaScrollY = currentScrollY.toFixed(3);
         }
         markScrolling();
+        beginWave();
         updateController();
       };
       const handleNativeScroll = () => {
@@ -430,14 +529,12 @@ export function WickretRuntime() {
         renderAbout(aboutProgress);
         scenes.forEach((scene) => scene.refresh());
         updateController();
+        syncArticleVisibility();
       };
       const handleResize = () => handleLayout();
 
-      if (virtual) {
-        window.addEventListener(
-          "david:virtual-scroll",
-          handleVirtualScroll as EventListener,
-        );
+      if (ready.mode === "virtual") {
+        pointerCleanups.push(ready.subscribe(handleVirtualScroll));
       } else {
         window.addEventListener("scroll", handleNativeScroll, {
           passive: true,
@@ -448,12 +545,7 @@ export function WickretRuntime() {
 
       pointerCleanups.push(() => {
         TweenLite.killTweensOf(aboutTweenState);
-        if (virtual) {
-          window.removeEventListener(
-            "david:virtual-scroll",
-            handleVirtualScroll as EventListener,
-          );
-        } else {
+        if (!virtual) {
           window.removeEventListener("scroll", handleNativeScroll);
         }
         window.removeEventListener("david:layout", handleLayout);
@@ -461,6 +553,7 @@ export function WickretRuntime() {
       });
 
       updateController();
+      syncArticleVisibility();
     };
 
     const handleReady = (event: Event) => {
@@ -476,7 +569,7 @@ export function WickretRuntime() {
     return () => {
       disposed = true;
       window.removeEventListener("david:scroll-ready", handleReady);
-      window.clearTimeout(scrollIdleTimer);
+      window.cancelAnimationFrame(scrollIdleFrame);
       window.cancelAnimationFrame(waveFrame);
       waveObserver?.disconnect();
       pointerCleanups.forEach((cleanup) => cleanup());

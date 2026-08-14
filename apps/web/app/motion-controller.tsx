@@ -1,5 +1,6 @@
 "use client";
 
+import { HERO_ENTRANCE } from "@david/site-contract";
 import { useEffect } from "react";
 
 type Language = "zh" | "en";
@@ -12,6 +13,35 @@ export function MotionController() {
     ).matches;
     const desktopLayout = window.matchMedia("(min-width: 721px)");
     root.classList.add("js");
+    let disposed = false;
+    let fontReadyObserver: MutationObserver | null = null;
+    let removeFontReadyListener = () => {};
+
+    const fontsReady = root.classList.contains("fonts-ready")
+      ? Promise.resolve()
+      : new Promise<void>((resolve) => {
+          let resolved = false;
+          const finish = () => {
+            if (resolved || !root.classList.contains("fonts-ready")) return;
+            resolved = true;
+            fontReadyObserver?.disconnect();
+            removeFontReadyListener();
+            resolve();
+          };
+          const handleFontReady = () => finish();
+          fontReadyObserver = new MutationObserver(finish);
+          fontReadyObserver.observe(root, {
+            attributes: true,
+            attributeFilter: ["class"],
+          });
+          window.addEventListener(HERO_ENTRANCE.fontReadyEvent, handleFontReady);
+          removeFontReadyListener = () =>
+            window.removeEventListener(
+              HERO_ENTRANCE.fontReadyEvent,
+              handleFontReady,
+            );
+          finish();
+        });
 
     const syncViewportHeight = () => {
       if (!desktopLayout.matches) {
@@ -49,8 +79,11 @@ export function MotionController() {
     }
     applyLanguage(preferred);
 
+    let replayLanguageEntrance: (language: Language) => void = () => {};
     const toggleLanguage = () => {
-      applyLanguage(root.dataset.lang === "en" ? "zh" : "en");
+      const language = root.dataset.lang === "en" ? "zh" : "en";
+      applyLanguage(language);
+      replayLanguageEntrance(language);
       window.requestAnimationFrame(() =>
         window.dispatchEvent(new Event("david:layout")),
       );
@@ -95,6 +128,7 @@ export function MotionController() {
     const magneticLines = Array.from(
       document.querySelectorAll<HTMLElement>("[data-center-magnet]"),
     );
+    const magneticSettleTimers = new Map<HTMLElement, number>();
     const magnetOffsets = [
       { x: "-72px", y: "42px", rotate: "-8deg" },
       { x: "64px", y: "-40px", rotate: "7deg" },
@@ -121,25 +155,49 @@ export function MotionController() {
       line.classList.add("center-magnet-ready");
     });
 
+    const playMagneticEntrance = (
+      lines: HTMLElement[],
+      replay = false,
+    ) => {
+      if (disposed) return;
+      lines.forEach((line) => {
+        const previousTimer = magneticSettleTimers.get(line);
+        if (previousTimer) window.clearTimeout(previousTimer);
+        if (replay) {
+          line.classList.remove("text-motion-entered", "motion-settled");
+        }
+      });
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          if (disposed) return;
+          lines.forEach((line) => {
+            line.classList.add("text-motion-entered");
+            const timer = window.setTimeout(() => {
+              line.classList.add("motion-settled");
+              magneticSettleTimers.delete(line);
+            }, HERO_ENTRANCE.settleAfterMs);
+            magneticSettleTimers.set(line, timer);
+          });
+        });
+      });
+    };
+
+    const playAfterFonts = (lines: HTMLElement[], replay = false) => {
+      void fontsReady.then(() => playMagneticEntrance(lines, replay));
+    };
+
     if (reducedMotion) {
       magneticLines.forEach((line) =>
         line.classList.add("text-motion-entered", "motion-settled"),
       );
     } else {
-      window.requestAnimationFrame(() => {
-        window.requestAnimationFrame(() => {
-          magneticLines.forEach((line) =>
-            line.classList.add("text-motion-entered"),
-          );
-          settleTimers.push(
-            window.setTimeout(() => {
-              magneticLines.forEach((line) =>
-                line.classList.add("motion-settled"),
-              );
-            }, 1180),
-          );
-        });
-      });
+      playAfterFonts(magneticLines);
+      replayLanguageEntrance = (language) => {
+        const line = document.querySelector<HTMLElement>(
+          `.hero-title > .lang-${language}[data-center-magnet]`,
+        );
+        if (line) playAfterFonts([line], true);
+      };
     }
 
     const revealTargets = Array.from(
@@ -215,8 +273,12 @@ export function MotionController() {
     window.addEventListener("resize", handleResize, { passive: true });
 
     return () => {
+      disposed = true;
+      fontReadyObserver?.disconnect();
+      removeFontReadyListener();
       heroObserver?.disconnect();
       settleTimers.forEach((timer) => window.clearTimeout(timer));
+      magneticSettleTimers.forEach((timer) => window.clearTimeout(timer));
       revealObserver?.disconnect();
       titleObserver?.disconnect();
       window.removeEventListener("resize", handleResize);

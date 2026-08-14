@@ -1,4 +1,5 @@
 import { pptAgentReport } from "./ppt-agent-report";
+import { promePaper } from "./prome-paper";
 
 export type ArticleText = {
   zh: string;
@@ -666,7 +667,7 @@ html, body { width: 1280px; height: 720px; overflow: hidden; }
   },
 ];
 
-export const articles: Article[] = [pptAgentReport, legacyArticles[1]];
+export const articles: Article[] = [promePaper, pptAgentReport, legacyArticles[1]];
 
 export function getArticle(slug: string) {
   return articles.find((article) => article.slug === slug);

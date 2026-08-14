@@ -77,10 +77,12 @@ function CharacterStory({ paragraphs, language }: { paragraphs: string[]; langua
 
 function ChapterTitle({ id, zh, en }: { id: string; zh: string; en: string }) {
   return (
-    <h2 id={id} className="chapter-title" data-top-flip data-scroll-wave>
-      <span className="lang lang-zh" data-flip-label={zh}>{zh}</span>
-      <span className="lang lang-en" data-flip-label={en}>{en}</span>
-    </h2>
+    <div className="chapter-wave-shell" data-scroll-wave>
+      <h2 id={id} className="chapter-title" data-top-flip>
+        <span className="lang lang-zh" data-flip-label={zh}>{zh}</span>
+        <span className="lang lang-en" data-flip-label={en}>{en}</span>
+      </h2>
+    </div>
   );
 }
 
@@ -124,11 +126,13 @@ export default function Home() {
         <main id="main">
           <section className="screen hero-screen is-visible" id="home" data-reveal-section aria-labelledby="hero-title">
             <FloatingDecor />
-            <h1 id="hero-title" className="hero-title" data-scroll-wave>
-              <span className="hero-line hero-name" data-center-magnet>David</span>
-              <span className="lang lang-zh" data-center-magnet>个人开发者</span>
-              <span className="lang lang-en" data-center-magnet>Independent Developer</span>
-            </h1>
+            <div className="hero-wave-shell" data-scroll-wave>
+              <h1 id="hero-title" className="hero-title">
+                <span className="hero-line hero-name" data-center-magnet>David</span>
+                <span className="lang lang-zh" data-center-magnet>个人开发者</span>
+                <span className="lang lang-en" data-center-magnet>Independent Developer</span>
+              </h1>
+            </div>
           </section>
 
           <section className="experience-profile-section" id="about" data-reveal-section aria-labelledby="about-title">
@@ -204,7 +208,7 @@ export default function Home() {
           <section><Bilingual as="h2" zh="关注我" en="Follow me" /><nav className="footer-nav social-nav" aria-label="Social links">
             {socialLinks.map((social) => <a href={social.href} key={social.label} target="_blank" rel="noreferrer"><span>{social.label}</span><SocialBrand icon={social.icon} kind={social.kind} /></a>)}
           </nav></section>
-          <section className="footer-contact"><Bilingual as="h2" zh="联系合作" en="Work with me" /><a href="mailto:h2811459442@gmail.com">h2811459442@gmail.com</a></section>
+          <section className="footer-contact"><Bilingual as="h2" zh="联系合作" en="Work with me" /><a href="mailto:g2811459442@gmail.com">g2811459442@gmail.com</a></section>
         </div></footer>
       </SmoothScroll>
     </>

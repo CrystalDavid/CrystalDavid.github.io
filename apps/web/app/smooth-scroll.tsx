@@ -1,8 +1,12 @@
 "use client";
 
+import { SMOOTH_SCROLLBAR_OPTIONS } from "@david/site-contract";
 import { type ReactNode, useEffect, useRef } from "react";
 import type { Scrollbar as ScrollbarInstance } from "smooth-scrollbar/scrollbar";
-import type { ScrollRuntimeReadyDetail } from "./scroll-runtime-events";
+import type {
+  ScrollRuntimeReadyDetail,
+  VirtualScrollListener,
+} from "./scroll-runtime-events";
 
 type VirtualScrollStatus = {
   offset: { x: number; y: number };
@@ -35,14 +39,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     let scrollbar: ScrollbarInstance | null = null;
     let disposed = false;
     let previousVirtualY = 0;
-
-    const dispatchVirtualScroll = (y: number, deltaY = 0) => {
-      window.dispatchEvent(
-        new CustomEvent("david:virtual-scroll", {
-          detail: { y, deltaY },
-        }),
-      );
-    };
+    const virtualSubscribers = new Set<VirtualScrollListener>();
 
     const dispatchRuntimeReady = (detail: ScrollRuntimeReadyDetail) => {
       window.__davidScrollRuntimeReady = detail;
@@ -57,7 +54,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       const y = status.offset.y;
       const deltaY = y - previousVirtualY;
       previousVirtualY = y;
-      dispatchVirtualScroll(y, deltaY);
+      virtualSubscribers.forEach((listener) => listener(y, deltaY));
     };
 
     const scrollToHash = (
@@ -114,7 +111,11 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       if (!container || useNativeScroll) {
         root.classList.add("native-scroll");
         if (container) {
-          dispatchRuntimeReady({ mode: "native", container });
+          dispatchRuntimeReady({
+            mode: "native",
+            container,
+            getScrollY: () => window.scrollY,
+          });
         }
         restoreInitialAnchor();
         void document.fonts?.ready.then(restoreInitialAnchor);
@@ -125,20 +126,22 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       if (disposed) return;
 
       scrollbar = Scrollbar.init(container, {
-        // Wickret's actual runtime overrides. Its bundled library defaults
-        // are different, but the live site uses these values.
-        damping: 0.06,
-        renderByPixels: false,
-        continuousScrolling: false,
-        alwaysShowTracks: false,
+        ...SMOOTH_SCROLLBAR_OPTIONS,
         delegateTo: container,
       });
       previousVirtualY = scrollbar.offset.y;
       scrollbar.addListener(handleVirtualScroll);
       root.classList.remove("native-scroll");
       root.classList.add("virtual-scroll");
-      dispatchVirtualScroll(previousVirtualY);
-      dispatchRuntimeReady({ mode: "virtual", container });
+      dispatchRuntimeReady({
+        mode: "virtual",
+        container,
+        getScrollY: () => scrollbar?.offset.y ?? previousVirtualY,
+        subscribe: (listener) => {
+          virtualSubscribers.add(listener);
+          return () => virtualSubscribers.delete(listener);
+        },
+      });
       restoreInitialAnchor();
       window.dispatchEvent(new Event("david:layout"));
     };
@@ -150,6 +153,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       scrollbar?.removeListener(handleVirtualScroll);
       scrollbar?.destroy();
       scrollbar = null;
+      virtualSubscribers.clear();
       delete window.__davidScrollRuntimeReady;
       root.classList.remove("native-scroll", "virtual-scroll");
       document.removeEventListener("click", handleAnchor);

@@ -12,8 +12,10 @@ const fontBootstrapScript = String.raw`
     root.lang = language === "zh" ? "zh-CN" : "en";
 
     var reveal = function () {
+      if (root.classList.contains("fonts-ready")) return;
       root.classList.remove("fonts-loading");
       root.classList.add("fonts-ready");
+      dispatchEvent(new Event("david:fonts-ready"));
     };
     var fallback = setTimeout(reveal, 4000);
 
@@ -42,6 +44,8 @@ const fontBootstrapScript = String.raw`
     });
   } catch (error) {
     document.documentElement.classList.remove("fonts-loading");
+    document.documentElement.classList.add("fonts-ready");
+    dispatchEvent(new Event("david:fonts-ready"));
   }
 `;
 
