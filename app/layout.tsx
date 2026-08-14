@@ -12,28 +12,28 @@ const fontBootstrapScript = String.raw`
 
     var fontParameter = new URLSearchParams(location.search).get("font");
     var storedFont = sessionStorage.getItem("david-site-font-v1");
-    var fontVersion = fontParameter === "mi" || fontParameter === "oppo"
+    var fontVersion = fontParameter === "mi" || fontParameter === "harmony"
       ? fontParameter
-      : storedFont === "mi" || storedFont === "oppo"
+      : storedFont === "mi" || storedFont === "harmony"
         ? storedFont
-        : "oppo";
+        : "harmony";
 
     root.dataset.font = fontVersion;
-    if (fontParameter === "mi" || fontParameter === "oppo") {
+    if (fontParameter === "mi" || fontParameter === "harmony") {
       sessionStorage.setItem("david-site-font-v1", fontVersion);
     }
 
     var fontFiles = fontVersion === "mi"
-      ? ["/fonts/misans-site.woff2"]
-      : ["/fonts/oppo-sans-4.0-site.woff2"];
+      ? [{ href: "/fonts/misans-site.woff2", type: "font/woff2" }]
+      : [{ href: "/fonts/harmonyos-sans-sc-regular.ttf", type: "font/ttf" }];
 
-    fontFiles.forEach(function (href) {
+    fontFiles.forEach(function (fontFile) {
       var preload = document.createElement("link");
       preload.rel = "preload";
       preload.as = "font";
-      preload.type = "font/woff2";
+      preload.type = fontFile.type;
       preload.crossOrigin = "anonymous";
-      preload.href = href;
+      preload.href = fontFile.href;
       document.head.appendChild(preload);
     });
 
@@ -50,13 +50,13 @@ const fontBootstrapScript = String.raw`
         return;
       }
 
-      var cjkFamily = fontVersion === "mi" ? "MiSans VF" : "OPPO Sans 4.0";
+      var cjkFamily = fontVersion === "mi" ? "MiSans VF" : "HarmonyOS Sans SC";
       Promise.all([
         document.fonts.load('400 1em Nunito'),
         document.fonts.load('700 1em Nunito'),
+        document.fonts.load('330 1em "' + cjkFamily + '"', '中文字体测试'),
         document.fonts.load('400 1em "' + cjkFamily + '"', '中文字体测试'),
-        document.fonts.load('500 1em "' + cjkFamily + '"', '中文字体测试'),
-        document.fonts.load('700 1em "' + cjkFamily + '"', '中文字体测试')
+        document.fonts.load('500 1em "' + cjkFamily + '"', '中文字体测试')
       ]).then(function () {
         return document.fonts.ready;
       }).then(function () {
@@ -103,7 +103,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-lang="en" data-font="oppo">
+    <html lang="en" data-lang="en" data-font="harmony">
       <head>
         <link
           rel="preload"

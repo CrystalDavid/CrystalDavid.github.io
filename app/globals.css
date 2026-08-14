@@ -24,11 +24,13 @@
 }
 
 @font-face {
-  font-family: "OPPO Sans 4.0";
+  /* HarmonyOS Sans is used under the HarmonyOS Sans Fonts License Agreement.
+     The unmodified license is published at /fonts/harmonyos-sans-license.txt. */
+  font-family: "HarmonyOS Sans SC";
   font-style: normal;
-  font-weight: 100 700;
+  font-weight: 100 900;
   font-display: block;
-  src: url("/fonts/oppo-sans-4.0-site.woff2") format("woff2");
+  src: url("/fonts/harmonyos-sans-sc-regular.ttf") format("truetype");
 }
 
 @font-face {
@@ -41,10 +43,14 @@
 
 :root {
   --font-latin: "Nunito";
-  --font-cjk: "OPPO Sans 4.0";
+  --font-cjk: "HarmonyOS Sans SC";
   --font-interface:
     var(--font-latin), var(--font-cjk), "PingFang SC", "Microsoft YaHei UI",
     "Microsoft YaHei", sans-serif;
+  --cjk-body-weight: 400;
+  --cjk-ui-weight: 400;
+  --cjk-heading-weight: 400;
+  --cjk-strong-weight: 400;
   --paper: #fffefe;
   --cream: #fdf0e5;
   --sky: #eefbff;
@@ -59,12 +65,16 @@
   --app-viewport-height: 100svh;
 }
 
-html[data-font="oppo"] {
-  --font-cjk: "OPPO Sans 4.0";
+html[data-font="harmony"] {
+  --font-cjk: "HarmonyOS Sans SC";
 }
 
 html[data-font="mi"] {
   --font-cjk: "MiSans VF";
+  --cjk-body-weight: 330;
+  --cjk-ui-weight: 400;
+  --cjk-heading-weight: 450;
+  --cjk-strong-weight: 500;
 }
 
 * {
@@ -1385,6 +1395,157 @@ html.is-scrolling .feature-media-motion {
   letter-spacing: 0.035em;
 }
 
+/* Chinese typography is calibrated independently from Nunito. The smaller
+   display scale and moderate weights keep dense CJK strokes open at speed. */
+html[data-lang="zh"] body {
+  letter-spacing: 0.026em;
+}
+
+html[data-lang="zh"] .site-nav {
+  font-size: 14px;
+  font-weight: var(--cjk-ui-weight);
+  letter-spacing: 0.04em;
+}
+
+html[data-lang="zh"] .hero-title > .lang-zh {
+  font-size: 0.61em;
+  font-weight: var(--cjk-heading-weight);
+  line-height: 1.12;
+  letter-spacing: 0.055em;
+}
+
+html[data-lang="zh"] .experience-profile-inner > h2 {
+  font-size: clamp(48px, 5.4vw, 76px);
+  font-weight: var(--cjk-heading-weight);
+  line-height: 1.08;
+  letter-spacing: 0.025em;
+}
+
+html[data-lang="zh"] .experience-profile-copy p {
+  font-size: clamp(18px, 1.55vw, 21px);
+  font-weight: var(--cjk-body-weight);
+  line-height: 1.9;
+  letter-spacing: 0.035em;
+}
+
+html[data-lang="zh"] .chapter-title {
+  font-size: clamp(72px, 6.8vw, 104px);
+  font-weight: var(--cjk-heading-weight);
+  line-height: 1.08;
+  letter-spacing: 0.035em;
+}
+
+html[data-lang="zh"] .feature-title {
+  font-size: 29px;
+  font-weight: 700;
+}
+
+html[data-lang="zh"] .feature-copy > p {
+  font-size: 23px;
+  font-weight: var(--cjk-body-weight);
+  line-height: 1.7;
+  letter-spacing: 0.035em;
+}
+
+html[data-lang="zh"] .outline-button {
+  font-size: 13px;
+  font-weight: var(--cjk-ui-weight);
+  letter-spacing: 0.035em;
+}
+
+html[data-lang="zh"] .article-gallery-header h2 {
+  font-size: clamp(58px, 5.6vw, 84px);
+  font-weight: var(--cjk-heading-weight);
+  line-height: 1.04;
+  letter-spacing: 0.025em;
+}
+
+html[data-lang="zh"] .article-work-copy strong {
+  font-size: 18px;
+  font-weight: var(--cjk-heading-weight);
+  line-height: 1.4;
+  letter-spacing: 0.025em;
+}
+
+html[data-lang="zh"] .footer-grid h2 {
+  font-size: 15px;
+  font-weight: var(--cjk-heading-weight);
+  letter-spacing: 0.1em;
+}
+
+html[data-lang="zh"] .footer-nav a {
+  font-size: 15px;
+  font-weight: var(--cjk-body-weight);
+  letter-spacing: 0.035em;
+}
+
+html[data-lang="zh"] .article-page-header {
+  font-size: 13px;
+  font-weight: var(--cjk-ui-weight);
+}
+
+html[data-lang="zh"] .article-back {
+  font-size: 14px;
+  font-weight: var(--cjk-heading-weight);
+  letter-spacing: 0.04em;
+}
+
+html[data-lang="zh"] .section-number {
+  font-weight: 700;
+}
+
+html[data-lang="zh"] .article-page h1 {
+  font-size: clamp(42px, 6vw, 74px);
+  font-weight: var(--cjk-heading-weight);
+  line-height: 1.12;
+  letter-spacing: 0.02em;
+}
+
+html[data-lang="zh"] .article-english-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+html[data-lang="zh"] .article-lede {
+  font-size: 20px;
+  font-weight: var(--cjk-body-weight);
+  line-height: 1.9;
+  letter-spacing: 0.03em;
+}
+
+html[data-lang="zh"] .article-source {
+  font-size: 13px;
+  font-weight: var(--cjk-body-weight);
+  line-height: 1.8;
+  letter-spacing: 0.035em;
+}
+
+html[data-lang="zh"] .article-body h2 {
+  font-size: 33px;
+  font-weight: var(--cjk-heading-weight);
+  line-height: 1.35;
+  letter-spacing: 0.025em;
+}
+
+html[data-lang="zh"] .article-body p,
+html[data-lang="zh"] .article-body li {
+  font-size: 17px;
+  font-weight: var(--cjk-body-weight);
+  line-height: 2.05;
+  letter-spacing: 0.03em;
+}
+
+html[data-lang="zh"] .article-body .article-subheading {
+  font-size: 23px;
+  font-weight: var(--cjk-heading-weight);
+  line-height: 1.5;
+  letter-spacing: 0.025em;
+}
+
+html[data-lang="zh"] .article-body strong {
+  font-weight: var(--cjk-strong-weight);
+}
+
 @media (max-width: 1100px) {
   :root {
     --page-gutter: 32px;
@@ -1735,6 +1896,82 @@ html.is-scrolling .feature-media-motion {
 
   .article-body h2 {
     font-size: 30px;
+  }
+
+  html[data-lang="zh"] .site-nav {
+    font-size: 9.5px;
+    letter-spacing: 0.025em;
+  }
+
+  html[data-lang="zh"] .hero-title > .lang-zh {
+    font-size: 0.5em;
+    line-height: 1.18;
+    letter-spacing: 0.045em;
+  }
+
+  html[data-lang="zh"] .chapter-title {
+    font-size: clamp(47px, 13.5vw, 64px);
+  }
+
+  html[data-lang="zh"] .experience-profile-inner > h2 {
+    margin-bottom: 34px;
+    font-size: 44px;
+  }
+
+  html[data-lang="zh"] .experience-profile-copy p {
+    font-size: 16.5px;
+    line-height: 1.95;
+  }
+
+  html[data-lang="zh"] .feature-title {
+    font-size: 24px;
+  }
+
+  html[data-lang="zh"] .feature-copy > p {
+    font-size: 17px;
+    line-height: 1.8;
+  }
+
+  html[data-lang="zh"] .article-gallery-header h2 {
+    font-size: 43px;
+  }
+
+  html[data-lang="zh"] .article-work-copy strong {
+    font-size: 18px;
+  }
+
+  html[data-lang="zh"] .footer-grid h2 {
+    font-size: 12px;
+  }
+
+  html[data-lang="zh"] .footer-nav a {
+    font-size: 13px;
+  }
+
+  html[data-lang="zh"] .article-back {
+    font-size: 12px;
+  }
+
+  html[data-lang="zh"] .article-page h1 {
+    font-size: 40px;
+  }
+
+  html[data-lang="zh"] .article-lede {
+    font-size: 18px;
+  }
+
+  html[data-lang="zh"] .article-body h2 {
+    font-size: 27px;
+  }
+
+  html[data-lang="zh"] .article-body p,
+  html[data-lang="zh"] .article-body li {
+    font-size: 16px;
+    line-height: 2;
+  }
+
+  html[data-lang="zh"] .article-body .article-subheading {
+    font-size: 21px;
   }
 }
 
