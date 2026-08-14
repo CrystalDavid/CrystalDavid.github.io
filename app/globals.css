@@ -326,8 +326,6 @@ html[data-lang="zh"] .lang-zh {
   line-height: 0.94;
   letter-spacing: 0.012em;
   text-align: center;
-  contain: layout style;
-  text-rendering: optimizeSpeed;
 }
 
 .hero-line {
@@ -423,15 +421,11 @@ html[data-lang="en"] .hero-title > .lang-en.center-magnet-ready .magnet-word {
   background: var(--dot-color);
   animation: dot-rise var(--speed) linear var(--delay) infinite;
   transform: translate3d(0, 0, 0);
+  will-change: transform;
 }
 
 .js .hero-screen:not(.motion-active) .float-dot {
   animation-play-state: paused;
-  will-change: auto;
-}
-
-.js .hero-screen.motion-active .float-dot {
-  will-change: transform;
 }
 
 @keyframes dot-rise {
@@ -452,6 +446,10 @@ html[data-lang="en"] .hero-title > .lang-en.center-magnet-ready .magnet-word {
   perspective: 200px;
   transform-style: preserve-3d;
   place-items: center;
+}
+
+[data-scroll-wave] {
+  transform-origin: 0 50%;
 }
 
 .experience-profile-section {
@@ -504,21 +502,21 @@ html[data-lang="en"] .hero-title > .lang-en.center-magnet-ready .magnet-word {
 
 .experience-profile-section.is-visible .experience-profile-inner > h2 {
   opacity: 1;
-  transform: none;
+  transform: translate3d(0, 0, 0);
 }
 
 .char-reveal-story {
   font-variant-ligatures: none;
 }
 
-.story-reveal-beat {
-  display: inline;
-  opacity: 0.16;
-  transition: opacity 420ms var(--story-delay, 0ms) var(--ease-out);
+.char-reveal-word {
+  display: inline-block;
+  white-space: nowrap;
 }
 
-.char-reveal-story.is-revealed .story-reveal-beat {
-  opacity: 1;
+.char-reveal-glyph {
+  display: inline;
+  opacity: 0.2;
 }
 
 .agent-chapter {
@@ -550,7 +548,6 @@ html[data-lang="en"] .hero-title > .lang-en.center-magnet-ready .magnet-word {
     transform 720ms 70ms var(--ease-out);
   transform-style: preserve-3d;
   text-rendering: optimizeSpeed;
-  contain: layout style;
 }
 
 [data-wickret-pointer].pointer-active .chapter-title,
@@ -564,7 +561,7 @@ html.is-scrolling [data-wickret-pointer] {
 
 .chapter-screen.is-visible .chapter-title {
   opacity: 1;
-  transform: none;
+  transform: translate3d(0, 0, 0);
 }
 
 .chapter-title[data-top-flip] {
@@ -767,11 +764,15 @@ html.is-scrolling [data-wickret-pointer] {
 }
 
 .feature-media-motion {
-  transform: none;
+  transform: translate3d(0, 0, 0);
 }
 
 .feature-copy-motion {
   transform: none;
+}
+
+html.is-scrolling .feature-media-motion {
+  will-change: transform;
 }
 
 .product-visual {
@@ -787,7 +788,7 @@ html.is-scrolling [data-wickret-pointer] {
 
 .feature-screen.is-visible .product-visual {
   opacity: 1;
-  transform: none;
+  transform: translate3d(0, 0, 0);
 }
 
 .product-backdrop {
@@ -892,7 +893,7 @@ html.is-scrolling [data-wickret-pointer] {
 .feature-screen.is-visible .feature-copy > p,
 .feature-screen.is-visible .outline-button {
   opacity: 1;
-  transform: none;
+  transform: translate3d(0, 0, 0);
 }
 
 .outline-button:hover {
@@ -932,7 +933,7 @@ html.is-scrolling [data-wickret-pointer] {
 
 .article-gallery-section.is-visible .article-gallery-header h2 {
   opacity: 1;
-  transform: none;
+  transform: translate3d(0, 0, 0);
 }
 
 .article-gallery {
@@ -957,19 +958,8 @@ html.is-scrolling [data-wickret-pointer] {
 
 .article-gallery-section.is-visible .article-work-card {
   opacity: 1;
-  filter: none;
-  transform: none;
-}
-
-/* A return link can arrive before the deferred scroll runtime has loaded.
-   Keep the target gallery painted from the first frame, then the runtime
-   releases this class once its cached bounds and repeatable reveal agree. */
-html.article-anchor-return .article-gallery-header h2,
-html.article-anchor-return .article-work-card {
-  opacity: 1;
-  filter: none;
-  transform: none;
-  transition: none;
+  filter: blur(0);
+  transform: translate3d(0, 0, 0);
 }
 
 .article-work-placeholder {
@@ -1385,8 +1375,8 @@ html.article-anchor-return .article-work-card {
   letter-spacing: 0.035em;
 }
 
-/* Noto Sans SC has denser square glyphs than Nunito. A 600 CJK display weight
-   optically matches Nunito 700 without closing counters or joining strokes. */
+/* Noto Sans SC has denser square glyphs than Nunito. A 700 CJK display weight
+   preserves the visual authority of the Nunito headings without shrinking text. */
 html[data-lang="zh"] body {
   letter-spacing: 0.025em;
 }
@@ -1829,6 +1819,10 @@ html[data-lang="zh"] .article-body strong {
     font-size: 25px;
   }
 
+  [data-scroll-wave] {
+    transform: none !important;
+  }
+
   .article-page {
     padding: 28px 20px 52px;
   }
@@ -2009,7 +2003,7 @@ html[data-lang="zh"] .article-body strong {
     transform: none;
   }
 
-  .story-reveal-beat {
+  .char-reveal-glyph {
     opacity: 1;
   }
 }

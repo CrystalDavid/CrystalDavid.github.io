@@ -43,70 +43,32 @@ function Bilingual({ zh, en, as: Tag = "span" }: { zh: string; en: string; as?: 
   return <><Tag className="lang lang-zh">{zh}</Tag><Tag className="lang lang-en">{en}</Tag></>;
 }
 
-function createStoryBeats(value: string, language: "zh" | "en") {
-  if (language === "en") {
-    const words = value.match(/\S+\s*/g) ?? [value];
-    const beats: string[] = [];
-    let beat = "";
-    let wordCount = 0;
-
-    words.forEach((word) => {
-      beat += word;
-      wordCount += 1;
-      if (wordCount >= 5 || (wordCount >= 3 && /[.!?]\s*$/.test(word))) {
-        beats.push(beat);
-        beat = "";
-        wordCount = 0;
-      }
-    });
-    if (beat) beats.push(beat);
-    return beats;
-  }
-
-  const beats: string[] = [];
-  let beat = "";
-  Array.from(value).forEach((character) => {
-    beat += character;
-    const naturalBreak = /[，。！？；：、]/.test(character);
-    if ((beat.length >= 11 && naturalBreak) || beat.length >= 15) {
-      beats.push(beat);
-      beat = "";
-    }
-  });
-  if (beat) beats.push(beat);
-  return beats;
-}
-
 function CharacterStory({ paragraphs, language }: { paragraphs: string[]; language: "zh" | "en" }) {
-  const paragraphBeats = paragraphs.map((paragraph) =>
-    createStoryBeats(paragraph, language),
-  );
-  const beatCount = paragraphBeats.reduce(
-    (total, beats) => total + beats.length,
-    0,
-  );
-  let beatIndex = 0;
+  let characterIndex = 0;
+  const renderCharacters = (value: string) => Array.from(value).map((character) => {
+    const index = characterIndex++;
+    return (
+      <span
+        className="char-reveal-glyph"
+        aria-hidden="true"
+        key={`${character}-${index}`}
+      >
+        {character}
+      </span>
+    );
+  });
 
   return (
     <div className={`lang lang-${language} char-reveal-story`} data-char-story>
       {paragraphs.map((text, paragraphIndex) => (
         <p aria-label={text} key={text}>
-          {paragraphBeats[paragraphIndex].map((beat) => {
-            const index = beatIndex++;
-            const delay = Math.round(
-              (index / Math.max(beatCount - 1, 1)) * 560,
-            );
-            return (
-              <span
-                className="story-reveal-beat"
-                aria-hidden="true"
-                key={`${paragraphIndex}-${index}`}
-                style={{ "--story-delay": `${delay}ms` } as CSSVars}
-              >
-                {beat}
-              </span>
-            );
-          })}
+          {language === "en"
+            ? text.split(/(\s+)/).map((part, partIndex) => (
+              /\s/.test(part)
+                ? <span aria-hidden="true" key={`space-${paragraphIndex}-${partIndex}`}>{part}</span>
+                : <span className="char-reveal-word" aria-hidden="true" key={`${part}-${paragraphIndex}-${partIndex}`}>{renderCharacters(part)}</span>
+            ))
+            : renderCharacters(text)}
         </p>
       ))}
     </div>
@@ -115,7 +77,7 @@ function CharacterStory({ paragraphs, language }: { paragraphs: string[]; langua
 
 function ChapterTitle({ id, zh, en }: { id: string; zh: string; en: string }) {
   return (
-    <h2 id={id} className="chapter-title" data-top-flip>
+    <h2 id={id} className="chapter-title" data-top-flip data-scroll-wave>
       <span className="lang lang-zh" data-flip-label={zh}>{zh}</span>
       <span className="lang lang-en" data-flip-label={en}>{en}</span>
     </h2>
@@ -162,7 +124,7 @@ export default function Home() {
         <main id="main">
           <section className="screen hero-screen is-visible" id="home" data-reveal-section aria-labelledby="hero-title">
             <FloatingDecor />
-            <h1 id="hero-title" className="hero-title">
+            <h1 id="hero-title" className="hero-title" data-scroll-wave>
               <span className="hero-line hero-name" data-center-magnet>David</span>
               <span className="lang lang-zh" data-center-magnet>个人开发者</span>
               <span className="lang lang-en" data-center-magnet>Independent Developer</span>

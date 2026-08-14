@@ -34,7 +34,15 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     const container = containerRef.current;
     let scrollbar: ScrollbarInstance | null = null;
     let disposed = false;
-    const virtualScrollListeners = new Set<(y: number) => void>();
+    let previousVirtualY = 0;
+
+    const dispatchVirtualScroll = (y: number, deltaY = 0) => {
+      window.dispatchEvent(
+        new CustomEvent("david:virtual-scroll", {
+          detail: { y, deltaY },
+        }),
+      );
+    };
 
     const dispatchRuntimeReady = (detail: ScrollRuntimeReadyDetail) => {
       window.__davidScrollRuntimeReady = detail;
@@ -46,9 +54,10 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     };
 
     const handleVirtualScroll = (status: VirtualScrollStatus) => {
-      virtualScrollListeners.forEach((listener) =>
-        listener(status.offset.y),
-      );
+      const y = status.offset.y;
+      const deltaY = y - previousVirtualY;
+      previousVirtualY = y;
+      dispatchVirtualScroll(y, deltaY);
     };
 
     const scrollToHash = (
@@ -88,13 +97,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       if (!window.location.hash) return;
       window.requestAnimationFrame(() => {
         window.requestAnimationFrame(() => {
-          if (!scrollToHash(window.location.hash, "auto")) return;
-          // The virtual offset changes after ScrollMagic has measured its
-          // scenes. Re-measure from the restored position so repeatable
-          // reveals (especially Article) cannot inherit stale document bounds.
-          window.requestAnimationFrame(() =>
-            window.dispatchEvent(new Event("david:layout")),
-          );
+          scrollToHash(window.location.hash, "auto");
         });
       });
     };
@@ -111,11 +114,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       if (!container || useNativeScroll) {
         root.classList.add("native-scroll");
         if (container) {
-          dispatchRuntimeReady({
-            mode: "native",
-            container,
-            getScrollY: () => window.scrollY,
-          });
+          dispatchRuntimeReady({ mode: "native", container });
         }
         restoreInitialAnchor();
         void document.fonts?.ready.then(restoreInitialAnchor);
@@ -134,18 +133,12 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
         alwaysShowTracks: false,
         delegateTo: container,
       });
+      previousVirtualY = scrollbar.offset.y;
       scrollbar.addListener(handleVirtualScroll);
       root.classList.remove("native-scroll");
       root.classList.add("virtual-scroll");
-      dispatchRuntimeReady({
-        mode: "virtual",
-        container,
-        getScrollY: () => scrollbar?.offset.y ?? 0,
-        subscribe: (listener) => {
-          virtualScrollListeners.add(listener);
-          return () => virtualScrollListeners.delete(listener);
-        },
-      });
+      dispatchVirtualScroll(previousVirtualY);
+      dispatchRuntimeReady({ mode: "virtual", container });
       restoreInitialAnchor();
       window.dispatchEvent(new Event("david:layout"));
     };
@@ -157,7 +150,6 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       scrollbar?.removeListener(handleVirtualScroll);
       scrollbar?.destroy();
       scrollbar = null;
-      virtualScrollListeners.clear();
       delete window.__davidScrollRuntimeReady;
       root.classList.remove("native-scroll", "virtual-scroll");
       document.removeEventListener("click", handleAnchor);
