@@ -23,26 +23,19 @@ test("homepage exports the intended typography and motion hooks", async () => {
   ]);
 
   assert.match(html, /rel="preload"[^>]+\/fonts\/nunito-latin\.woff2/);
+  assert.match(html, /rel="preload"[^>]+\/fonts\/noto-sans-sc-site\.woff2/);
   assert.match(css, /font-family:\s*(?:"Nunito"|Nunito)/);
-  assert.match(css, /font-family:\s*(?:"HarmonyOS Sans SC"|HarmonyOS Sans SC)/);
-  assert.match(css, /font-family:\s*(?:"MiSans VF"|MiSans VF)/);
+  assert.match(css, /font-family:\s*(?:"Noto Sans SC"|Noto Sans SC)/);
   assert.match(css, /PingFang SC/);
   assert.ok(
-    css.indexOf("Nunito") < css.indexOf("HarmonyOS Sans SC"),
-    "Nunito must precede both Chinese comparison fonts",
+    css.indexOf("Nunito") < css.indexOf("Noto Sans SC"),
+    "Nunito must precede Noto Sans SC",
   );
-  assert.doesNotMatch(css, /OPPO Sans|David Yuan Round Web|Chiron GoRound TC WS|fonts\.googleapis\.com|fonts\.gstatic\.com/);
-  assert.match(css, /font-family:\s*(?:"HarmonyOS Sans SC"|HarmonyOS Sans SC)[^}]*font-weight:400[^}]*font-display:swap/);
+  assert.doesNotMatch(css, /HarmonyOS Sans|MiSans|OPPO Sans|David Yuan Round Web|Chiron GoRound TC WS|font-display:swap|fonts\.googleapis\.com|fonts\.gstatic\.com/);
   assert.match(css, /font-display:block/);
-  assert.match(html, /data-font="mi"/);
-  assert.match(html, /david-site-font-v1/);
-  assert.match(html, /fontParameter === "mi" \|\| fontParameter === "harmony"/);
-  assert.match(html, /fontVersion === "harmony"[^}]+classList\.remove\("fonts-loading"\)/);
-  assert.match(html, /\/fonts\/harmonyos-sans-sc-regular\.ttf/);
-  assert.match(html, /\/fonts\/misans-site\.woff2/);
-  assert.doesNotMatch(html, /rel="preload"[^>]+(?:harmonyos-sans-sc-regular\.ttf|misans-site\.woff2)/);
-  assert.match(css, /html\[data-font=(?:"mi"|mi)\][^{]*\{[^}]*--cjk-body-weight:500[^}]*--cjk-ui-weight:700[^}]*--cjk-heading-weight:700[^}]*--cjk-strong-weight:700/);
-  assert.match(css, /html\[data-font=(?:"harmony"|harmony)\] body[^}]*font-synthesis:weight/);
+  assert.match(html, /data-font="noto"/);
+  assert.doesNotMatch(html, /david-site-font-v1|fontParameter|fontVersion|harmonyos-sans|misans-site/);
+  assert.match(css, /:root[^}]*--font-cjk:"Noto Sans SC"[^}]*--cjk-body-weight:400[^}]*--cjk-ui-weight:600[^}]*--cjk-heading-weight:600[^}]*--cjk-strong-weight:600/);
   assert.match(css, /html\[data-lang=(?:"zh"|zh)\] \.article-body p/);
   assert.equal(
     JSON.parse(packageJson).dependencies["chiron-go-round-tc-webfont-truetype"],
@@ -59,7 +52,7 @@ test("homepage exports the intended typography and motion hooks", async () => {
   assert.ok((html.match(/data-wickret-pointer/g) ?? []).length >= 1);
   assert.ok((html.match(/data-char-story/g) ?? []).length >= 2);
   assert.match(html, /data-feature-scroll/);
-  assert.match(html, /data-scroll-wave/);
+  assert.doesNotMatch(html, /data-scroll-wave/);
   assert.match(html, /ppt-agent-mac-composite\.webp/);
   assert.match(html, />Agent</);
   assert.match(html, />Article</);
@@ -68,21 +61,21 @@ test("homepage exports the intended typography and motion hooks", async () => {
   assert.doesNotMatch(html, /Explore my GitHub projects/);
 });
 
-test("font comparison assets preserve HarmonyOS licensing and compact MiSans delivery", async () => {
-  const [harmony, miSans, harmonyLicense, fontFiles] = await Promise.all([
-    readFile(new URL("../public/fonts/harmonyos-sans-sc-regular.ttf", import.meta.url)),
-    readFile(new URL("../public/fonts/misans-site.woff2", import.meta.url)),
-    readSource("public/fonts/harmonyos-sans-license.txt"),
+test("the fixed Noto Sans SC subset is compact, complete and licensed", async () => {
+  const [notoSans, notoLicense, fontFiles] = await Promise.all([
+    readFile(new URL("../public/fonts/noto-sans-sc-site.woff2", import.meta.url)),
+    readSource("public/fonts/noto-sans-sc-license.txt"),
     readdir(new URL("../public/fonts/", import.meta.url)),
   ]);
   const sha256 = (data) => createHash("sha256").update(data).digest("hex").toUpperCase();
 
-  assert.equal(harmony.length, 8_261_128);
-  assert.equal(miSans.length, 259_144);
-  assert.equal(sha256(harmony), "297B088424BE212207DF2CE8B98E335468B782AA6B96832AF0B8B773D711E2B1");
-  assert.equal(sha256(miSans), "495C72920152DF665C03865F2CE9CC91CCC8BECEFDD9ACCAFDF034AB42D3BA3F");
-  assert.match(harmonyLicense, /HarmonyOS Sans Fonts License Agreement/);
-  assert.equal(fontFiles.some((file) => file.toLowerCase().includes("oppo")), false);
+  assert.equal(notoSans.length, 202_372);
+  assert.equal(sha256(notoSans), "1D6F47ADC649BA39F7F45915A43F63386667B7D143DFD8F29FDB1249216B2633");
+  assert.match(notoLicense, /SIL OPEN FONT LICENSE Version 1\.1/);
+  assert.equal(
+    fontFiles.some((file) => /harmony|misans|oppo/i.test(file)),
+    false,
+  );
 });
 
 test("desktop scrolling uses Wickret's live fractional runtime settings", async () => {
@@ -98,17 +91,24 @@ test("desktop scrolling uses Wickret's live fractional runtime settings", async 
   assert.match(smoothScroll, /renderByPixels:\s*false/);
   assert.match(smoothScroll, /continuousScrolling:\s*false/);
   assert.match(smoothScroll, /delegateTo:\s*container/);
+  assert.match(
+    smoothScroll,
+    /scrollToHash\(window\.location\.hash, "auto"\)[\s\S]*david:layout/,
+  );
   assert.match(wickretRuntime, /new ScrollMagic\.Controller/);
   assert.match(wickretRuntime, /refreshInterval:\s*virtual \? 0 : 80/);
   assert.match(wickretRuntime, /controller\.scrollPos\(\(\) => currentScrollY\)/);
   assert.match(wickretRuntime, /TweenLite\.set/);
   assert.match(wickretRuntime, /triggerHook:\s*0\.82/);
-  assert.match(wickretRuntime, /TweenLite\.to\(aboutTweenState,\s*1\.05/);
-  assert.match(wickretRuntime, /aboutProgress\s*>=\s*1\s*\?\s*1/);
-  assert.match(wickretRuntime, /rect\.bottom > 0 && rect\.top < window\.innerHeight/);
+  assert.match(wickretRuntime, /if \(!scrolling\)/);
+  assert.match(wickretRuntime, /setAbout\(true, true\)/);
+  assert.match(wickretRuntime, /currentScrollY \+ window\.innerHeight > articleTop/);
+  assert.doesNotMatch(wickretRuntime, /glyph\.style\.opacity|data-scroll-wave|renderWave|activeWaveTargets/);
+  assert.match(globalCss, /\.char-reveal-story\.is-revealed \.char-reveal-glyph/);
+  assert.match(globalCss, /contain:\s*layout style/);
   assert.doesNotMatch(articlePage, /ArticleScrollRuntime|window\.scrollTo|preventDefault/);
   assert.doesNotMatch(globalCss, /article-scroll-active/);
-  assert.doesNotMatch(globalCss, /html\.is-scrolling \[data-scroll-wave\][^{]*\{[^}]*will-change/s);
+  assert.doesNotMatch(globalCss, /data-scroll-wave/);
   assert.doesNotMatch(globalCss, /--char-progress/);
   assert.doesNotMatch(globalCss, /--char-offset/);
   assert.doesNotMatch(globalCss, /--feature-media-y/);

@@ -29,10 +29,11 @@
 
 ## 字体与渲染
 
-1. 全站英文统一使用 `Nunito`；中文提供两个 URL 对比版本：`?font=harmony` 使用 `HarmonyOS Sans SC`，`?font=mi` 使用 `MiSans VF`。由于 HarmonyOS Sans 的官方原始 SC 文件体积较大，无参数时默认使用轻量的 MiSans 版，HarmonyOS Sans 作为显式对比入口；当前标签页内通过 `sessionStorage` 保持选择。字体栈顺序固定为英文在前、所选中文字体在后，再回退到 `PingFang SC`、`Microsoft YaHei UI`、`Microsoft YaHei` 与通用无衬线字体。
-2. 字体必须由 `public/fonts` 自托管，不得引用开发机绝对路径或运行时第三方字体 CDN。HarmonyOS Sans 的许可禁止修改字体，因此必须使用官方原始 SC Regular 文件并保留原始许可文件，不得转换或裁剪；MiSans 使用覆盖全部发布内容的可变 WOFF2 站点子集。每次只预载和解码当前 URL 选择的中文字体，禁止同时加载两个对比版本。MiSans 保持首屏显示门控；HarmonyOS Sans 的官方原文件较大，显式对比入口必须用 `font-display: swap` 非阻塞加载，不得在字体下载期间隐藏整个页面。
+1. 全站字体组合固定为英文 `Nunito`、中文 `Noto Sans SC`，不再提供 URL 字体对比参数或用 `sessionStorage` 记忆字体版本。字体栈顺序固定为英文在前、中文在后，再回退到 `PingFang SC`、`Microsoft YaHei UI`、`Microsoft YaHei` 与通用无衬线字体。
+2. 两套字体必须由 `public/fonts` 自托管并在首屏预载，不得引用开发机绝对路径或运行时第三方字体 CDN。Noto Sans SC 使用 Google Fonts CSS2 API 按本站全部发布字符生成的 400–700 可变 WOFF2 子集，并保留 OFL 许可证。页面必须等待 Nunito 与 Noto Sans SC 完成首次解码后再显示文字，避免回退字体切换造成字宽、换行和滚动范围跳变；字体失败兜底不得超过 8 秒。
 3. 长文章正文不得进入逐帧动画，不得永久设置 `will-change`，不得套用滚动容器 transform。
-4. 中文排版使用独立的字号、字距和字重标尺：中文标题、导航与强调文字使用 700，与 Nunito 英文界面的视觉重量对齐；MiSans 正文使用 500，HarmonyOS Sans 正文使用官方 Regular 400。HarmonyOS Sans 只提供未修改的 Regular 文件，允许浏览器仅对 700 级界面文字合成粗体，避免额外下载另一个大字体文件。中文字距使用独立放宽标尺，不得压缩为 Nunito 英文字距。MiSans 及其他字体保持 `font-synthesis: none`；避免 `text-rendering: geometricPrecision` 造成长页面重绘压力。
+4. 中文排版使用独立标尺：Noto Sans SC 正文 400、导航与界面 600、标题及强调 600；不要把中文标题机械设置成 Nunito 的 700/800。中文正文标准字距约 `0.025em`，大标题约 `0.035em–0.055em`，以保持笔画分离。全站保持 `font-synthesis: none` 与抗锯齿；只有超大展示标题使用 `text-rendering: optimizeSpeed` 和 `contain: layout style`，长文章正文不得使用。
+5. Wickret 实测桌面滚动参数固定为 smooth-scrollbar 8.x、`damping: 0.06`、`renderByPixels: false`、`continuousScrolling: false`、`delegateTo: container`。滚动内容只能有一个永久合成层；禁止给文字附加持续运行的滚动 skew/wave，禁止在滚动帧内逐字写入内联样式或无条件重启指针 GSAP tween。
 
 ## 性能与验收
 

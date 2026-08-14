@@ -97,7 +97,13 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       if (!window.location.hash) return;
       window.requestAnimationFrame(() => {
         window.requestAnimationFrame(() => {
-          scrollToHash(window.location.hash, "auto");
+          if (!scrollToHash(window.location.hash, "auto")) return;
+          // The virtual offset changes after ScrollMagic has measured its
+          // scenes. Re-measure from the restored position so repeatable
+          // reveals (especially Article) cannot inherit stale document bounds.
+          window.requestAnimationFrame(() =>
+            window.dispatchEvent(new Event("david:layout")),
+          );
         });
       });
     };

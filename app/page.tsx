@@ -45,13 +45,21 @@ function Bilingual({ zh, en, as: Tag = "span" }: { zh: string; en: string; as?: 
 
 function CharacterStory({ paragraphs, language }: { paragraphs: string[]; language: "zh" | "en" }) {
   let characterIndex = 0;
+  const characterCount = paragraphs.reduce(
+    (total, paragraph) => total + Array.from(paragraph.replace(/\s/g, "")).length,
+    0,
+  );
   const renderCharacters = (value: string) => Array.from(value).map((character) => {
     const index = characterIndex++;
+    const delay = Math.round(
+      (index / Math.max(characterCount - 1, 1)) * 620,
+    );
     return (
       <span
         className="char-reveal-glyph"
         aria-hidden="true"
         key={`${character}-${index}`}
+        style={{ "--char-delay": `${delay}ms` } as CSSVars}
       >
         {character}
       </span>
@@ -77,7 +85,7 @@ function CharacterStory({ paragraphs, language }: { paragraphs: string[]; langua
 
 function ChapterTitle({ id, zh, en }: { id: string; zh: string; en: string }) {
   return (
-    <h2 id={id} className="chapter-title" data-top-flip data-scroll-wave>
+    <h2 id={id} className="chapter-title" data-top-flip>
       <span className="lang lang-zh" data-flip-label={zh}>{zh}</span>
       <span className="lang lang-en" data-flip-label={en}>{en}</span>
     </h2>
@@ -124,7 +132,7 @@ export default function Home() {
         <main id="main">
           <section className="screen hero-screen is-visible" id="home" data-reveal-section aria-labelledby="hero-title">
             <FloatingDecor />
-            <h1 id="hero-title" className="hero-title" data-scroll-wave>
+            <h1 id="hero-title" className="hero-title">
               <span className="hero-line hero-name" data-center-magnet>David</span>
               <span className="lang lang-zh" data-center-magnet>个人开发者</span>
               <span className="lang lang-en" data-center-magnet>Independent Developer</span>

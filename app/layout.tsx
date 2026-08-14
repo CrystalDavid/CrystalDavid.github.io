@@ -5,46 +5,17 @@ const fontBootstrapScript = String.raw`
   try {
     var root = document.documentElement;
     root.classList.add("fonts-loading");
+    root.dataset.font = "noto";
 
     var language = localStorage.getItem("david-site-language-v2") === "zh" ? "zh" : "en";
     root.dataset.lang = language;
     root.lang = language === "zh" ? "zh-CN" : "en";
 
-    var fontParameter = new URLSearchParams(location.search).get("font");
-    var storedFont = sessionStorage.getItem("david-site-font-v1");
-    var fontVersion = fontParameter === "mi" || fontParameter === "harmony"
-      ? fontParameter
-      : storedFont === "mi" || storedFont === "harmony"
-        ? storedFont
-        : "mi";
-
-    root.dataset.font = fontVersion;
-    if (fontVersion === "harmony") {
-      root.classList.remove("fonts-loading");
-    }
-    if (fontParameter === "mi" || fontParameter === "harmony") {
-      sessionStorage.setItem("david-site-font-v1", fontVersion);
-    }
-
-    var fontFiles = fontVersion === "mi"
-      ? [{ href: "/fonts/misans-site.woff2", type: "font/woff2" }]
-      : [{ href: "/fonts/harmonyos-sans-sc-regular.ttf", type: "font/ttf" }];
-
-    fontFiles.forEach(function (fontFile) {
-      var preload = document.createElement("link");
-      preload.rel = "preload";
-      preload.as = "font";
-      preload.type = fontFile.type;
-      preload.crossOrigin = "anonymous";
-      preload.href = fontFile.href;
-      document.head.appendChild(preload);
-    });
-
     var reveal = function () {
       root.classList.remove("fonts-loading");
       root.classList.add("fonts-ready");
     };
-    var fallback = setTimeout(reveal, 30000);
+    var fallback = setTimeout(reveal, 8000);
 
     addEventListener("DOMContentLoaded", function () {
       if (!document.fonts) {
@@ -53,13 +24,11 @@ const fontBootstrapScript = String.raw`
         return;
       }
 
-      var cjkFamily = fontVersion === "mi" ? "MiSans VF" : "HarmonyOS Sans SC";
       Promise.all([
         document.fonts.load('400 1em Nunito'),
         document.fonts.load('700 1em Nunito'),
-        document.fonts.load('400 1em "' + cjkFamily + '"', '中文字体测试'),
-        document.fonts.load('500 1em "' + cjkFamily + '"', '中文字体测试'),
-        document.fonts.load('700 1em "' + cjkFamily + '"', '中文字体测试')
+        document.fonts.load('400 1em "Noto Sans SC"', '中文字体测试'),
+        document.fonts.load('600 1em "Noto Sans SC"', '中文字体测试')
       ]).then(function () {
         return document.fonts.ready;
       }).then(function () {
@@ -106,11 +75,18 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-lang="en" data-font="mi">
+    <html lang="en" data-lang="en" data-font="noto">
       <head>
         <link
           rel="preload"
           href="/fonts/nunito-latin.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/fonts/noto-sans-sc-site.woff2"
           as="font"
           type="font/woff2"
           crossOrigin="anonymous"
