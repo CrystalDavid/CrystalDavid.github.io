@@ -36,9 +36,9 @@ test("homepage exports the intended typography and motion hooks", async () => {
   assert.match(html, /data-font="oppo"/);
   assert.match(html, /david-site-font-v1/);
   assert.match(html, /fontParameter === "mi" \|\| fontParameter === "oppo"/);
-  assert.match(html, /\/fonts\/oppo-sans-4\.0-vf\.ttf/);
-  assert.match(html, /\/fonts\/misans-vf\.ttf/);
-  assert.doesNotMatch(html, /rel="preload"[^>]+(?:oppo-sans-4\.0-vf|misans-vf)\.ttf/);
+  assert.match(html, /\/fonts\/oppo-sans-4\.0-site\.woff2/);
+  assert.match(html, /\/fonts\/misans-site\.woff2/);
+  assert.doesNotMatch(html, /rel="preload"[^>]+(?:oppo-sans-4\.0-site|misans-site)\.woff2/);
   assert.equal(
     JSON.parse(packageJson).dependencies["chiron-go-round-tc-webfont-truetype"],
     undefined,
@@ -63,18 +63,18 @@ test("homepage exports the intended typography and motion hooks", async () => {
   assert.doesNotMatch(html, /Explore my GitHub projects/);
 });
 
-test("font comparison assets are the unmodified source variable fonts", async () => {
+test("font comparison assets are compact variable web subsets", async () => {
   const [oppo, miSans, oppoLicense] = await Promise.all([
-    readFile(new URL("../public/fonts/oppo-sans-4.0-vf.ttf", import.meta.url)),
-    readFile(new URL("../public/fonts/misans-vf.ttf", import.meta.url)),
+    readFile(new URL("../public/fonts/oppo-sans-4.0-site.woff2", import.meta.url)),
+    readFile(new URL("../public/fonts/misans-site.woff2", import.meta.url)),
     readSource("public/fonts/oppo-sans-4.0-license.txt"),
   ]);
   const sha256 = (data) => createHash("sha256").update(data).digest("hex").toUpperCase();
 
-  assert.equal(oppo.length, 22_741_096);
-  assert.equal(miSans.length, 20_093_424);
-  assert.equal(sha256(oppo), "6C7D5864C661516E1F400D9F21E4297F2E2A0719909691E29607CC4EF484A9F4");
-  assert.equal(sha256(miSans), "0DDEF90648998900175CFDCA9A6F087A2544C182F130B0AD4F7E94A03A115E79");
+  assert.equal(oppo.length, 270_148);
+  assert.equal(miSans.length, 259_144);
+  assert.equal(sha256(oppo), "E9B25E337A389C1F1F2583BE9641D76FF3F5F2351D97F695F5FDF2839A89F9D9");
+  assert.equal(sha256(miSans), "495C72920152DF665C03865F2CE9CC91CCC8BECEFDD9ACCAFDF034AB42D3BA3F");
   assert.match(oppoLicense, /OPPO Sans Fonts License Agreement/);
 });
 

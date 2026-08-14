@@ -24,14 +24,14 @@ const fontBootstrapScript = String.raw`
     }
 
     var fontFiles = fontVersion === "mi"
-      ? ["/fonts/misans-vf.ttf"]
-      : ["/fonts/oppo-sans-4.0-vf.ttf"];
+      ? ["/fonts/misans-site.woff2"]
+      : ["/fonts/oppo-sans-4.0-site.woff2"];
 
     fontFiles.forEach(function (href) {
       var preload = document.createElement("link");
       preload.rel = "preload";
       preload.as = "font";
-      preload.type = "font/ttf";
+      preload.type = "font/woff2";
       preload.crossOrigin = "anonymous";
       preload.href = href;
       document.head.appendChild(preload);

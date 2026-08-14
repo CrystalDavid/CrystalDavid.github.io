@@ -28,7 +28,7 @@
   font-style: normal;
   font-weight: 100 700;
   font-display: block;
-  src: url("/fonts/oppo-sans-4.0-vf.ttf") format("truetype");
+  src: url("/fonts/oppo-sans-4.0-site.woff2") format("woff2");
 }
 
 @font-face {
@@ -36,7 +36,7 @@
   font-style: normal;
   font-weight: 150 700;
   font-display: block;
-  src: url("/fonts/misans-vf.ttf") format("truetype");
+  src: url("/fonts/misans-site.woff2") format("woff2");
 }
 
 :root {

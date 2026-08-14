@@ -30,7 +30,7 @@
 ## 字体与渲染
 
 1. 全站英文统一使用 `Nunito`；中文提供两个 URL 对比版本：`?font=oppo` 使用 `OPPO Sans 4.0`，`?font=mi` 使用 `MiSans VF`。无参数时默认 OPPO 版，当前标签页内通过 `sessionStorage` 保持选择；字体栈顺序固定为英文在前、所选中文字体在后，再回退到 `PingFang SC`、`Microsoft YaHei UI`、`Microsoft YaHei` 与通用无衬线字体。
-2. 字体必须由 `public/fonts` 自托管并在首屏提前加载，不得引用开发机绝对路径或运行时第三方字体 CDN；OPPO 与 MiSans 均保留用户提供的原始可变字体文件，不得修改 OPPO 字体数据，并保留其许可文件。每次只预载和解码当前 URL 选择的中文字体，禁止同时加载两个对比版本。字体不得使用 `font-display: swap`，发布前必须分别验证两版冷启动没有字形、字宽或换行跳变。
+2. 字体必须由 `public/fonts` 自托管并在首屏提前加载，不得引用开发机绝对路径或运行时第三方字体 CDN；OPPO 与 MiSans 使用覆盖全部发布内容的可变 WOFF2 站点子集，并保留 OPPO 的许可文件。每次只预载和解码当前 URL 选择的中文字体，禁止同时加载两个对比版本。字体不得使用 `font-display: swap`，发布前必须分别验证两版冷启动没有字形、字宽或换行跳变。
 3. 长文章正文不得进入逐帧动画，不得永久设置 `will-change`，不得套用滚动容器 transform。
 4. 保持 `font-synthesis: none`、抗锯齿与全站相同的字体回退逻辑；避免 `text-rendering: geometricPrecision` 造成长页面重绘压力。
 
