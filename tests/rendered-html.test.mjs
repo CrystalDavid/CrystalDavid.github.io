@@ -33,7 +33,7 @@ test("homepage exports the intended typography and motion hooks", async () => {
   );
   assert.doesNotMatch(css, /OPPO Sans|David Yuan Round Web|Chiron GoRound TC WS|font-display:swap|fonts\.googleapis\.com|fonts\.gstatic\.com/);
   assert.match(css, /font-display:block/);
-  assert.match(html, /data-font="harmony"/);
+  assert.match(html, /data-font="mi"/);
   assert.match(html, /david-site-font-v1/);
   assert.match(html, /fontParameter === "mi" \|\| fontParameter === "harmony"/);
   assert.match(html, /\/fonts\/harmonyos-sans-sc-regular\.ttf/);

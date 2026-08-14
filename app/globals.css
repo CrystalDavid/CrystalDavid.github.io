@@ -43,7 +43,7 @@
 
 :root {
   --font-latin: "Nunito";
-  --font-cjk: "HarmonyOS Sans SC";
+  --font-cjk: "MiSans VF";
   --font-interface:
     var(--font-latin), var(--font-cjk), "PingFang SC", "Microsoft YaHei UI",
     "Microsoft YaHei", sans-serif;

@@ -16,7 +16,7 @@ const fontBootstrapScript = String.raw`
       ? fontParameter
       : storedFont === "mi" || storedFont === "harmony"
         ? storedFont
-        : "harmony";
+        : "mi";
 
     root.dataset.font = fontVersion;
     if (fontParameter === "mi" || fontParameter === "harmony") {
@@ -103,7 +103,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-lang="en" data-font="harmony">
+    <html lang="en" data-lang="en" data-font="mi">
       <head>
         <link
           rel="preload"
