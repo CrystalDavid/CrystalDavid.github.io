@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
@@ -22,18 +23,22 @@ test("homepage exports the intended typography and motion hooks", async () => {
   ]);
 
   assert.match(html, /rel="preload"[^>]+\/fonts\/nunito-latin\.woff2/);
-  assert.match(html, /rel="preload"[^>]+\/fonts\/david-yuan-round-400\.woff2/);
-  assert.match(html, /rel="preload"[^>]+\/fonts\/david-yuan-round-500\.woff2/);
-  assert.match(html, /rel="preload"[^>]+\/fonts\/david-yuan-round-700\.woff2/);
   assert.match(css, /font-family:\s*(?:"Nunito"|Nunito)/);
-  assert.match(css, /David Yuan Round Web/);
+  assert.match(css, /font-family:\s*"OPPO Sans 4\.0"/);
+  assert.match(css, /font-family:\s*(?:"MiSans VF"|MiSans VF)/);
   assert.match(css, /PingFang SC/);
   assert.ok(
-    css.indexOf("Nunito") < css.indexOf("David Yuan Round Web"),
-    "Nunito must precede the Chinese interface font",
+    css.indexOf("Nunito") < css.indexOf("OPPO Sans 4.0"),
+    "Nunito must precede both Chinese comparison fonts",
   );
-  assert.doesNotMatch(css, /Chiron GoRound TC WS|font-display:swap|fonts\.googleapis\.com|fonts\.gstatic\.com/);
+  assert.doesNotMatch(css, /David Yuan Round Web|Chiron GoRound TC WS|font-display:swap|fonts\.googleapis\.com|fonts\.gstatic\.com/);
   assert.match(css, /font-display:block/);
+  assert.match(html, /data-font="oppo"/);
+  assert.match(html, /david-site-font-v1/);
+  assert.match(html, /fontParameter === "mi" \|\| fontParameter === "oppo"/);
+  assert.match(html, /\/fonts\/oppo-sans-4\.0-vf\.ttf/);
+  assert.match(html, /\/fonts\/misans-vf\.ttf/);
+  assert.doesNotMatch(html, /rel="preload"[^>]+(?:oppo-sans-4\.0-vf|misans-vf)\.ttf/);
   assert.equal(
     JSON.parse(packageJson).dependencies["chiron-go-round-tc-webfont-truetype"],
     undefined,
@@ -56,6 +61,21 @@ test("homepage exports the intended typography and motion hooks", async () => {
   assert.match(html, />About me</);
   assert.doesNotMatch(html, />Experience</);
   assert.doesNotMatch(html, /Explore my GitHub projects/);
+});
+
+test("font comparison assets are the unmodified source variable fonts", async () => {
+  const [oppo, miSans, oppoLicense] = await Promise.all([
+    readFile(new URL("../public/fonts/oppo-sans-4.0-vf.ttf", import.meta.url)),
+    readFile(new URL("../public/fonts/misans-vf.ttf", import.meta.url)),
+    readSource("public/fonts/oppo-sans-4.0-license.txt"),
+  ]);
+  const sha256 = (data) => createHash("sha256").update(data).digest("hex").toUpperCase();
+
+  assert.equal(oppo.length, 22_741_096);
+  assert.equal(miSans.length, 20_093_424);
+  assert.equal(sha256(oppo), "6C7D5864C661516E1F400D9F21E4297F2E2A0719909691E29607CC4EF484A9F4");
+  assert.equal(sha256(miSans), "0DDEF90648998900175CFDCA9A6F087A2544C182F130B0AD4F7E94A03A115E79");
+  assert.match(oppoLicense, /OPPO Sans Fonts License Agreement/);
 });
 
 test("desktop scrolling uses Wickret's live fractional runtime settings", async () => {

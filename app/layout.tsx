@@ -1,6 +1,77 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
+const fontBootstrapScript = String.raw`
+  try {
+    var root = document.documentElement;
+    root.classList.add("fonts-loading");
+
+    var language = localStorage.getItem("david-site-language-v2") === "zh" ? "zh" : "en";
+    root.dataset.lang = language;
+    root.lang = language === "zh" ? "zh-CN" : "en";
+
+    var fontParameter = new URLSearchParams(location.search).get("font");
+    var storedFont = sessionStorage.getItem("david-site-font-v1");
+    var fontVersion = fontParameter === "mi" || fontParameter === "oppo"
+      ? fontParameter
+      : storedFont === "mi" || storedFont === "oppo"
+        ? storedFont
+        : "oppo";
+
+    root.dataset.font = fontVersion;
+    if (fontParameter === "mi" || fontParameter === "oppo") {
+      sessionStorage.setItem("david-site-font-v1", fontVersion);
+    }
+
+    var fontFiles = fontVersion === "mi"
+      ? ["/fonts/misans-vf.ttf"]
+      : ["/fonts/oppo-sans-4.0-vf.ttf"];
+
+    fontFiles.forEach(function (href) {
+      var preload = document.createElement("link");
+      preload.rel = "preload";
+      preload.as = "font";
+      preload.type = "font/ttf";
+      preload.crossOrigin = "anonymous";
+      preload.href = href;
+      document.head.appendChild(preload);
+    });
+
+    var reveal = function () {
+      root.classList.remove("fonts-loading");
+      root.classList.add("fonts-ready");
+    };
+    var fallback = setTimeout(reveal, 30000);
+
+    addEventListener("DOMContentLoaded", function () {
+      if (!document.fonts) {
+        clearTimeout(fallback);
+        reveal();
+        return;
+      }
+
+      var cjkFamily = fontVersion === "mi" ? "MiSans VF" : "OPPO Sans 4.0";
+      Promise.all([
+        document.fonts.load('400 1em Nunito'),
+        document.fonts.load('700 1em Nunito'),
+        document.fonts.load('400 1em "' + cjkFamily + '"', '中文字体测试'),
+        document.fonts.load('500 1em "' + cjkFamily + '"', '中文字体测试'),
+        document.fonts.load('700 1em "' + cjkFamily + '"', '中文字体测试')
+      ]).then(function () {
+        return document.fonts.ready;
+      }).then(function () {
+        clearTimeout(fallback);
+        reveal();
+      }, function () {
+        clearTimeout(fallback);
+        reveal();
+      });
+    });
+  } catch (error) {
+    document.documentElement.classList.remove("fonts-loading");
+  }
+`;
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://crystaldavid.github.io"),
   title: { default: "David — Independent Developer", template: "%s" },
@@ -32,7 +103,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-lang="en">
+    <html lang="en" data-lang="en" data-font="oppo">
       <head>
         <link
           rel="preload"
@@ -41,31 +112,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           type="font/woff2"
           crossOrigin="anonymous"
         />
-        <link
-          rel="preload"
-          href="/fonts/david-yuan-round-400.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/david-yuan-round-500.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="/fonts/david-yuan-round-700.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
         <script
           dangerouslySetInnerHTML={{
-            __html:
-              "try{var r=document.documentElement;r.classList.add('fonts-loading');var l=localStorage.getItem('david-site-language-v2')==='zh'?'zh':'en';r.dataset.lang=l;r.lang=l==='zh'?'zh-CN':'en';var d=function(){r.classList.remove('fonts-loading');r.classList.add('fonts-ready')};var t=setTimeout(d,3000);addEventListener('DOMContentLoaded',function(){if(!document.fonts){clearTimeout(t);d();return}Promise.all([document.fonts.load('400 1em Nunito'),document.fonts.load('700 1em Nunito'),document.fonts.load('400 1em \\\"David Yuan Round Web\\\"'),document.fonts.load('500 1em \\\"David Yuan Round Web\\\"'),document.fonts.load('700 1em \\\"David Yuan Round Web\\\"')]).then(function(){return document.fonts.ready}).then(function(){clearTimeout(t);d()},function(){clearTimeout(t);d()})})}catch(e){document.documentElement.classList.remove('fonts-loading')}",
+            __html: fontBootstrapScript,
           }}
         />
       </head>
