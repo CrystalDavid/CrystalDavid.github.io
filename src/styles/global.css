@@ -16,6 +16,7 @@
   --code-toolbar: #f8f8f8;
   --code-background: #fafafa;
   --selection: #daedf7;
+  --text-button: 14px;
   --text-meta: 16px;
   --text-small: var(--text-meta);
   --text-body: 18px;
@@ -35,7 +36,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 32px; }
 body { padding: 0; margin: 0; font: 400 var(--text-body)/1.7 var(--font-interface); background: var(--paper); color: var(--body); font-kerning: normal; font-optical-sizing: auto; -webkit-font-smoothing: antialiased; }
 a { color: var(--accent); text-decoration: none; }
 a:hover { color: var(--accent-hover); }
-button { cursor: pointer; font: inherit; color: inherit; border: 0; background: none; }
+button { cursor: pointer; font: inherit; font-size: var(--text-button); color: inherit; border: 0; background: none; }
 a:focus-visible, button:focus-visible, pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 main:focus { outline: none; }
 img { max-width: 100%; height: auto; }
@@ -86,7 +87,7 @@ ol { list-style: decimal; padding-left: 30px; }
 .publication-authors strong { color: var(--ink); }
 .publication-venue { color: var(--secondary); font-size: var(--text-meta); line-height: 1.65; }
 .publication-links { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
-.publication-links a { display: inline-block; border: 1px solid var(--button-border); color: var(--ink); font-size: var(--text-small); line-height: 1.5; padding: 2px 10px; border-radius: 999px; }
+.publication-links a { display: inline-block; border: 1px solid var(--button-border); color: var(--ink); font-size: var(--text-button); line-height: 1.5; padding: 2px 10px; border-radius: 999px; }
 .publication-links a:hover { color: var(--accent); border-color: var(--accent); }
 .article-toc { margin: 15px 0 30px; padding: 0 10px; text-align: left; font-size: var(--text-meta); line-height: 1.7; }
 .toc-back { margin-bottom: 16px; }

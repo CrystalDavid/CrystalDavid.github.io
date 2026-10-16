@@ -34,9 +34,11 @@ site's bilingual, animation and monorepo requirements.
 - Keep every author list on one line without reducing its 16px type. Allow it to
   extend into the desktop right margin; scroll only the author line when the
   viewport cannot fit it. Preserve author order and the bold personal name.
-- Use only the five shared type sizes in global.css: 16px auxiliary text and
+- Use the five shared text sizes in global.css: 16px auxiliary text and
   metadata, 18px body/listing titles, 22px subheadings, 26px section headings and
   32px page titles/name. Keep the same scale on mobile and desktop.
+- Buttons are the sole smaller exception: use --text-button (14px) for resource
+  capsules and Copy. Keep navigation and other auxiliary text at 16px.
 - Sidebar navigation matches the school text: Nunito 16px/1.7, weight 400.
 - Text uses three default colors: #043361, #3399cc and #444444.
   All gray text uses #444444; do not restore #595959, #333333 or #777777.
