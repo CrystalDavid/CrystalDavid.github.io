@@ -30,6 +30,8 @@ CSS 映射：--ink 为深蓝，--accent 为链接蓝，--accent-hover 为悬停�
 
 背景固定 #FFFFFF，color-scheme: only light，不随系统外观改变。边框 #E5E5E5、按钮边框 #7C8C9B、图片阴影 #B0B0B0、工具栏背景 #F8F8F8、代码背景 #FAFAFA、选择背景 #DAEDF7；这些不是额外字体颜色。
 
+浏览器标签页不显示网站图标。共享布局使用透明空 SVG，不恢复 D 字母或新增其他 favicon 图案。
+
 ## 字号：5 档文字 + 14px 按钮，共 6 种
 
 | 字号 | CSS 变量 | 用途 |
