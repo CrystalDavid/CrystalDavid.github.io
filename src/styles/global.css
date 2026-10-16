@@ -5,8 +5,8 @@
   color-scheme: only light;
   --paper: #fff;
   --ink: #043361;
-  --body: #595959;
   --secondary: #444;
+  --body: var(--secondary);
   --muted: var(--secondary);
   --accent: #3399cc;
   --accent-hover: #006699;
@@ -16,8 +16,8 @@
   --code-toolbar: #f8f8f8;
   --code-background: #fafafa;
   --selection: #daedf7;
-  --text-small: 14px;
   --text-meta: 16px;
+  --text-small: var(--text-meta);
   --text-body: 18px;
   --text-subheading: 22px;
   --text-heading: 26px;
@@ -88,9 +88,9 @@ ol { list-style: decimal; padding-left: 30px; }
 .publication-links { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
 .publication-links a { display: inline-block; border: 1px solid var(--button-border); color: var(--ink); font-size: var(--text-small); line-height: 1.5; padding: 2px 10px; border-radius: 999px; }
 .publication-links a:hover { color: var(--accent); border-color: var(--accent); }
-.article-toc { margin: 15px 0 30px; padding: 0 10px; text-align: left; font-size: var(--text-small); }
+.article-toc { margin: 15px 0 30px; padding: 0 10px; text-align: left; font-size: var(--text-meta); line-height: 1.7; }
 .toc-back { margin-bottom: 16px; }
-.nav-link { display: flex; gap: 7px; color: var(--body); padding: 5px 0; line-height: 1.4; }
+.nav-link { display: flex; gap: 7px; color: var(--body); padding: 5px 0; line-height: inherit; }
 .nav-link[aria-current='location'] { color: var(--accent); }
 .article-sidebar .profile-avatar { width: 112px; height: 112px; padding: 14px; margin-bottom: 8px; }
 .article-sidebar .profile-avatar img { width: 84px; height: 84px; }
