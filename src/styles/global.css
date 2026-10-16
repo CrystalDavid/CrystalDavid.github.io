@@ -4,21 +4,21 @@
 :root {
   color-scheme: light dark;
   --paper: #fff;
-  --ink: #043361;
   --body: #595959;
+  --ink: var(--body);
   --muted: #777;
   --secondary: #444;
   --description: #333;
   --strong: #222;
-  --accent: #3399cc;
-  --accent-hover: #006699;
+  --accent: var(--body);
+  --accent-hover: var(--body);
   --line: #e5e5e5;
-  --button-border: #7c8c9b;
-  --badge: #002d72;
+  --button-border: #888;
+  --badge: #595959;
   --image-shadow: #b0b0b0;
   --code-toolbar: #f8f8f8;
   --code-background: #fafafa;
-  --selection: #daedf7;
+  --selection: #e5e5e5;
   --font-interface: 'Nunito', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei UI', 'Microsoft YaHei', sans-serif;
   font-family: var(--font-interface);
   color: var(--body);
@@ -28,28 +28,26 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --paper: #111111;
-    --ink: #c6dced;
     --body: #b8b8b8;
     --muted: #a0a0a0;
     --secondary: #b8b8b8;
     --description: #c6c6c6;
     --strong: #e0e0e0;
-    --accent: #7cb7df;
-    --accent-hover: #b5dcf7;
     --line: #333333;
-    --button-border: #687e91;
-    --badge: #21496b;
+    --button-border: #777;
+    --badge: #444;
     --image-shadow: #0008;
     --code-toolbar: #222222;
     --code-background: #191919;
-    --selection: #25465f;
+    --selection: #333;
   }
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 32px; }
 body { padding: 0; margin: 0; font: 400 16px/1.6 var(--font-interface); background: var(--paper); color: var(--body); font-kerning: normal; font-optical-sizing: auto; -webkit-font-smoothing: antialiased; }
 a { color: var(--accent); text-decoration: none; }
-a:hover { color: var(--accent-hover); }
+a:hover { color: var(--accent-hover); text-decoration: underline; text-underline-offset: 3px; }
+.home-section > p a, .source-link { text-decoration: underline; text-decoration-color: var(--button-border); text-underline-offset: 3px; }
 button { cursor: pointer; font: inherit; color: inherit; border: 0; background: none; }
 a:focus-visible, button:focus-visible, pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 main:focus { outline: none; }
@@ -65,7 +63,7 @@ ul { list-style: disc; padding-left: 40px; }
 ol { list-style: decimal; padding-left: 30px; }
 ::selection { color: var(--ink); background: var(--selection); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-.skip-link { position: fixed; top: -60px; left: 20px; padding: 8px 15px; background: #043361; color: white; z-index: 20; }
+.skip-link { position: fixed; top: -60px; left: 20px; padding: 8px 15px; background: #444; color: white; z-index: 20; }
 .skip-link:focus { top: 15px; color: white; }
 .site-shell { display: grid; grid-template-columns: 232px 650px; gap: 78px; width: 960px; margin: 0 auto; align-items: start; }
 .sidebar { position: sticky; top: 0; width: 232px; padding-top: 64px; text-align: center; max-height: 100svh; overflow-y: auto; scrollbar-width: thin; }
@@ -97,11 +95,11 @@ ol { list-style: decimal; padding-left: 30px; }
 .publication-description { color: var(--description); font-size: 15px; line-height: 1.45; margin-top: 4px !important; }
 .publication-links { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
 .publication-links a { display: inline-block; border: 1px solid var(--button-border); color: var(--ink); font-size: 12px; line-height: 1.5; padding: 2px 10px; border-radius: 999px; }
-.publication-links a:hover { color: var(--accent); border-color: var(--accent); }
+.publication-links a:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
 .article-toc { margin: 15px 0 30px; padding: 0 10px; text-align: left; font-size: 13px; }
 .toc-back { margin-bottom: 16px; }
 .nav-link { display: flex; gap: 7px; color: var(--body); padding: 5px 0; line-height: 1.4; }
-.nav-link[aria-current='location'] { color: var(--accent); }
+.nav-link[aria-current='location'] { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 .article-sidebar .profile-avatar { width: 112px; height: 112px; padding: 14px; margin-bottom: 8px; }
 .article-sidebar .profile-avatar img { width: 84px; height: 84px; }
 .article-sidebar .profile-name { font-size: 25px; margin-bottom: 18px; }

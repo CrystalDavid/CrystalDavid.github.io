@@ -62,4 +62,4 @@ npm run preview
 
 默认正式域名沿用旧站 `https://crystaldavid.github.io`。更换域名时，设置 `SITE_URL` 后构建，并同步 `public/robots.txt` 和社交分享图中的域名。本站按域名根路径部署。
 
-详细说明见 `docs/implementation.md` 与 `docs/verification.md`。
+详细说明见 `docs/implementation.md` 与 `docs/verification.md`。当前字体颜色、字号及其用途见 `docs/typography.md`；全站文字使用中性灰配色。
