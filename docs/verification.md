@@ -7,6 +7,7 @@
 - npm run check、五页生产构建、四项已有自动检查通过，0 错误、0 警告；保留剪贴板兼容 API 的 1 项既有弃用提示。浏览器脚本未变，仍为 18,062 bytes raw / 6,754 bytes gzip。
 - Edge 本地检查 ProME、PPT-Agent 两篇含代码文章 × 1440/390/320px，共六种状态；全部六个代码块的字体、字号、行高和颜色符合规范，Nunito 已加载，页面无横向溢出或运行时异常。窄屏代码可局部滚动至末尾，浅/深色偏好和同页偏好切换均保持白色。
 - 使用页面内剪贴板写入替身验证每篇首个 Copy 按钮传出的完整文本与代码一致，成功提示正常恢复。桌面/手机代码截图显示字体一致；未改动复制逻辑、文章内容或其他布局。
+- 应用提交 `11519a65931e297c4f2c0e3108b58ee3814884cc` 已推送 main；GitHub Actions [38942593976](https://github.com/CrystalDavid/CrystalDavid.github.io/actions/runs/38942593976) 的 build、deploy 均成功。未登录 Edge 在 https://crystaldavid.github.io/ 的两篇文章上复核同样六种视口状态，代码、工具栏、Copy、局部滚动和固定浅色均通过；线上截图与本地一致。
 
 ## 2026-10-17 统一视觉细节并发布正式网站（历史版本）
 
