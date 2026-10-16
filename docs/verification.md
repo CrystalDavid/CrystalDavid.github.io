@@ -8,6 +8,8 @@
 - 本地 npm run check、五页构建、四项内容/资源/隐私/体积检查通过。0 错误、0 警告，保留剪贴板 API 的 1 项既有弃用提示；浏览器脚本仍为 18,062 bytes raw / 6,754 bytes gzip。
 - Edge 检查五页 × 1440/390px，覆盖浅/深色偏好，共十种状态：四项修改均达到指定数值，所有图片可解码，无整页横向溢出或运行时异常。桌面与手机完整截图、Copy 工具栏截图检查正常，Notes 与文章返回锚点可用。
 - 用户明确授权发布到 https://crystaldavid.github.io/；发布前确认远端 main 已在 d799ef18b75d1940d2f5b6d2e0630822e1918e68 清空旧站、Pages API 返回未配置。保留既有提交历史，以 Astro dist 重新配置正式发布。
+- 正式发布提交 `657b1e61d60187302c7fd4cff0c3392e07c09bb7`，应用与规范提交 `c11a387`。GitHub Actions [38940733759](https://github.com/CrystalDavid/CrystalDavid.github.io/actions/runs/38940733759) 的 build、deploy 均成功；Pages 为 public、workflow、HTTPS enforced。
+- 未登录 Edge 在正式域名复核同样十种页面/视口状态全部通过，Notes 跳转及返回首页条目正常。公开文章、ProME PDF、字体和项目图片返回 200；GRA-Flow/RECAST 的两份 PDF、两篇 Notes 与私有目录地址均为 404，正式站点地图不包含它们或预览域名。
 
 ## 2026-10-17 按钮文字单独调整为 14px（历史版本）
 

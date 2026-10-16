@@ -25,6 +25,14 @@ Astro `site` / 构建的 `SITE_URL` 使用 `https://crystaldavid.github.io`，�
 - `.private/`、本机路径、CV、凭据、源码草稿和依赖目录不得进入 Pages 上传产物。
 - Sites 预览为独立历史对比站，版本见 [preview.md](preview.md)。正式发布不自动同步它。
 
+## 首次 Astro 正式发布记录
+
+- 日期：2026-10-17（Asia/Shanghai）。
+- 发布提交：`657b1e61d60187302c7fd4cff0c3392e07c09bb7`，已包含最新 main 历史及经过验证的 Astro 源码。
+- Actions：[38940733759](https://github.com/CrystalDavid/CrystalDavid.github.io/actions/runs/38940733759)，build 与 deploy 均成功。
+- Pages：public，GitHub Actions 构建，HTTPS 已启用。
+- 正式域名五页 × 1440/390px 验收通过；四项样式统一、文章导航、资源状态及暂不公开资料的 404 均已核对。
+
 ## 回退
 
 优先在 main 上撤销有问题的应用提交并重新运行发布，保留后续无关修改。也可按明确的发布需求恢复已验证版本的源文件后提交。不要 reset/force-push main，不要为修复展示问题恢复暂不公开资料。
