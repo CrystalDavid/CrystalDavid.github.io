@@ -124,9 +124,9 @@ ol { list-style: decimal; padding-left: 30px; }
 .article-body ul, .article-body ol { margin: 18px 0 24px; }
 .article-body li { margin-top: 8px; }
 .code-block { min-width: 0; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; margin: 24px 0; }
-.code-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; color: var(--secondary); font: var(--text-small)/1.5 'Ubuntu Mono', monospace; border-bottom: 1px solid var(--line); background: var(--code-toolbar); }
+.code-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; color: var(--secondary); font: var(--text-small)/1.5 var(--font-interface); border-bottom: 1px solid var(--line); background: var(--code-toolbar); }
 .code-toolbar button { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-interface); }
-pre { font: var(--text-small)/1.65 'Ubuntu Mono', 'Noto Sans SC', Consolas, monospace; white-space: pre; overflow-x: auto; padding: 16px; margin: 0; background: var(--code-background); color: var(--secondary); }
+pre { font: var(--text-small)/1.65 var(--font-interface); white-space: pre; overflow-x: auto; padding: 16px; margin: 0; background: var(--code-background); color: var(--secondary); }
 code { font-family: inherit; }
 .not-found { padding-top: 30px; }
 .not-found h1 { line-height: 1.4; }

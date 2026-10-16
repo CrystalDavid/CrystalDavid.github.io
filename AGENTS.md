@@ -34,25 +34,13 @@ Keep the legacy Next.js implementation in Git history, not in the active site.
   Do not expose their PDFs, Notes pages, title/image links or sitemap entries.
   Keep drafts in the ignored local `.private/` directory, outside public resources
   and tracked article data. Never copy that directory to a hosted checkout.
-- Keep every author list on one line without reducing its 16px type. Allow it to
+- Keep every author list on one line without reducing its specified type size. Allow it to
   extend into the desktop right margin; scroll only the author line when the
   viewport cannot fit it. Preserve author order and the bold personal name.
-- Use the five shared text sizes in global.css: 16px auxiliary text and
-  metadata, 18px body/listing titles, 22px subheadings, 26px section headings and
-  32px page titles/name. Keep the same scale on mobile and desktop.
-- Buttons are the sole smaller exception: use --text-button (14px) for resource
-  capsules and Copy, all in Nunito. Code and its language label use Ubuntu Mono.
-  Keep navigation and other auxiliary text at 16px.
-- Homepage and article 26px headings share --line-heading (1.3 / 33.8px).
-  Authors and submission metadata share --line-meta (1.65 / 26.4px).
-- Use --paragraph-gap (18px) between prose paragraphs, --auxiliary-gap (16px)
-  after article summaries/status, and --subheading-gap (24px) above article h3.
-- Sidebar navigation matches the school text: Nunito 16px/1.7, weight 400.
-- Text uses three default colors: #043361, #3399cc and #444444.
-  All gray text uses #444444; do not restore #595959, #333333 or #777777.
-- Section gaps are 48px, or 40px up to 1000px. Give image-led publication/project
-  sections 8px extra space before the next heading to compensate for the image
-  shadow; up to 520px, cards stack and all section gaps are 40px.
+- Follow `docs/typography.md` for fonts, colors, sizes, line heights, spacing and
+  responsive rules. Keep the numerical specification there, not in this file.
+- Preserve code characters, whitespace, newlines and local horizontal scrolling
+  when changing its typography.
 - Keep verified article text, conclusions, limitations, citations and author
   order. Do not invent credentials, accepted papers or unavailable code links.
 - Keep public article slugs and all `/#article-card-<slug>` listing anchors stable.

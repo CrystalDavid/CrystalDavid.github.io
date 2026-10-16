@@ -12,7 +12,7 @@ PPT-Agent 首页配图 `public/media/ppt-agent-welcome.png` 是 2026-10-16 从�
 
 桌面内容区 960px：左栏 232px、列间距 78px、右栏 650px。顶部间距 64px。左栏使用 CSS sticky；右栏随浏览器文档原生滚动，没有虚拟滚轮、逐帧 transform 或滚动动画循环。1000px 及以下使用单栏，520px 及以下的条目缩略图与文字上下排列。
 
-完整视觉规范统一维护在 [typography.md](typography.md)。资源胶囊及 Copy 按钮均使用 Nunito 14px，代码正文及语言标签保留 Ubuntu Mono；侧栏目录与学校文字同为 Nunito 16px/1.7、400 字重。首页与文章的 26px 标题共用 --line-heading (1.3)，作者/投稿信息共用 --line-meta (1.65)。段落间距共用 --paragraph-gap (18px)，文章摘要和状态下方共用 --auxiliary-gap (16px)，文章 h3 上方使用 --subheading-gap (24px)。其余布局、字号及内容边界保持。
+完整视觉规范统一维护在 [typography.md](typography.md)。资源胶囊及 Copy 按钮均使用 Nunito 14px，代码正文及工具栏标签也使用 Nunito、字号为 16px；侧栏目录与学校文字同为 Nunito 16px/1.7、400 字重。首页与文章的 26px 标题共用 --line-heading (1.3)，作者/投稿信息共用 --line-meta (1.65)。段落间距共用 --paragraph-gap (18px)，文章摘要和状态下方共用 --auxiliary-gap (16px)，文章 h3 上方使用 --subheading-gap (24px)。其余布局、字号及内容边界保持。
 
 所有论文作者列表与文章页作者信息统一为 16px，均不换行、不缩小字体、不加省略号。桌面长名单可以超出条目文字列，向右侧留白延伸；屏幕空间不足时仅作者行可横向滚动，手机同样保持单行，页面整体不横向溢出。
 
@@ -58,7 +58,7 @@ ProME 展示在 Publications & Manuscripts 中，保留旧文章关于训练群�
 
 ## 字体与资源
 
-英文 Nunito 的 latin 与 latin-ext 文件直接复制旧站；代码块使用 Ubuntu Mono。Nunito latin 在首屏本地预加载，使用 font-display: block，不引入整页隐藏脚本。Noto Sans SC 子集仅保留作非英文字符后备，不再预加载。字体、真实项目截图、论文图和头像均由本站提供。字体 OFL 许可证位于 public/fonts。
+英文 Nunito 的 latin 与 latin-ext 文件直接复制旧站，全站文字统一使用，包括代码正文、语言标签和 Copy。代码仍保持原始内容与空白，通过 pre 的局部横向滚动容纳长行。Nunito latin 在首屏本地预加载，使用 font-display: block，不引入整页隐藏脚本。Noto Sans SC 子集仅保留作非英文字符后备，不再预加载。字体、真实项目截图、论文图和头像均由本站提供。使用字体的 OFL 许可证位于 public/fonts。
 
 没有第三方字体 CDN、追踪器、登录或运行时后端依赖。
 
