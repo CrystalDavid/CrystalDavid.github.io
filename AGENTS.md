@@ -31,12 +31,17 @@ site's bilingual, animation and monorepo requirements.
   Do not expose their PDFs, Notes pages, title/image links or sitemap entries.
   Keep drafts in the ignored local `.private/` directory, outside public resources
   and tracked article data. Never copy that directory to a hosted checkout.
-- Keep every author list on one line without reducing its 15px type. Allow it to
+- Keep every author list on one line without reducing its 16px type. Allow it to
   extend into the desktop right margin; scroll only the author line when the
   viewport cannot fit it. Preserve author order and the bold personal name.
-- Homepage body text is 17px and publication metadata 15px. Section gaps are
-  48px, or 40px up to 1000px. Article body text is 18px,
-  or 17px up to 520px. Preserve heading sizes and the established palette.
+- Use only the six shared type sizes in global.css: 14px auxiliary text, 16px
+  metadata, 18px body/listing titles, 22px subheadings, 26px section headings and
+  32px page titles/name. Keep the same scale on mobile and desktop.
+- Text uses four default colors: #043361, #3399cc, #595959 and #444444.
+  Auxiliary text and code use #444444; do not restore #333333 or #777777.
+- Section gaps are 48px, or 40px up to 1000px. Give image-led publication/project
+  sections 8px extra space before the next heading to compensate for the image
+  shadow; up to 520px, cards stack and all section gaps are 40px.
 - Keep verified article text, conclusions, limitations, citations and author
   order. Do not invent credentials, accepted papers or unavailable code links.
 - Keep public article slugs and all `/#article-card-<slug>` listing anchors stable.
