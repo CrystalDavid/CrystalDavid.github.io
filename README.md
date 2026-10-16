@@ -26,9 +26,9 @@ npm run preview
 
 `dist/` 是完整的静态网站，可以部署到 GitHub Pages、Cloudflare Pages、Netlify 或任意静态服务器。用 HTTP 服务器预览，不要直接双击生成的 HTML。
 
-新版独立保存在 `redesign/astro-homepage-2026-10-16` 分支，原版保留在 `main`。此分支不包含自动发布工作流，不会改变现有 GitHub Pages 网站。后续要正式上线时，需另行配置 Astro 的 `dist/` 发布流程，不能沿用旧版的 `apps/web/out` 路径。
+正式网站：[crystaldavid.github.io](https://crystaldavid.github.io/)。`main` 是正式发布分支，`.github/workflows/pages.yml` 使用 Node.js 24 安装锁定依赖，完成检查、构建和内容验证后，仅发布 `dist/`。旧版 Next.js 留在 Git 历史中，不再使用 `apps/web/out` 发布路径。发布、验证与回退方式见 [部署说明](docs/deployment.md)。
 
-公开在线预览：[David — Astro Preview](https://david-astro-preview-20261016.g2811459442.chatgpt.site)。任何人都能打开，无需登录。此独立 Sites 站点用于与 [原网站](https://crystaldavid.github.io/) 对比；GitHub 分支更新后需单独重新发布预览。发布信息见 `docs/preview.md`。
+此前的公开对比预览：[David — Astro Preview](https://david-astro-preview-20261016.g2811459442.chatgpt.site)。这是独立 Sites 站点，GitHub Pages 发布不会自动更新它；对外展示以正式网站为准。该预览的版本信息见 [预览记录](docs/preview.md)。
 
 ## 技术与参考
 
@@ -63,8 +63,12 @@ npm run preview
 
 首页论文、PPT-Agent 和 Evidence Tracker 均不显示额外的短说明，全部配图移除名称标签；左栏使用实心邮件/GitHub 图标。PPT-Agent 展示在线 Demo 的单张真实欢迎界面，Evidence Tracker 使用依据项目文章绘制的 SVG 工作流示意图。文章页摘要与正文保留。图片来源与含义见 `docs/implementation.md`。
 
-正文及辅助文字使用 16 / 18 / 22 / 26 / 32px 五档，按钮单独使用 14px，手机和桌面共用。正文 18px，资料信息和辅助文字至少 16px。侧栏目录和返回链接与学校文字统一为 Nunito 16px、常规字重、1.7 行高。作者名单保持单行，桌面向右侧留白延伸，空间不足时仅名单横向滚动。文字常驻颜色为深蓝、链接蓝、#444444 三种，所有灰色文字共用 #444444。首页普通板块间距桌面 48px、单栏 40px，图片结尾的论文/项目板块额外增加 8px 补偿阴影；手机卡片上下排列时统一 40px。完整实测清单见 `docs/typography.md`。
+## 视觉规范
+
+完整的字体、颜色、字号、行高、间距与响应式规则统一维护在 **[视觉规范](docs/typography.md)**。这是视觉设计的唯一规范入口；`AGENTS.md` 要求后续修改遵守并同步更新它，README 只保留入口，避免多份数值漂移。
+
+全站保持三种常驻文字颜色、14 / 16 / 18 / 22 / 26 / 32px 六档字号。所有按钮使用 Nunito 14px，代码使用 Ubuntu Mono。26px 标题统一 1.3 行高，作者和投稿信息统一 1.65；段落间距 18px，摘要/状态下方 16px，文章小标题上方 24px。完整用途、例外和板块间距以规范为准。
 
 默认正式域名沿用旧站 `https://crystaldavid.github.io`。更换域名时，设置 `SITE_URL` 后构建，并同步 `public/robots.txt` 和社交分享图中的域名。本站按域名根路径部署。
 
-详细说明见 `docs/implementation.md` 与 `docs/verification.md`。当前字体颜色、字号及其用途见 `docs/typography.md`。
+详细说明见 [实现依据](docs/implementation.md)、[验证记录](docs/verification.md) 与 [视觉规范](docs/typography.md)。

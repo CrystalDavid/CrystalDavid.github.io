@@ -1,6 +1,15 @@
 # 验证记录
 
-## 2026-10-17 按钮文字单独调整为 14px（当前版本）
+## 2026-10-17 统一视觉细节并发布正式网站（当前版本）
+
+- Copy 改为 Nunito 14px/21px，代码正文和语言标签保留 Ubuntu Mono；投稿信息统一 16px/26.4px，首页和文章 h2 均为 26px/33.8px。
+- 相邻普通段落统一 18px，文章摘要和状态下方统一 16px，文章 h3 上方统一 24px，使用共享 CSS 变量。六档字号、三种常驻色、两种字重及既有板块间距规则保持。
+- 完整视觉规范集中到 docs/typography.md；AGENTS.md 强制后续遵守，README.md 提供入口。新增 docs/deployment.md 和 main 分支的 Astro Pages 发布流程。
+- 本地 npm run check、五页构建、四项内容/资源/隐私/体积检查通过。0 错误、0 警告，保留剪贴板 API 的 1 项既有弃用提示；浏览器脚本仍为 18,062 bytes raw / 6,754 bytes gzip。
+- Edge 检查五页 × 1440/390px，覆盖浅/深色偏好，共十种状态：四项修改均达到指定数值，所有图片可解码，无整页横向溢出或运行时异常。桌面与手机完整截图、Copy 工具栏截图检查正常，Notes 与文章返回锚点可用。
+- 用户明确授权发布到 https://crystaldavid.github.io/；发布前确认远端 main 已在 d799ef18b75d1940d2f5b6d2e0630822e1918e68 清空旧站、Pages API 返回未配置。保留既有提交历史，以 Astro dist 重新配置正式发布。
+
+## 2026-10-17 按钮文字单独调整为 14px（历史版本）
 
 - 新增 --text-button: 14px，供 PDF / arXiv / Notes / Code / Demo / Article 等胶囊按钮和 Copy 使用；行高均为 21px。其余文字继续使用 16/18/22/26/32px 五档，颜色与间距规则不变。
 - `npm run check`、五页生产构建及四项现有检查通过；0 错误、0 警告，保留既有剪贴板 API 的 1 项弃用提示。浏览器脚本仍为 18,062 bytes raw / 6,754 bytes gzip。

@@ -1,12 +1,15 @@
 # David personal website
 
-This branch contains David's Astro redesign. The legacy Next.js site and its
-deployment remain on `main`. The current user instructions supersede the old
-site's bilingual, animation and monorepo requirements.
+This repository contains David's Astro personal website. The user authorized
+production publication at https://crystaldavid.github.io on 2026-10-17.
+The `main` branch builds and deploys the current Astro site through GitHub Pages.
+Keep the legacy Next.js implementation in Git history, not in the active site.
 
 ## Before changing the site
 
-- Read `README.md`, `docs/implementation.md`, and `docs/verification.md`.
+- Read `README.md`, `docs/typography.md`, `docs/implementation.md`, and
+  `docs/verification.md`. The complete visual specification lives only in
+  `docs/typography.md`; keep it synchronized with `src/styles/global.css`.
 - Check Git status and preserve existing user edits.
 - Update the relevant documentation whenever appearance, behavior, architecture,
   content, routes or verification commands change.
@@ -38,7 +41,12 @@ site's bilingual, animation and monorepo requirements.
   metadata, 18px body/listing titles, 22px subheadings, 26px section headings and
   32px page titles/name. Keep the same scale on mobile and desktop.
 - Buttons are the sole smaller exception: use --text-button (14px) for resource
-  capsules and Copy. Keep navigation and other auxiliary text at 16px.
+  capsules and Copy, all in Nunito. Code and its language label use Ubuntu Mono.
+  Keep navigation and other auxiliary text at 16px.
+- Homepage and article 26px headings share --line-heading (1.3 / 33.8px).
+  Authors and submission metadata share --line-meta (1.65 / 26.4px).
+- Use --paragraph-gap (18px) between prose paragraphs, --auxiliary-gap (16px)
+  after article summaries/status, and --subheading-gap (24px) above article h3.
 - Sidebar navigation matches the school text: Nunito 16px/1.7, weight 400.
 - Text uses three default colors: #043361, #3399cc and #444444.
   All gray text uses #444444; do not restore #595959, #333333 or #777777.
@@ -61,5 +69,8 @@ site's bilingual, animation and monorepo requirements.
   including live preference changes, article navigation, images and overflow.
 - Do not commit dependencies, build output, credentials, private source files,
   browser profiles, scratch scripts or screenshots.
-- Push this redesign to its own branch. Do not change `main`, the Pages source,
-  or deploy over the existing site without the user's explicit instruction.
+- Production deployment uses `.github/workflows/pages.yml` on `main`, Node.js
+  24, and the checked `dist/` artifact. Read `docs/deployment.md` before release.
+  Preserve remote history and unrelated changes; never force-push the main branch.
+- The Sites comparison preview is independent; a GitHub Pages release does not
+  automatically update it. Do not confuse its URL with the production website.

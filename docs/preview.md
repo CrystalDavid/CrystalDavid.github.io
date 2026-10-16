@@ -1,7 +1,7 @@
-# 独立公开预览
+# 独立公开预览（历史对比版本）
 
 - 预览网址：https://david-astro-preview-20261016.g2811459442.chatgpt.site
-- 原网站：https://crystaldavid.github.io/
+- 正式网站：https://crystaldavid.github.io/ （现在用于发布 Astro 新版）
 - 访问权限：public，任何人无需登录即可访问。
 - 内容来源：`redesign/astro-homepage-2026-10-16` 的 `6e49b2370894129ed97eca4f177bcf69ecb260f9`（按钮单独使用 14px，其余五档文字字号与统一深灰保持）。
 - 预览方式：Sites 独立静态站点，发布 Astro `dist/`。与原 GitHub Pages 的部署完全分开。
@@ -18,4 +18,4 @@
 
 预览应用代码与上述分支提交一致，仅调整独立域名的 canonical/站点地图元数据、禁止预览被搜索引擎收录，并添加 Sites hosting manifest。搜索引擎规则不限制访客访问。公开内容包括三篇完整文章和 ProME PDF；两篇暂不公开稿件的笔记、PDF 及本机私有目录均不进入当前构建。发布记录等维护文档不影响页面输出。
 
-GitHub 分支与预览之间没有自动发布工作流。后续先在本分支完成修改，再按 Sites 技能的现有站点流程，使用上述 project_id 同步预览源码、构建和发布；保持公开权限。原仓库 main 及 GitHub Pages 发布配置应保持不变。
+GitHub 分支与此预览之间没有自动同步流程。用户于 2026-10-17 要求把新版部署到 GitHub Pages；正式发布流程见 [deployment.md](deployment.md)。本页记录的 Sites 版本 9 保留用于历史对比，不表示最新正式版本。只有需要更新此预览时才按 Sites 的现有站点流程，复用上述 project_id 同步源码、构建和发布，并保持公开权限。

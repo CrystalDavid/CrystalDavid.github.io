@@ -12,7 +12,7 @@ PPT-Agent 首页配图 `public/media/ppt-agent-welcome.png` 是 2026-10-16 从�
 
 桌面内容区 960px：左栏 232px、列间距 78px、右栏 650px。顶部间距 64px。左栏使用 CSS sticky；右栏随浏览器文档原生滚动，没有虚拟滚轮、逐帧 transform 或滚动动画循环。1000px 及以下使用单栏，520px 及以下的条目缩略图与文字上下排列。
 
-全站使用五档文字字号，并增加独立 14px 按钮档位：16px 资料/辅助信息、18px 正文及论文/项目标题、22px 小标题与英文全名、26px 栏目/章节标题、32px 姓名和文章主标题。资源胶囊及 Copy 按钮使用 --text-button (14px)；其他辅助文字的 --text-small 仍引用 --text-meta (16px)。侧栏目录与 Back to home 的字体、字号、字重和行高与学校文字完全一致：Nunito 16px/1.7、400 字重。桌面与手机共用字号体系；同档用颜色、字重和段落层级区分角色。正文行高为 1.7，作者等资料信息为 1.65。
+完整视觉规范统一维护在 [typography.md](typography.md)。资源胶囊及 Copy 按钮均使用 Nunito 14px，代码正文及语言标签保留 Ubuntu Mono；侧栏目录与学校文字同为 Nunito 16px/1.7、400 字重。首页与文章的 26px 标题共用 --line-heading (1.3)，作者/投稿信息共用 --line-meta (1.65)。段落间距共用 --paragraph-gap (18px)，文章摘要和状态下方共用 --auxiliary-gap (16px)，文章 h3 上方使用 --subheading-gap (24px)。其余布局、字号及内容边界保持。
 
 所有论文作者列表与文章页作者信息统一为 16px，均不换行、不缩小字体、不加省略号。桌面长名单可以超出条目文字列，向右侧留白延伸；屏幕空间不足时仅作者行可横向滚动，手机同样保持单行，页面整体不横向溢出。
 
@@ -66,6 +66,6 @@ ProME 展示在 Publications & Manuscripts 中，保留旧文章关于训练群�
 
 npm run check 检查 Astro/TypeScript；npm run build 输出首页、404、三篇公开文章共五个静态页面，以及站点地图与资源；npm test 核对完整英文文章、英文元数据、本地资源/链接/锚点、暂不公开稿件的 PDF/页面/站点地图排除、语言控件和页脚的移除，以及包含内联脚本的浏览器脚本体积。dist 与 node_modules 是生成目录。
 
-新版保存到 `redesign/astro-homepage-2026-10-16`，基于原仓库 main 的历史提交。该分支不包含旧版 Next.js 部署工作流；现有 main 和 GitHub Pages 配置保留。正式切换网站需要后续明确授权与适用于 Astro dist 的部署配置。
+用户于 2026-10-17 明确要求将新版发布至正式网站。`main` 发布当前 Astro 版本，`.github/workflows/pages.yml` 使用 Node.js 24 运行 npm ci、check、build、test，再通过 GitHub Pages 发布 dist。迁移保留 main 的既有提交历史，原 Next.js 代码不进入当前构建。部署维护见 [deployment.md](deployment.md)。
 
-为公开对比提供独立 Sites 预览，地址与维护信息见 `docs/preview.md`。预览使用单独的站点身份和源码仓库，保持 public 权限，不影响原 GitHub Pages；本分支推送不会自动更新该预览。
+此前的独立 Sites 对比预览继续保持 public 权限，地址与版本信息见 [preview.md](preview.md)。GitHub Pages 是正式展示入口；其发布不会自动同步独立预览。
