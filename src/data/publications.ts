@@ -4,10 +4,14 @@ import type { ArticleText } from './articles';
 export type Publication = {
   slug: string;
   name: string;
+  title: string;
+  coverImage: string;
+  coverAlt: string;
+  notesAvailable: boolean;
   authors: string[];
   status: ArticleText;
   description: ArticleText;
-  pdf: string;
+  pdf?: string;
   preprint?: string;
 };
 

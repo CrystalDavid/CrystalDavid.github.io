@@ -2,7 +2,13 @@
   {
     "slug": "prome-group-robust-learning",
     "name": "ProME",
-    "authors": ["Qianqian Wang", "Yunshan Li", "Dawei Huang", "Wenwu Gong", "Lili Yang"],
+    "authors": [
+      "Qianqian Wang",
+      "Yunshan Li",
+      "Dawei Huang",
+      "Wenwu Gong",
+      "Lili Yang"
+    ],
     "status": {
       "zh": "已投稿 Neurocomputing · arXiv:2608.13190",
       "en": "Submitted to Neurocomputing · arXiv:2608.13190"
@@ -12,12 +18,23 @@
       "en": "Prototype-margin environments, classifier repair and deployment-aware model selection."
     },
     "pdf": "/papers/prome.pdf",
-    "preprint": "https://arxiv.org/abs/2608.13190"
+    "preprint": "https://arxiv.org/abs/2608.13190",
+    "title": "ProME: Prototype-Margin Environments with Repair-Aware Selection for Group-Robust Learning",
+    "coverImage": "/media/prome-framework.webp",
+    "coverAlt": "The two-stage ProME training, classifier-repair and deployment framework from the paper",
+    "notesAvailable": true
   },
   {
     "slug": "gra-flow-image-restoration",
     "name": "GRA-Flow",
-    "authors": ["Qianqian Wang", "Dawei Huang", "Hang Fu", "Wenwu Gong", "Yunshan Li", "Lili Yang"],
+    "authors": [
+      "Qianqian Wang",
+      "Dawei Huang",
+      "Hang Fu",
+      "Wenwu Gong",
+      "Yunshan Li",
+      "Lili Yang"
+    ],
     "status": {
       "zh": "手稿准备中，拟投 Pattern Recognition",
       "en": "In preparation for submission to Pattern Recognition"
@@ -26,12 +43,22 @@
       "zh": "在推理时无需退化标签或干净图像，预测候选修正的收益并控制应用强度。",
       "en": "Predicting correction benefit and choosing how much to refine, without a clean target or degradation label at inference."
     },
-    "pdf": "/papers/gra-flow.pdf"
+    "title": "GRA-Flow: Gain-Risk Aligned Rectified-Flow Refinement for Task-Free OOD Image Restoration",
+    "coverImage": "/media/gra-flow-correction.webp",
+    "coverAlt": "Figure 2 from GRA-Flow: image-space correction decomposition under low-light and spatial haze, including channel-mean and centered components and pixelwise error changes.",
+    "notesAvailable": false
   },
   {
     "slug": "recast-image-restoration",
     "name": "RECAST",
-    "authors": ["Qianqian Wang", "Wenwu Gong", "Dawei Huang", "Hang Fu", "Yunshan Li", "Lili Yang"],
+    "authors": [
+      "Qianqian Wang",
+      "Wenwu Gong",
+      "Dawei Huang",
+      "Hang Fu",
+      "Yunshan Li",
+      "Lili Yang"
+    ],
     "status": {
       "zh": "已投稿 ICCBD+AI 2026",
       "en": "Submitted to ICCBD+AI 2026"
@@ -40,6 +67,9 @@
       "zh": "结合条件残差传输、尺度一致性融合与多视图平均，细化冻结骨干的图像修复结果。",
       "en": "Frozen-backbone restoration with conditional residual transport, scale-consistency fusion and view averaging."
     },
-    "pdf": "/papers/recast.pdf"
+    "title": "Controlled Residual Transport for Frozen-Backbone All-in-One Image Restoration",
+    "coverImage": "/media/recast-framework.webp",
+    "coverAlt": "Figure 1 from RECAST: residual-transport training, full- and half-resolution inference, scale-consistency fusion and view averaging on a frozen backbone.",
+    "notesAvailable": false
   }
 ]

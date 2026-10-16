@@ -12,6 +12,10 @@ PPT-Agent 首页配图 `public/media/ppt-agent-welcome.png` 是 2026-10-16 从�
 
 桌面内容区 960px：左栏 232px、列间距 78px、右栏 650px。顶部间距 64px。左栏使用 CSS sticky；右栏随浏览器文档原生滚动，没有虚拟滚轮、逐帧 transform 或滚动动画循环。1000px 及以下使用单栏，520px 及以下的条目缩略图与文字上下排列。
 
+首页简介、研究兴趣与生活板块正文从 16px 增至 17px，行高 1.7；项目说明从 15px 增至 16px，行高 1.6；论文作者/投稿状态和项目类型从 14px 增至 15px。文章正文和摘要各增加 1px，正文桌面 18px、手机 17px，摘要 18px；作者信息 15px。标题、字体、颜色和控件字号保留。
+
+首页板块使用 `flow-root` 阻止子元素外边距穿透，末项不保留底部外边距；相邻板块间距统一为 48px，1000px 及以下为 40px。此前桌面为 20/28/42px、手机为 20/28/32px。正文板块标题下方留白从 15px 改为 18px；论文/项目标题下到首条的间距为 24px。文章章节间距从 35px 增至桌面 44px、单栏 40px。
+
 头像是 CrystalDavid 的现有 GitHub 头像，下载地址由 GitHub 用户 API 返回，静态托管在 public/media/avatar.png。
 
 ## 内容迁移
@@ -28,13 +32,15 @@ PPT-Agent 首页配图 `public/media/ppt-agent-welcome.png` 是 2026-10-16 从�
 
 ProME 展示在 Publications & Manuscripts 中，保留旧文章关于训练群体标签、带群体标签的验证集、跨协议实验报告和代码开放状态的边界。Evidence Tracker 原文团队致谢保留。
 
-新增 GRA-Flow 与 RECAST 研究笔记，原有三篇内容不变。目前共五篇文章、25 个章节、116 个内容块。原始双语数据保留，所有页面仅输出英文，包括标题、摘要、正文、替代文本、元数据与无障碍标签。论文标题、作者及图示来自用户提供的三份 PDF，投稿状态来自所提供 CV 的第 1 页：
+先前曾新增 GRA-Flow 与 RECAST 研究笔记，现按用户要求暂不公开。当前公开三篇文章、18 个章节、100 个内容块；两篇草稿及原始双语内容仅保留本机 `.private/articles.json`。当前 `src/data/articles.json` 只包含三篇公开文章，所有页面仅输出英文。三篇论文的列表信息保留，标题、作者及图示来自用户提供的 PDF，投稿状态来自 CV 第 1 页：
 
 - ProME：第三作者，已投稿 Neurocomputing；保留 arXiv:2608.13190 链接。
 - GRA-Flow：第二作者，准备投稿 Pattern Recognition。
 - RECAST：第三作者，已投稿 ICCBD+AI 2026；正式标题为 Controlled Residual Transport for Frozen-Backbone All-in-One Image Restoration。
 
-论文 PDF 位于 `public/papers/`，逐文件 SHA-256 与提供的原件一致。RECAST 封面提取自第 3 页图 1；GRA-Flow 封面提取自第 10 页图 2。新增笔记的依据和限制见 `docs/research-sources.md`。
+`public/papers/` 仅保留 ProME PDF。另外两份网站副本移入 `.private/papers/`，移动前后 SHA-256 一致，源 PDF 和 CV 未修改。`publications.json` 将公开列表标题与配图独立存储；GRA-Flow/RECAST 没有 `pdf` 字段且 `notesAvailable: false`。首页标题和图片均无链接，不生成空按钮行；旧 PDF、Notes 地址返回 404，站点地图不收录两篇。原始笔记及其来源说明保存在本机被忽略的 `.private/`，不会同步到 Sites。
+
+撤下的是当前网站和当前源码中的完整资料；已公开过的 Git 历史及访客保存的副本不能通过这次常规提交追溯撤回。未改写历史或修改原站。RECAST 展示图仍来自第 3 页图 1，GRA-Flow 展示图仍来自第 10 页图 2。
 
 ## 技术
 
@@ -56,7 +62,7 @@ ProME 展示在 Publications & Manuscripts 中，保留旧文章关于训练群�
 
 ## 构建
 
-npm run check 检查 Astro/TypeScript；npm run build 输出七个静态页面、站点地图与资源；npm test 核对完整英文文章、英文元数据、本地资源/链接/锚点、语言控件和页脚的移除，以及包含内联脚本的浏览器脚本体积。dist 与 node_modules 是生成目录。
+npm run check 检查 Astro/TypeScript；npm run build 输出首页、404、三篇公开文章共五个静态页面，以及站点地图与资源；npm test 核对完整英文文章、英文元数据、本地资源/链接/锚点、暂不公开稿件的 PDF/页面/站点地图排除、语言控件和页脚的移除，以及包含内联脚本的浏览器脚本体积。dist 与 node_modules 是生成目录。
 
 新版保存到 `redesign/astro-homepage-2026-10-16`，基于原仓库 main 的历史提交。该分支不包含旧版 Next.js 部署工作流；现有 main 和 GitHub Pages 配置保留。正式切换网站需要后续明确授权与适用于 Astro dist 的部署配置。
 

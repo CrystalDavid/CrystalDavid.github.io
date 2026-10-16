@@ -12,8 +12,8 @@ const home = await readFile(path.join(dist, 'index.html'), 'utf8');
 const escape = value => value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
 const documents = ['index.html', '404.html', ...articles.map(article => `articles/${article.slug}/index.html`)];
 
-test('all five full English articles are statically rendered, with their sources and return anchors', async () => {
-  assert.equal(articles.length, 5);
+test('all three public English articles are statically rendered, with their sources and return anchors', async () => {
+  assert.equal(articles.length, 3);
   let sectionCount = 0;
   let blockCount = 0;
   for (const article of articles) {
@@ -36,8 +36,32 @@ test('all five full English articles are statically rendered, with their sources
       }
     }
   }
-  assert.equal(sectionCount, 25);
-  assert.equal(blockCount, 116);
+  assert.equal(sectionCount, 18);
+  assert.equal(blockCount, 100);
+});
+
+test('withheld manuscripts keep their listing but publish neither notes nor downloadable PDFs', async () => {
+  const withheld = [
+    { slug: 'gra-flow-image-restoration', pdf: 'gra-flow.pdf' },
+    { slug: 'recast-image-restoration', pdf: 'recast.pdf' },
+  ];
+  const publications = JSON.parse(await readFile(path.join(root, 'src/data/publications.json'), 'utf8'));
+  const sitemap = await readFile(path.join(dist, 'sitemap-0.xml'), 'utf8');
+  for (const paper of withheld) {
+    const metadata = publications.find(p => p.slug === paper.slug);
+    assert.ok(metadata && !metadata.pdf && !metadata.notesAvailable);
+    assert.ok(home.includes(escape(metadata.title)));
+    assert.ok(home.includes(`id="article-card-${paper.slug}"`));
+    assert.ok(!home.includes(`/articles/${paper.slug}/`));
+    assert.ok(!home.includes(`/papers/${paper.pdf}`));
+    assert.ok(!sitemap.includes(paper.slug));
+    assert.ok(!articles.some(article => article.slug === paper.slug));
+    await assert.rejects(access(path.join(dist, 'articles', paper.slug, 'index.html')), { code: 'ENOENT' });
+    await assert.rejects(access(path.join(dist, 'papers', paper.pdf)), { code: 'ENOENT' });
+  }
+  await assert.rejects(access(path.join(dist, '.private')), { code: 'ENOENT' });
+  assert.deepEqual((await readdir(path.join(dist, 'papers'))).sort(), ['prome.pdf']);
+  assert.ok(home.includes('/papers/prome.pdf') && home.includes('/articles/prome-group-robust-learning/'));
 });
 
 test('all local links, images, scripts, fonts, anchor targets and social metadata resolve', async () => {

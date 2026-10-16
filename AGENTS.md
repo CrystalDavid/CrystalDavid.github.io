@@ -26,9 +26,16 @@ site's bilingual, animation and monorepo requirements.
 - Keep publication thumbnails free of overlaid badges and omit the extra paper
   descriptions on the homepage. Use one real interface screenshot for PPT-Agent
   and the documented workflow figure for Evidence Tracker.
+- GRA-Flow and RECAST are listing-only until the user explicitly republishes them.
+  Do not expose their PDFs, Notes pages, title/image links or sitemap entries.
+  Keep drafts in the ignored local `.private/` directory, outside public resources
+  and tracked article data. Never copy that directory to a hosted checkout.
+- Homepage body text is 17px, project descriptions 16px and publication metadata
+  15px. Section gaps are 48px, or 40px up to 1000px. Article body text is 18px,
+  or 17px up to 520px. Preserve heading sizes and the established palette.
 - Keep verified article text, conclusions, limitations, citations and author
   order. Do not invent credentials, accepted papers or unavailable code links.
-- Keep article slugs and the `/#article-card-<slug>` return anchors stable.
+- Keep public article slugs and all `/#article-card-<slug>` listing anchors stable.
 - Source PDFs and the CV are read-only references. Do not publish the CV.
 
 ## Architecture and checks

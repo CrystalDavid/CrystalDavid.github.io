@@ -43,24 +43,27 @@ npm run preview
 | --- | --- |
 | 个人信息、项目、联系方式 | `src/data/site.ts` |
 | 首页文字与栏目结构 | `src/pages/index.astro` |
-| 五篇文章的原始数据（网站只渲染英文字段） | `src/data/articles.json` |
+| 三篇公开文章的原始数据（网站只渲染英文字段） | `src/data/articles.json` |
 | 论文作者、投稿状态、PDF 链接 | `src/data/publications.json` |
 | 文章类型与阅读时间计算 | `src/data/articles.ts` |
 | 左栏与文章目录 | `src/components/Sidebar.astro` |
 | 颜色、字体、响应式布局 | `src/styles/global.css` |
 | 滚动目录与复制 | `src/scripts/site.ts` |
 | 项目图片、论文插图和字体 | `public/media/`、`public/fonts/` |
-| 三篇论文 PDF | `public/papers/` |
+| 当前公开的 ProME PDF | `public/papers/` |
+| 暂不公开的两篇笔记和 PDF（仅本机，不提交） | `.private/` |
 
-文章 slug 会生成 `/articles/<slug>/`，文章返回链接定位到首页对应的条目。请保留已有 slug，避免旧链接失效。
+公开文章 slug 会生成 `/articles/<slug>/`，文章返回链接定位到首页对应的条目。GRA-Flow、RECAST 目前仅保留标题、作者、投稿状态和配图，不生成笔记页、下载按钮、标题/图片链接或站点地图记录。
 
 英文使用旧站原有的 Nunito 文件，代码块使用 Ubuntu Mono。Noto Sans SC 仍作为源代码等非英文字符的后备字体，但不再预加载。各字体许可证已保留。原始文章数据中的中文字段保留用于溯源，不生成隐藏中文正文，也不再读取旧版语言缓存。
 
 配色集中在 `src/styles/global.css` 的 CSS 变量中，使用 `color-scheme: only light` 固定浅色。页面元数据声明浅色和白色浏览器主题色，不包含深色媒体查询；禁用 JavaScript 也保持浅色。
 
-论文栏目包含 ProME、GRA-Flow 和 RECAST，作者顺序依据论文，投稿状态依据提供的 CV。两篇新增研究笔记基于本次提供的 PDF；论文下载文件与原文件保持一致。
+论文栏目包含 ProME、GRA-Flow 和 RECAST，作者顺序依据论文，投稿状态依据提供的 CV。GRA-Flow 和 RECAST 的完整笔记及 PDF 已移入本机 `.private/`，不进入构建或 Git 当前版本；其 PDF 移动前后 SHA-256 一致。用户明确要求重新公开前，不恢复资源入口或页面。此前已发布的 Git 历史不因当前版本的删除自动清除。
 
 首页论文不显示额外的短说明，全部配图移除名称标签；左栏使用实心邮件/GitHub 图标。PPT-Agent 展示在线 Demo 的单张真实欢迎界面，Evidence Tracker 使用依据项目文章绘制的 SVG 工作流示意图。图片来源与含义见 `docs/implementation.md`。
+
+首页板块正文 17px、项目说明 16px、论文作者与状态 15px；文章正文桌面 18px、手机 17px。首页板块间距桌面 48px、单栏 40px。完整实测颜色、字号、行高与布局间距见 `docs/typography.md`。
 
 默认正式域名沿用旧站 `https://crystaldavid.github.io`。更换域名时，设置 `SITE_URL` 后构建，并同步 `public/robots.txt` 和社交分享图中的域名。本站按域名根路径部署。
 

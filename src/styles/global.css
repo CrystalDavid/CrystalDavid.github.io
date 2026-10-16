@@ -59,9 +59,11 @@ ol { list-style: decimal; padding-left: 30px; }
 .social-icons a { display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; color: var(--ink); }
 .social-icons a:hover { color: var(--accent); }
 .main-content { width: 650px; min-width: 0; padding-top: 64px; padding-bottom: 40px; }
-.home-section { scroll-margin-top: 32px; margin: 0; }
+.home-section { display: flow-root; scroll-margin-top: 32px; margin: 0; font-size: 17px; line-height: 1.7; }
+.home-section + .home-section { margin-top: 48px; }
+.home-section > :last-child { margin-bottom: 0; }
+.home-section > h2 { margin-top: 0; margin-bottom: 18px; }
 .interest-list { color: var(--body); font-weight: inherit; }
-.publications { margin-top: 28px; }
 .publication-row { display: grid; grid-template-columns: 195px minmax(0, 1fr); align-items: center; gap: 28px; margin: 24px 0 42px; scroll-margin-top: 70px; }
 /* Show the complete figures and screenshots without image overlays or cropping. */
 .publication-image { position: relative; display: block; margin: 5px; background: white; border-radius: 8px; box-shadow: 3px 3px 6px var(--image-shadow); }
@@ -69,10 +71,10 @@ ol { list-style: decimal; padding-left: 30px; }
 .publication-image.project-image img { padding: 0; }
 .publication-copy h3 { color: var(--accent); font-size: 16px; font-weight: 700; line-height: 1.5; margin: 0 0 4px; }
 .publication-copy p { margin: 0; }
-.publication-authors { color: var(--body); font-size: 14px; line-height: 1.65; }
+.publication-authors { color: var(--body); font-size: 15px; line-height: 1.65; }
 .publication-authors strong { color: var(--ink); }
-.publication-venue { color: var(--secondary); font-size: 14px; line-height: 1.65; }
-.publication-description { color: var(--description); font-size: 15px; line-height: 1.45; margin-top: 4px !important; }
+.publication-venue { color: var(--secondary); font-size: 15px; line-height: 1.65; }
+.publication-description { color: var(--description); font-size: 16px; line-height: 1.6; margin-top: 4px !important; }
 .publication-links { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
 .publication-links a { display: inline-block; border: 1px solid var(--button-border); color: var(--ink); font-size: 12px; line-height: 1.5; padding: 2px 10px; border-radius: 999px; }
 .publication-links a:hover { color: var(--accent); border-color: var(--accent); }
@@ -89,16 +91,16 @@ ol { list-style: decimal; padding-left: 30px; }
 .article-topbar { display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-bottom: 28px; }
 .reading-time { color: var(--muted); font-size: 13px; }
 .article-header h1 { font-size: 32px; line-height: 1.25; margin-bottom: 20px; }
-.article-summary { font-size: 17px; line-height: 1.6; margin-bottom: 15px; }
-.article-byline { font-size: 14px; line-height: 1.7; margin-bottom: 6px; }
+.article-summary { font-size: 18px; line-height: 1.6; margin-bottom: 15px; }
+.article-byline { font-size: 15px; line-height: 1.7; margin-bottom: 6px; }
 .article-byline strong { color: var(--ink); }
 .article-status { font-size: 13px; line-height: 1.6; color: var(--muted); margin-bottom: 14px; }
 .source-link { font-size: 14px; }
 .article-cover { margin: 25px 0 36px; background: #fff; }
 .article-cover img { display: block; width: 100%; max-height: 360px; object-fit: contain; }
-.article-body { font-size: 17px; line-height: 1.65; color: var(--secondary); }
+.article-body { font-size: 18px; line-height: 1.65; color: var(--secondary); }
 .article-body section { scroll-margin-top: 35px; }
-.article-body section + section { margin-top: 35px; }
+.article-body section + section { margin-top: 44px; }
 .article-body h2 { display: flex; gap: 10px; align-items: baseline; font-size: 25px; line-height: 1.3; margin-bottom: 18px; }
 .article-section-number { font-size: 17px; }
 .article-body h3 { font-size: 20px; line-height: 1.35; margin: 25px 0 12px; }
@@ -123,6 +125,8 @@ html.is-navigating { scroll-behavior: auto; }
   .profile-school { max-width: 330px; margin-inline: auto; }
   .social-icons { margin-top: 15px; }
   .main-content { width: auto; padding-top: 25px; border-top: 1px solid var(--line); }
+  .home-section + .home-section { margin-top: 40px; }
+  .article-body section + section { margin-top: 40px; }
   .article-toc { display: none; }
   .article-sidebar .profile-school, .article-sidebar .profile-major { display: none; }
   .article-sidebar .profile-avatar { width: 90px; height: 90px; padding: 8px; }
@@ -143,7 +147,7 @@ html.is-navigating { scroll-behavior: auto; }
   .publication-image img { width: 230px; height: 150px; }
   .publication-copy h3 { font-size: 17px; }
   .article-header h1 { font-size: 29px; }
-  .article-body { font-size: 16px; }
+  .article-body { font-size: 17px; }
   .article-body h2 { font-size: 23px; }
   pre { font-size: 12px; }
 }

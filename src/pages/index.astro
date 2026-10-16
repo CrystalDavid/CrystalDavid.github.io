@@ -16,12 +16,12 @@ import Authors from '../components/Authors.astro';
   </section>
   <section id="writing" class="home-section publications" data-section aria-labelledby="writing-title">
     <h2 id="writing-title">Publications & Manuscripts</h2>
-    {publications.map(publication => { const paper = articles.find(article => article.slug === publication.slug)!; return <article class="publication-row" id={`article-card-${paper.slug}`}>
-      <a class="publication-image" href={`/articles/${paper.slug}/`} data-astro-prefetch aria-label={publication.name}><img src={paper.coverImage} alt={paper.coverAltEn} width="1280" height="720" loading="lazy" decoding="async" /></a>
+    {publications.map(publication => { const ImageTag = publication.notesAvailable ? 'a' : 'div'; return <article class="publication-row" id={`article-card-${publication.slug}`}>
+      <ImageTag class="publication-image" href={publication.notesAvailable ? `/articles/${publication.slug}/` : undefined} data-astro-prefetch={publication.notesAvailable ? '' : undefined} aria-label={publication.notesAvailable ? publication.name : undefined}><img src={publication.coverImage} alt={publication.coverAlt} width="1280" height="720" loading="lazy" decoding="async" /></ImageTag>
       <div class="publication-copy">
-        <h3><a href={`/articles/${paper.slug}/`} data-astro-prefetch>{paper.titleEn}</a></h3>
+        <h3>{publication.notesAvailable ? <a href={`/articles/${publication.slug}/`} data-astro-prefetch>{publication.title}</a> : publication.title}</h3>
         <p class="publication-authors"><Authors authors={publication.authors} /></p><p class="publication-venue">{publication.status.en}</p>
-        <div class="publication-links"><a href={publication.pdf} target="_blank" rel="noopener noreferrer">PDF</a>{publication.preprint && <a href={publication.preprint} target="_blank" rel="noopener noreferrer">arXiv</a>}<a href={`/articles/${paper.slug}/`} data-astro-prefetch>Notes</a></div>
+        {(publication.pdf || publication.preprint || publication.notesAvailable) && <div class="publication-links">{publication.pdf && <a href={publication.pdf} target="_blank" rel="noopener noreferrer">PDF</a>}{publication.preprint && <a href={publication.preprint} target="_blank" rel="noopener noreferrer">arXiv</a>}{publication.notesAvailable && <a href={`/articles/${publication.slug}/`} data-astro-prefetch>Notes</a>}</div>}
       </div>
     </article>; })}
   </section>

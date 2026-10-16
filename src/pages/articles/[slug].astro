@@ -17,7 +17,7 @@ const publication = publications.find(paper => paper.slug === article.slug);
       {publication && <><p class="article-byline"><Authors authors={publication.authors} /></p><p class="article-status">{publication.status.en}</p></>}
       <p class="article-summary">{article.summaryEn}</p>
       <a class="source-link inline-link" href={article.sourceHref} target="_blank" rel="noopener noreferrer">{article.sourceLabelEn}<Icon name="arrow" size={15} /></a>
-      {publication && article.sourceHref !== publication.pdf && <div class="publication-links"><a href={publication.pdf} target="_blank" rel="noopener noreferrer">Paper PDF</a></div>}
+      {publication?.pdf && article.sourceHref !== publication.pdf && <div class="publication-links"><a href={publication.pdf} target="_blank" rel="noopener noreferrer">Paper PDF</a></div>}
       <figure class:list={['article-cover', { 'paper-cover': publication }]}><img src={article.coverImage} alt={article.coverAltEn} width="1280" height="720" fetchpriority="high" decoding="async" /></figure>
     </header>
     <div class="article-body">
