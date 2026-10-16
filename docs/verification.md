@@ -5,6 +5,7 @@
 - 删除 D 字母 favicon 文件；五个页面的共享布局使用透明空 SVG，防止浏览器回退到旧图标。页面标题、侧栏社交图标及页面排版不变。
 - npm run check、五页生产构建及四项已有检查通过；0 错误、0 警告，保留剪贴板兼容 API 的 1 项既有弃用提示。构建内已无旧 favicon.svg；浏览器脚本仍为 18,062 bytes raw / 6,754 bytes gzip。
 - 规范与实现说明同步记录不显示标签页网站图标的要求。
+- 应用提交 `23be7cc9ac6290de74e164912edbcc9db19c3d8e` 已发布；GitHub Actions [38943051298](https://github.com/CrystalDavid/CrystalDavid.github.io/actions/runs/38943051298) 的 build、deploy 均成功。Edge 在正式域名核对五页的图标均可解码且 32×32 像素完全透明，Notes 客户端跳转与返回后仍保持透明，无运行时异常。发布前已打开的旧页面需刷新后读取新声明，刷新后验证通过。
 
 ## 2026-10-17 代码字体统一与规范归位（历史版本）
 
