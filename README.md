@@ -61,9 +61,9 @@ npm run preview
 
 论文栏目包含 ProME、GRA-Flow 和 RECAST，作者顺序依据论文，投稿状态依据提供的 CV。GRA-Flow 和 RECAST 的完整笔记及 PDF 已移入本机 `.private/`，不进入构建或 Git 当前版本；其 PDF 移动前后 SHA-256 一致。用户明确要求重新公开前，不恢复资源入口或页面。此前已发布的 Git 历史不因当前版本的删除自动清除。
 
-首页论文不显示额外的短说明，全部配图移除名称标签；左栏使用实心邮件/GitHub 图标。PPT-Agent 展示在线 Demo 的单张真实欢迎界面，Evidence Tracker 使用依据项目文章绘制的 SVG 工作流示意图。图片来源与含义见 `docs/implementation.md`。
+首页论文、PPT-Agent 和 Evidence Tracker 均不显示额外的短说明，全部配图移除名称标签；左栏使用实心邮件/GitHub 图标。PPT-Agent 展示在线 Demo 的单张真实欢迎界面，Evidence Tracker 使用依据项目文章绘制的 SVG 工作流示意图。文章页摘要与正文保留。图片来源与含义见 `docs/implementation.md`。
 
-首页板块正文 17px、项目说明 16px、论文作者与状态 15px；文章正文桌面 18px、手机 17px。首页板块间距桌面 48px、单栏 40px。完整实测颜色、字号、行高与布局间距见 `docs/typography.md`。
+首页板块正文 17px、论文作者与状态 15px；文章正文桌面 18px、手机 17px。作者名单统一单行显示，桌面向右侧留白延伸，空间不足时仅名单横向滚动。首页板块间距桌面 48px、单栏 40px。完整实测颜色、字号、行高与布局间距见 `docs/typography.md`。
 
 默认正式域名沿用旧站 `https://crystaldavid.github.io`。更换域名时，设置 `SITE_URL` 后构建，并同步 `public/robots.txt` 和社交分享图中的域名。本站按域名根路径部署。
 

@@ -69,12 +69,14 @@ ol { list-style: decimal; padding-left: 30px; }
 .publication-image { position: relative; display: block; margin: 5px; background: white; border-radius: 8px; box-shadow: 3px 3px 6px var(--image-shadow); }
 .publication-image img { display: block; width: 185px; height: 123px; padding: 7px; border-radius: 8px; object-fit: contain; }
 .publication-image.project-image img { padding: 0; }
+.publication-copy { min-width: 0; }
 .publication-copy h3 { color: var(--accent); font-size: 16px; font-weight: 700; line-height: 1.5; margin: 0 0 4px; }
 .publication-copy p { margin: 0; }
+/* Author lists may extend into the desktop margin; narrow screens scroll the line. */
+.publication-authors, .article-byline { white-space: nowrap; width: max-content; max-width: calc(100% + max(0px, (100vw - 960px) / 2 - 24px)); overflow-x: auto; scrollbar-width: thin; }
 .publication-authors { color: var(--body); font-size: 15px; line-height: 1.65; }
 .publication-authors strong { color: var(--ink); }
 .publication-venue { color: var(--secondary); font-size: 15px; line-height: 1.65; }
-.publication-description { color: var(--description); font-size: 16px; line-height: 1.6; margin-top: 4px !important; }
 .publication-links { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
 .publication-links a { display: inline-block; border: 1px solid var(--button-border); color: var(--ink); font-size: 12px; line-height: 1.5; padding: 2px 10px; border-radius: 999px; }
 .publication-links a:hover { color: var(--accent); border-color: var(--accent); }
@@ -125,6 +127,7 @@ html.is-navigating { scroll-behavior: auto; }
   .profile-school { max-width: 330px; margin-inline: auto; }
   .social-icons { margin-top: 15px; }
   .main-content { width: auto; padding-top: 25px; border-top: 1px solid var(--line); }
+  .publication-authors, .article-byline { max-width: 100%; }
   .home-section + .home-section { margin-top: 40px; }
   .article-body section + section { margin-top: 40px; }
   .article-toc { display: none; }

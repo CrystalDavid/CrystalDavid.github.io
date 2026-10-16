@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { profile, projects } from '../data/site';
-import { articles } from '../data/articles';
 import { publications } from '../data/publications';
 import Authors from '../components/Authors.astro';
 ---
@@ -27,10 +26,10 @@ import Authors from '../components/Authors.astro';
   </section>
   <section id="projects" class="home-section publications" data-section aria-labelledby="projects-title">
     <h2 id="projects-title">Projects</h2>
-    {projects.map(project => { const article = articles.find(item => item.slug === project.article)!; return <article class="publication-row" id={`article-card-${project.article}`}>
+    {projects.map(project => <article class="publication-row" id={`article-card-${project.article}`}>
       <a class="publication-image project-image" href={`/articles/${project.article}/`} data-astro-prefetch aria-label={project.name}><img src={project.image} alt={project.alt.en} width="900" height="600" loading="lazy" decoding="async" /></a>
-      <div class="publication-copy"><h3><a href={`/articles/${project.article}/`} data-astro-prefetch>{project.name}</a></h3><p class="publication-venue">{project.type.en}</p><p class="publication-description">{article.summaryEn}</p><div class="publication-links"><a href={project.github} target="_blank" rel="noopener noreferrer">Code</a>{project.demo && <a href={project.demo} target="_blank" rel="noopener noreferrer">Demo</a>}<a href={`/articles/${project.article}/`} data-astro-prefetch>Article</a></div></div>
-    </article>; })}
+      <div class="publication-copy"><h3><a href={`/articles/${project.article}/`} data-astro-prefetch>{project.name}</a></h3><p class="publication-venue">{project.type.en}</p><div class="publication-links"><a href={project.github} target="_blank" rel="noopener noreferrer">Code</a>{project.demo && <a href={project.demo} target="_blank" rel="noopener noreferrer">Demo</a>}<a href={`/articles/${project.article}/`} data-astro-prefetch>Article</a></div></div>
+    </article>)}
   </section>
   <section id="offscreen" class="home-section" data-section aria-labelledby="offscreen-title">
     <h2 id="offscreen-title">Beyond Research</h2>
