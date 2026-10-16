@@ -10,6 +10,8 @@
 
 ## GitHub Pages
 
+旧站已于 2026-10-16 取消发布。原站的部署工作流已停用，动效参考仓库也关闭了自动工作流；以下保留静态部署方式供后续使用。
+
 `.github/workflows/pages.yml` 在 `main` 推送或手动触发时执行：
 
 1. Node 22 + `npm ci`。
@@ -17,7 +19,7 @@
 3. 上传 `apps/web/out`。
 4. 部署到 GitHub Pages。
 
-站点使用用户主页域名 `https://crystaldavid.github.io/`，因此当前不设置 `basePath`。如果未来改为项目子路径，必须同时核对字体、图片、文章链接和锚点。
+旧站使用用户主页域名 `https://crystaldavid.github.io/`，因此当前不设置 `basePath`。如果未来改为项目子路径，必须同时核对字体、图片、文章链接和锚点。
 
 ## 发布前检查
 

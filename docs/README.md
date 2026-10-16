@@ -1,26 +1,24 @@
-# David 个人网站规范库
+# 网站设计与实现
 
-`docs/` 是网站设计、架构、动画与验收标准的长期记录。它的目标是让以后任何一次修改都能回答三件事：原来有什么、为什么这样实现、改完后哪些契约必须仍然成立。
+这里介绍旧版个人网站的布局、动效、排版和运行方式。先从 [项目介绍](../README.md) 启动本地预览，再按关注的效果阅读对应实现。
 
-## 目录
+## 动效与交互
 
-- `architecture/`：monorepo 边界、浏览器运行时、构建与部署。
-- `content/`：正式文章、权威来源、封面与路由清单。
-- `ui/`：字体、字号、颜色、布局和响应式规则。
-- `animation/`：完整动效清单、触发条件、参数和实现入口。
-- `quality/`：每次修改的核对清单与测试方法。
+- [完整动效清单](animation/inventory.md)：效果、触发条件、代码入口与移动端表现。
+- [Hero 入场](animation/hero-entrance.md)：字体加载、标题汇聚与首屏时序。
+- [滚动机制](animation/scrolling.md)：桌面虚拟滚动、锚点与滚动参数。
+- [文字和章节显现](animation/about-and-section-reveals.md)：逐字显色、翻字与卡片入场。
 
-## 强制维护流程
+## 视觉与内容
 
-1. 修改前先阅读与改动相关的文档，尤其是 `animation/inventory.md` 与 `quality/change-checklist.md`。
-2. 修改代码后逐项核对文档中的“不变量”，不得因为字体、布局或重构而误删动效。
-3. 新增、删除或改变有用户感知的功能、动画、字号、颜色、断点、依赖、目录或构建命令时，同一批改动必须更新对应文档。
-4. 如果代码与文档不一致，应先确认真实产品意图，再同步修正两者；不能只让测试绕过差异。
-5. 根目录 `AGENTS.md` 是执行入口，本目录是详细规范。两者冲突时采用更严格的规则，并及时消除冲突。
+- [字体排版](ui/typography.md)：Nunito、Noto Sans SC 和双语层级。
+- [颜色与布局](ui/color-and-layout.md)：页面结构和视觉参数。
+- [响应式](ui/responsive.md)：桌面、移动和减少动态效果偏好。
+- [文章结构](content/articles.md)：文章来源、数据模型与路由。
 
-## 当前基线
+## 开发
 
-- 视觉与非字体动效继承提交 `82d0bc5` 的效果清单。
-- 英文使用自托管 Nunito，中文使用自托管 Noto Sans SC。
-- 桌面端采用 smooth-scrollbar 的小数位虚拟滚动；移动端和减少动态效果环境采用原生滚动。
-- 业务应用与可复用契约包分别位于 `apps/web` 和 `packages/site-contract`。
+- [Monorepo](architecture/monorepo.md)：应用与共享包的组织。
+- [浏览器运行时](architecture/runtime.md)：字体、滚动与动画协作。
+- [构建与部署](architecture/deployment.md)：静态导出和 Pages 工作流。
+- [测试方法](quality/testing.md) · [修改检查](quality/change-checklist.md)
