@@ -17,11 +17,10 @@ import Authors from '../components/Authors.astro';
   <section id="writing" class="home-section publications" data-section aria-labelledby="writing-title">
     <h2 id="writing-title">Publications & Manuscripts</h2>
     {publications.map(publication => { const paper = articles.find(article => article.slug === publication.slug)!; return <article class="publication-row" id={`article-card-${paper.slug}`}>
-      <a class="publication-image" href={`/articles/${paper.slug}/`} data-astro-prefetch aria-label={publication.name}><span class="publication-badge">{publication.name}</span><img src={paper.coverImage} alt={paper.coverAltEn} width="1280" height="720" loading="lazy" decoding="async" /></a>
+      <a class="publication-image" href={`/articles/${paper.slug}/`} data-astro-prefetch aria-label={publication.name}><img src={paper.coverImage} alt={paper.coverAltEn} width="1280" height="720" loading="lazy" decoding="async" /></a>
       <div class="publication-copy">
         <h3><a href={`/articles/${paper.slug}/`} data-astro-prefetch>{paper.titleEn}</a></h3>
         <p class="publication-authors"><Authors authors={publication.authors} /></p><p class="publication-venue">{publication.status.en}</p>
-        <p class="publication-description">{publication.description.en}</p>
         <div class="publication-links"><a href={publication.pdf} target="_blank" rel="noopener noreferrer">PDF</a>{publication.preprint && <a href={publication.preprint} target="_blank" rel="noopener noreferrer">arXiv</a>}<a href={`/articles/${paper.slug}/`} data-astro-prefetch>Notes</a></div>
       </div>
     </article>; })}
@@ -29,7 +28,7 @@ import Authors from '../components/Authors.astro';
   <section id="projects" class="home-section publications" data-section aria-labelledby="projects-title">
     <h2 id="projects-title">Projects</h2>
     {projects.map(project => { const article = articles.find(item => item.slug === project.article)!; return <article class="publication-row" id={`article-card-${project.article}`}>
-      <a class="publication-image project-image" href={`/articles/${project.article}/`} data-astro-prefetch aria-label={project.name}><span class="publication-badge">{project.name === 'PPT-Agent' ? 'PPT-Agent' : 'OpenClaw'}</span><img src={project.image} alt={project.alt.en} width="560" height="360" loading="lazy" decoding="async" /></a>
+      <a class="publication-image project-image" href={`/articles/${project.article}/`} data-astro-prefetch aria-label={project.name}><img src={project.image} alt={project.alt.en} width="900" height="600" loading="lazy" decoding="async" /></a>
       <div class="publication-copy"><h3><a href={`/articles/${project.article}/`} data-astro-prefetch>{project.name}</a></h3><p class="publication-venue">{project.type.en}</p><p class="publication-description">{article.summaryEn}</p><div class="publication-links"><a href={project.github} target="_blank" rel="noopener noreferrer">Code</a>{project.demo && <a href={project.demo} target="_blank" rel="noopener noreferrer">Demo</a>}<a href={`/articles/${project.article}/`} data-astro-prefetch>Article</a></div></div>
     </article>; })}
   </section>

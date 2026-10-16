@@ -60,6 +60,8 @@ npm run preview
 
 论文栏目包含 ProME、GRA-Flow 和 RECAST，作者顺序依据论文，投稿状态依据提供的 CV。两篇新增研究笔记基于本次提供的 PDF；论文下载文件与原文件保持一致。
 
+首页论文不显示额外的短说明，全部配图移除名称标签；左栏使用实心邮件/GitHub 图标。PPT-Agent 展示在线 Demo 的单张真实欢迎界面，Evidence Tracker 使用依据项目文章绘制的 SVG 工作流示意图。图片来源与含义见 `docs/implementation.md`。
+
 默认正式域名沿用旧站 `https://crystaldavid.github.io`。更换域名时，设置 `SITE_URL` 后构建，并同步 `public/robots.txt` 和社交分享图中的域名。本站按域名根路径部署。
 
 详细说明见 `docs/implementation.md` 与 `docs/verification.md`。当前字体颜色、字号及其用途见 `docs/typography.md`。

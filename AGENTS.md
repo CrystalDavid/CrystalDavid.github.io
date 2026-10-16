@@ -21,8 +21,11 @@ site's bilingual, animation and monorepo requirements.
 - Keep the site light-only with a white background and the original blue palette.
   Use CSS `color-scheme: only light` and light metadata. Do not add automatic
   dark-mode adaptation or a stored theme override.
-- Preserve Nunito typography, `(Dawei HUANG)`, the two rounded Email/GitHub icons,
+- Preserve Nunito typography, `(Dawei HUANG)`, the two solid Email/GitHub icons,
   and the capsule-shaped resource links. Do not restore the removed footer.
+- Keep publication thumbnails free of overlaid badges and omit the extra paper
+  descriptions on the homepage. Use one real interface screenshot for PPT-Agent
+  and the documented workflow figure for Evidence Tracker.
 - Keep verified article text, conclusions, limitations, citations and author
   order. Do not invent credentials, accepted papers or unavailable code links.
 - Keep article slugs and the `/#article-card-<slug>` return anchors stable.

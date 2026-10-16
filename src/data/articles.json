@@ -662,9 +662,9 @@
     "sourceLabelZh": "GitHub：CrystalDavid/OpenClaw-Evidence-Tracker.git",
     "sourceLabelEn": "GitHub: CrystalDavid/OpenClaw-Evidence-Tracker.git",
     "sourceHref": "https://github.com/CrystalDavid/OpenClaw-Evidence-Tracker.git",
-    "coverImage": "/media/evidence-tracker-report.png",
-    "coverAltZh": "科研证据链插件能力演进对比图",
-    "coverAltEn": "Research evidence tracker capability evolution comparison",
+    "coverImage": "/media/evidence-tracker-workflow.svg",
+    "coverAltZh": "Evidence Tracker 的论文身份核对、全文检索、Claim 核验和审计报告流程",
+    "coverAltEn": "Evidence Tracker workflow: paper identity checks, full-text evidence retrieval, claim review and an auditable report",
     "sections": [
       {
         "headingZh": "项目目标与职责边界",

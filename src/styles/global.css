@@ -14,7 +14,6 @@
   --accent-hover: #006699;
   --line: #e5e5e5;
   --button-border: #7c8c9b;
-  --badge: #002d72;
   --image-shadow: #b0b0b0;
   --code-toolbar: #f8f8f8;
   --code-background: #fafafa;
@@ -64,11 +63,10 @@ ol { list-style: decimal; padding-left: 30px; }
 .interest-list { color: var(--body); font-weight: inherit; }
 .publications { margin-top: 28px; }
 .publication-row { display: grid; grid-template-columns: 195px minmax(0, 1fr); align-items: center; gap: 28px; margin: 24px 0 42px; scroll-margin-top: 70px; }
-/* Paper figures and project screenshots keep their original colors in both themes. */
+/* Show the complete figures and screenshots without image overlays or cropping. */
 .publication-image { position: relative; display: block; margin: 5px; background: white; border-radius: 8px; box-shadow: 3px 3px 6px var(--image-shadow); }
 .publication-image img { display: block; width: 185px; height: 123px; padding: 7px; border-radius: 8px; object-fit: contain; }
-.publication-image.project-image img { padding: 0; object-fit: cover; }
-.publication-badge { position: absolute; top: 4px; left: -5px; z-index: 1; min-width: 70px; padding: 2px 12px; border-radius: 2px; color: white; background: var(--badge); box-shadow: 0 2px 5px #0002; font-size: 12px; line-height: 1.2; font-weight: 600; text-align: center; }
+.publication-image.project-image img { padding: 0; }
 .publication-copy h3 { color: var(--accent); font-size: 16px; font-weight: 700; line-height: 1.5; margin: 0 0 4px; }
 .publication-copy p { margin: 0; }
 .publication-authors { color: var(--body); font-size: 14px; line-height: 1.65; }
