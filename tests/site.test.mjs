@@ -59,8 +59,9 @@ test('all local links, images, scripts, fonts, anchor targets and social metadat
     assert.ok(html.includes('name="description"'));
     assert.match(html, /<html\b[^>]*\blang="en"/);
     assert.doesNotMatch(html, /lang-zh|data-lang|data-alt-zh|language-button|<footer\b|©/);
-    assert.ok(html.includes('name="color-scheme" content="light dark"'));
-    for (const scheme of ['light', 'dark']) assert.ok(html.includes(`media="(prefers-color-scheme: ${scheme})"`));
+    assert.ok(html.includes('name="color-scheme" content="light"'));
+    assert.ok(html.includes('name="theme-color" content="#ffffff"'));
+    assert.doesNotMatch(html, /prefers-color-scheme/);
   }
   await access(path.join(dist, 'social.png'));
   await access(path.join(dist, 'sitemap-index.xml'));

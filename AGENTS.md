@@ -18,8 +18,9 @@ site's bilingual, animation and monorepo requirements.
 - Render English only, including metadata, alternative text and accessibility
   labels. Original bilingual article data may remain as source material; do not
   render the Chinese fields or restore a language preference/switch.
-- Follow the browser's `prefers-color-scheme` through CSS, including live changes.
-  Do not force a light theme or introduce a stored theme override.
+- Keep the site light-only with a white background and the original blue palette.
+  Use CSS `color-scheme: only light` and light metadata. Do not add automatic
+  dark-mode adaptation or a stored theme override.
 - Preserve Nunito typography, `(Dawei HUANG)`, the two rounded Email/GitHub icons,
   and the capsule-shaped resource links. Do not restore the removed footer.
 - Keep verified article text, conclusions, limitations, citations and author
@@ -34,8 +35,8 @@ site's bilingual, animation and monorepo requirements.
 - Use self-hosted fonts and native scrolling. Respect reduced motion. The
   complete page must remain readable without JavaScript.
 - Run `npm run check`, `npm run build`, and `npm test` after relevant changes.
-- Verify desktop/mobile layouts, light/dark appearance (including a live switch),
-  article navigation, images and horizontal overflow in a real browser.
+- Verify desktop/mobile layouts remain light under both browser color preferences,
+  including live preference changes, article navigation, images and overflow.
 - Do not commit dependencies, build output, credentials, private source files,
   browser profiles, scratch scripts or screenshots.
 - Push this redesign to its own branch. Do not change `main`, the Pages source,

@@ -2,52 +2,34 @@
 @font-face { font-family: 'Nunito'; src: url('/fonts/nunito-latin.woff2') format('woff2'); font-style: normal; font-weight: 400 800; font-display: block; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 @font-face { font-family: 'Noto Sans SC'; src: url('/fonts/noto-sans-sc-site.woff2') format('woff2'); font-style: normal; font-weight: 400 700; font-display: block; }
 :root {
-  color-scheme: light dark;
+  color-scheme: only light;
   --paper: #fff;
+  --ink: #043361;
   --body: #595959;
-  --ink: var(--body);
   --muted: #777;
   --secondary: #444;
   --description: #333;
   --strong: #222;
-  --accent: var(--body);
-  --accent-hover: var(--body);
+  --accent: #3399cc;
+  --accent-hover: #006699;
   --line: #e5e5e5;
-  --button-border: #888;
-  --badge: #595959;
+  --button-border: #7c8c9b;
+  --badge: #002d72;
   --image-shadow: #b0b0b0;
   --code-toolbar: #f8f8f8;
   --code-background: #fafafa;
-  --selection: #e5e5e5;
+  --selection: #daedf7;
   --font-interface: 'Nunito', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei UI', 'Microsoft YaHei', sans-serif;
   font-family: var(--font-interface);
   color: var(--body);
   background: var(--paper);
   font-synthesis: none;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #111111;
-    --body: #b8b8b8;
-    --muted: #a0a0a0;
-    --secondary: #b8b8b8;
-    --description: #c6c6c6;
-    --strong: #e0e0e0;
-    --line: #333333;
-    --button-border: #777;
-    --badge: #444;
-    --image-shadow: #0008;
-    --code-toolbar: #222222;
-    --code-background: #191919;
-    --selection: #333;
-  }
-}
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 32px; }
 body { padding: 0; margin: 0; font: 400 16px/1.6 var(--font-interface); background: var(--paper); color: var(--body); font-kerning: normal; font-optical-sizing: auto; -webkit-font-smoothing: antialiased; }
 a { color: var(--accent); text-decoration: none; }
-a:hover { color: var(--accent-hover); text-decoration: underline; text-underline-offset: 3px; }
-.home-section > p a, .source-link { text-decoration: underline; text-decoration-color: var(--button-border); text-underline-offset: 3px; }
+a:hover { color: var(--accent-hover); }
 button { cursor: pointer; font: inherit; color: inherit; border: 0; background: none; }
 a:focus-visible, button:focus-visible, pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 main:focus { outline: none; }
@@ -63,7 +45,7 @@ ul { list-style: disc; padding-left: 40px; }
 ol { list-style: decimal; padding-left: 30px; }
 ::selection { color: var(--ink); background: var(--selection); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-.skip-link { position: fixed; top: -60px; left: 20px; padding: 8px 15px; background: #444; color: white; z-index: 20; }
+.skip-link { position: fixed; top: -60px; left: 20px; padding: 8px 15px; background: #043361; color: white; z-index: 20; }
 .skip-link:focus { top: 15px; color: white; }
 .site-shell { display: grid; grid-template-columns: 232px 650px; gap: 78px; width: 960px; margin: 0 auto; align-items: start; }
 .sidebar { position: sticky; top: 0; width: 232px; padding-top: 64px; text-align: center; max-height: 100svh; overflow-y: auto; scrollbar-width: thin; }
@@ -95,11 +77,11 @@ ol { list-style: decimal; padding-left: 30px; }
 .publication-description { color: var(--description); font-size: 15px; line-height: 1.45; margin-top: 4px !important; }
 .publication-links { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
 .publication-links a { display: inline-block; border: 1px solid var(--button-border); color: var(--ink); font-size: 12px; line-height: 1.5; padding: 2px 10px; border-radius: 999px; }
-.publication-links a:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
+.publication-links a:hover { color: var(--accent); border-color: var(--accent); }
 .article-toc { margin: 15px 0 30px; padding: 0 10px; text-align: left; font-size: 13px; }
 .toc-back { margin-bottom: 16px; }
 .nav-link { display: flex; gap: 7px; color: var(--body); padding: 5px 0; line-height: 1.4; }
-.nav-link[aria-current='location'] { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.nav-link[aria-current='location'] { color: var(--accent); }
 .article-sidebar .profile-avatar { width: 112px; height: 112px; padding: 14px; margin-bottom: 8px; }
 .article-sidebar .profile-avatar img { width: 84px; height: 84px; }
 .article-sidebar .profile-name { font-size: 25px; margin-bottom: 18px; }

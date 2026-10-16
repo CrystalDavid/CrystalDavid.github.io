@@ -1,6 +1,6 @@
 # David 的个人网站
 
-以 markwwen.github.io 为布局参考的双栏英文个人网站，沿用旧站 Nunito 字体。自动跟随浏览器/系统的浅色和深色外观，外观变化时立即更新，不需要刷新。桌面左栏固定，右栏按浏览器原生方式滚动；手机自动变为单栏。
+以 markwwen.github.io 为布局参考的双栏英文个人网站，沿用旧站 Nunito 字体。固定白色背景，使用原来的深蓝标题和蓝色链接；浏览器或系统切换深色外观时，网页仍保持浅色。桌面左栏固定，右栏按浏览器原生方式滚动；手机自动变为单栏。
 
 ## 启动
 
@@ -56,10 +56,10 @@ npm run preview
 
 英文使用旧站原有的 Nunito 文件，代码块使用 Ubuntu Mono。Noto Sans SC 仍作为源代码等非英文字符的后备字体，但不再预加载。各字体许可证已保留。原始文章数据中的中文字段保留用于溯源，不生成隐藏中文正文，也不再读取旧版语言缓存。
 
-配色集中在 `src/styles/global.css` 的 CSS 变量中，通过 `@media (prefers-color-scheme: dark)` 自动切换；禁用 JavaScript 也有效。若浏览器明确设置网页使用浅色，它会优先遵循该浏览器的网页配色偏好。
+配色集中在 `src/styles/global.css` 的 CSS 变量中，使用 `color-scheme: only light` 固定浅色。页面元数据声明浅色和白色浏览器主题色，不包含深色媒体查询；禁用 JavaScript 也保持浅色。
 
 论文栏目包含 ProME、GRA-Flow 和 RECAST，作者顺序依据论文，投稿状态依据提供的 CV。两篇新增研究笔记基于本次提供的 PDF；论文下载文件与原文件保持一致。
 
 默认正式域名沿用旧站 `https://crystaldavid.github.io`。更换域名时，设置 `SITE_URL` 后构建，并同步 `public/robots.txt` 和社交分享图中的域名。本站按域名根路径部署。
 
-详细说明见 `docs/implementation.md` 与 `docs/verification.md`。当前字体颜色、字号及其用途见 `docs/typography.md`；全站文字使用中性灰配色。
+详细说明见 `docs/implementation.md` 与 `docs/verification.md`。当前字体颜色、字号及其用途见 `docs/typography.md`。
