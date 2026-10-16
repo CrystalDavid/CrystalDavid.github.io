@@ -31,3 +31,10 @@
 Git 不包含 `node_modules/`、`dist/`、`.astro/`、CV、凭据、截图或临时浏览器文件。技术参考和字体许可证仍保留在源码文档与资源中。
 
 本地预览通过 `start.cmd` 或 `npm run dev` 启动。以上结果为本机静态构建验收，不是线上部署或公网性能测试。
+
+## 2026-10-16 公开在线预览
+
+- 独立 Sites 版本 1 已发布，状态 succeeded，权限 public；网址见 `docs/preview.md`。
+- 在不提供 Cookie 或登录凭据的独立 HTTP 请求中，首页与 RECAST 文章均返回 200 和预期内容；PDF 返回 200、Content-Type 为 application/pdf。首页没有跳转到登录页。
+- 预览副本重新通过 Astro 检查、七页生产构建及三项自动检查；页面代码和样式沿用上面的浏览器验收版本。
+- 发布后原 main 仍为 `cbd93267bf0bd5b4e36b47a03f34fd999287be09`，GitHub Pages 仍使用 main、workflow 模式，原站没有被覆盖。

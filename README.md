@@ -28,6 +28,8 @@ npm run preview
 
 新版独立保存在 `redesign/astro-homepage-2026-10-16` 分支，原版保留在 `main`。此分支不包含自动发布工作流，不会改变现有 GitHub Pages 网站。后续要正式上线时，需另行配置 Astro 的 `dist/` 发布流程，不能沿用旧版的 `apps/web/out` 路径。
 
+公开在线预览：[David — Astro Preview](https://david-astro-preview-20261016.g2811459442.chatgpt.site)。任何人都能打开，无需登录。此独立 Sites 站点用于与 [原网站](https://crystaldavid.github.io/) 对比；GitHub 分支更新后需单独重新发布预览。发布信息见 `docs/preview.md`。
+
 ## 技术与参考
 
 - 排版参考 [Weihuang Wen 的主页](https://markwwen.github.io/)：左侧个人信息固定，右侧内容自然滚动。

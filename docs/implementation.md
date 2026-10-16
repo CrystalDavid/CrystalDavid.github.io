@@ -55,3 +55,5 @@ ProME 展示在 Publications & Manuscripts 中，保留旧文章关于训练群�
 npm run check 检查 Astro/TypeScript；npm run build 输出七个静态页面、站点地图与资源；npm test 核对完整英文文章、英文元数据、本地资源/链接/锚点、语言控件和页脚的移除，以及包含内联脚本的浏览器脚本体积。dist 与 node_modules 是生成目录。
 
 新版保存到 `redesign/astro-homepage-2026-10-16`，基于原仓库 main 的历史提交。该分支不包含旧版 Next.js 部署工作流；现有 main 和 GitHub Pages 配置保留。正式切换网站需要后续明确授权与适用于 Astro dist 的部署配置。
+
+为公开对比提供独立 Sites 预览，地址与维护信息见 `docs/preview.md`。预览使用单独的站点身份和源码仓库，保持 public 权限，不影响原 GitHub Pages；本分支推送不会自动更新该预览。
