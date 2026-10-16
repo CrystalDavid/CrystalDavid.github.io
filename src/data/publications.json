@@ -1,0 +1,45 @@
+[
+  {
+    "slug": "prome-group-robust-learning",
+    "name": "ProME",
+    "authors": ["Qianqian Wang", "Yunshan Li", "Dawei Huang", "Wenwu Gong", "Lili Yang"],
+    "status": {
+      "zh": "已投稿 Neurocomputing · arXiv:2608.13190",
+      "en": "Submitted to Neurocomputing · arXiv:2608.13190"
+    },
+    "description": {
+      "zh": "原型边际环境、分类器修复与部署感知的模型选择。",
+      "en": "Prototype-margin environments, classifier repair and deployment-aware model selection."
+    },
+    "pdf": "/papers/prome.pdf",
+    "preprint": "https://arxiv.org/abs/2608.13190"
+  },
+  {
+    "slug": "gra-flow-image-restoration",
+    "name": "GRA-Flow",
+    "authors": ["Qianqian Wang", "Dawei Huang", "Hang Fu", "Wenwu Gong", "Yunshan Li", "Lili Yang"],
+    "status": {
+      "zh": "手稿准备中，拟投 Pattern Recognition",
+      "en": "In preparation for submission to Pattern Recognition"
+    },
+    "description": {
+      "zh": "在推理时无需退化标签或干净图像，预测候选修正的收益并控制应用强度。",
+      "en": "Predicting correction benefit and choosing how much to refine, without a clean target or degradation label at inference."
+    },
+    "pdf": "/papers/gra-flow.pdf"
+  },
+  {
+    "slug": "recast-image-restoration",
+    "name": "RECAST",
+    "authors": ["Qianqian Wang", "Wenwu Gong", "Dawei Huang", "Hang Fu", "Yunshan Li", "Lili Yang"],
+    "status": {
+      "zh": "已投稿 ICCBD+AI 2026",
+      "en": "Submitted to ICCBD+AI 2026"
+    },
+    "description": {
+      "zh": "结合条件残差传输、尺度一致性融合与多视图平均，细化冻结骨干的图像修复结果。",
+      "en": "Frozen-backbone restoration with conditional residual transport, scale-consistency fusion and view averaging."
+    },
+    "pdf": "/papers/recast.pdf"
+  }
+]

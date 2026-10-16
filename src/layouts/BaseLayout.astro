@@ -1,0 +1,47 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import '@fontsource/ubuntu-mono/latin-400.css';
+import '../styles/global.css';
+import Sidebar from '../components/Sidebar.astro';
+import type { Article } from '../data/articles';
+interface Props { title?: string; description?: string; article?: Article; }
+const { title = 'David — Personal Homepage', description = 'David’s personal homepage. AI agents, data science, projects and research notes.', article } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="en" transition:name="root" transition:animate="none">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="David" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={article ? 'article' : 'website'} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL('/social.png', Astro.site)} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href="/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <ClientRouter />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-shell">
+      <Sidebar article={article} />
+      <main id="main" class:list={['main-content', { 'article-main': article }]} tabindex="-1" transition:name="content" transition:animate="fade">
+        <slot />
+      </main>
+    </div>
+    <div id="announcement" class="sr-only" aria-live="polite" role="status"></div>
+    <script>
+      import '../scripts/site';
+    </script>
+  </body>
+</html>

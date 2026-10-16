@@ -1,0 +1,24 @@
+---
+import { profile } from '../data/site';
+import type { Article } from '../data/articles';
+import Icon from './Icon.astro';
+interface Props { article?: Article; }
+const { article } = Astro.props;
+const NameTag = article ? 'div' : 'h1';
+---
+<aside class:list={['sidebar', { 'article-sidebar': article }]} transition:name="sidebar" transition:animate="none">
+  <div class="profile">
+    <a class="profile-avatar" href="/" aria-label="David home" data-astro-prefetch><img src="/media/avatar.png" alt="David’s GitHub avatar" width="104" height="104" fetchpriority="high" /></a>
+    <NameTag class="profile-name"><a href="/" data-astro-prefetch>David<br /><span class="profile-handle">(Dawei HUANG)</span></a></NameTag>
+    <p class="profile-school">{profile.school.en}</p>
+    <p class="profile-major">{profile.major.en}</p>
+    <div class="social-icons">
+      <a href={`mailto:${profile.email}`} aria-label="Email" title="Email"><Icon name="mail" size={20} /></a>
+      <a href={profile.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><Icon name="github" size={20} /></a>
+    </div>
+  </div>
+  {article && <nav class="article-toc" aria-label="Table of contents">
+    <a class="toc-back inline-link" href={`/#article-card-${article.slug}`} data-astro-prefetch><Icon name="back" size={14} />Back to home</a>
+    {article.sections.map((section, index) => <a href={`#section-${index + 1}`} data-section-link={`section-${index + 1}`} class="nav-link"><span>{index + 1}.</span><span>{section.headingEn}</span></a>)}
+  </nav>}
+</aside>
