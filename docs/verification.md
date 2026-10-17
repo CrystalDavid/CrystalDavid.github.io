@@ -7,6 +7,7 @@
 - 更新现有内容检查，要求所有论文数据无 pdf 字段、构建产物无 PDF 文件和 PDF 下载链接，同时保留 arXiv、Notes 及暂不公开稿件的约束。AGENTS、README、视觉规范、实现依据、研究来源和部署说明同步当前规则；历史预览与发布记录保持其当时事实。
 - npm run check、五页生产构建及四项现有检查全部通过；0 错误、0 警告，保留剪贴板兼容 API 的 1 项既有弃用提示。浏览器脚本仍为 18,062 bytes raw / 6,754 bytes gzip。
 - Edge 本地检查五页 × 1440/390px 共十种状态，覆盖浅/深色偏好、同页切换及文章往返：无 PDF 下载入口、空资源行、整页横向溢出或运行时异常。ProME 两处 arXiv 入口正确，Notes 和返回锚点正常；旧 /papers/prome.pdf 返回 404，缩略图和剩余两枚按钮截图检查正常。
+- 应用提交 `9d53e32ef27d1102aca7fd082f78af93e9a6c3e8` 已发布到 main；GitHub Actions [39025507352](https://github.com/CrystalDavid/CrystalDavid.github.io/actions/runs/39025507352) 的 build、deploy 均成功。未登录 Edge 在正式域名复核同样十种页面/视口状态、Notes 往返、arXiv 入口及旧 PDF 的 404，全部通过。删除后复核 D 盘源文件 SHA-256 未改变。
 
 ## 2026-10-17 放大标签页闪电图标（历史版本）
 
