@@ -30,7 +30,7 @@ CSS 映射：--ink 为深蓝，--accent 为链接蓝，--accent-hover 为悬停�
 
 背景固定 #FFFFFF，color-scheme: only light，不随系统外观改变。边框 #E5E5E5、按钮边框 #7C8C9B、图片阴影 #B0B0B0、工具栏背景 #F8F8F8、代码背景 #FAFAFA、选择背景 #DAEDF7；这些不是额外字体颜色。
 
-浏览器标签页使用用户选定的 **01 优化版「圆润闪电」**：透明底、#3399cc 实心轮廓，尖端与转折均作圆润处理，视觉中心保持居中。不添加底色、描边、阴影、动画或字母。SVG 与 16px PNG 沿用对比页中确认的小尺寸补偿（水平 1.055、垂直 1.025 倍，以中心为原点）；32px PNG 和 ICO 的 32/48px 图层使用标准轮廓。共享布局声明 SVG、16/32px PNG 与含 16/32/48px 图层的 ICO，全站一致；使用新的 lightning 文件名避免复用原 D 图标地址。正式资源见 public/favicon-lightning.svg、public/favicon-lightning-16.png、public/favicon-lightning-32.png 与 public/favicon.ico。
+浏览器标签页使用用户选定的 **01 优化版「圆润闪电」**：透明底、#3399cc 实心轮廓，尖端与转折均作圆润处理，视觉中心保持居中。不添加底色、描边、阴影、动画或字母。按用户对标签页实效的反馈，将每种规格的闪电以画布中心为原点等比放大 12%，减少内部留白，保留原有曲线和长宽比例。SVG 与 16px PNG 继续使用微尺寸补偿，最终水平/垂直缩放为 1.1816/1.148；32px PNG 和 ICO 的 32/48px 图层使用标准轮廓的 1.12 倍。共享布局声明 SVG、16/32px PNG 与含 16/32/48px 图层的 ICO，全站一致；使用新的 large 文件名刷新 SVG/PNG 缓存。正式资源见 public/favicon-lightning-large.svg、public/favicon-lightning-large-16.png、public/favicon-lightning-large-32.png 与 public/favicon.ico。
 
 ## 字号：5 档文字 + 14px 按钮，共 6 种
 
