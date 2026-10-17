@@ -6,6 +6,7 @@
 - 更新 SVG、16/32px PNG 和 ICO 的 16/32/48px 图层。SVG/PNG 使用新的 favicon-lightning-large 文件名使浏览器请求新版，根目录 ICO 同步更新；共享布局、视觉规范、实现说明和 README 路径已同步。
 - npm run check、五页生产构建及四项已有检查通过；0 错误、0 警告，仅保留剪贴板兼容 API 的 1 项既有弃用提示。客户端脚本仍为 18,062 bytes raw / 6,754 bytes gzip。
 - 检查 16px 图标在浅色/深色模拟标签栏中的前后对比。Edge 本地复核五页 × 1440/390px，共十种状态，覆盖浅/深色偏好、同页偏好切换、文章跳转及返回：固定浅色、图片解码、页面宽度与图标声明均正常，无运行时异常。SVG/PNG/ICO 均返回 200，四角透明，颜色正确，图标像素重心距画布中心小于 0.03px。
+- 应用提交 `f417947a8af8ad8103375d3facd49157a597c607` 已发布到 main；GitHub Actions [39014067453](https://github.com/CrystalDavid/CrystalDavid.github.io/actions/runs/39014067453) 的 build、deploy 均成功。正式域名的十种页面/视口状态及文章往返复核通过；四个线上图标文件均返回 200，SHA-256 与本地发布文件完全一致，线上 16px 渲染正确且未裁切。
 
 ## 2026-10-17 发布 01 优化版圆润闪电图标（历史版本）
 
