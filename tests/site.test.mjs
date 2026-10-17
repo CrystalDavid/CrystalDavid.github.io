@@ -40,7 +40,7 @@ test('all three public English articles are statically rendered, with their sour
   assert.equal(blockCount, 100);
 });
 
-test('withheld manuscripts keep their listing but publish neither notes nor downloadable PDFs', async () => {
+test('withheld manuscripts stay listing-only and paper downloads use arXiv without hosted PDFs', async () => {
   const withheld = [
     { slug: 'gra-flow-image-restoration', pdf: 'gra-flow.pdf' },
     { slug: 'recast-image-restoration', pdf: 'recast.pdf' },
@@ -49,7 +49,7 @@ test('withheld manuscripts keep their listing but publish neither notes nor down
   const sitemap = await readFile(path.join(dist, 'sitemap-0.xml'), 'utf8');
   for (const paper of withheld) {
     const metadata = publications.find(p => p.slug === paper.slug);
-    assert.ok(metadata && !metadata.pdf && !metadata.notesAvailable);
+    assert.ok(metadata && !metadata.notesAvailable);
     assert.ok(home.includes(escape(metadata.title)));
     assert.ok(home.includes(`id="article-card-${paper.slug}"`));
     assert.ok(!home.includes(`/articles/${paper.slug}/`));
@@ -60,8 +60,9 @@ test('withheld manuscripts keep their listing but publish neither notes nor down
     await assert.rejects(access(path.join(dist, 'papers', paper.pdf)), { code: 'ENOENT' });
   }
   await assert.rejects(access(path.join(dist, '.private')), { code: 'ENOENT' });
-  assert.deepEqual((await readdir(path.join(dist, 'papers'))).sort(), ['prome.pdf']);
-  assert.ok(home.includes('/papers/prome.pdf') && home.includes('/articles/prome-group-robust-learning/'));
+  assert.ok(publications.every(publication => !('pdf' in publication)));
+  assert.ok(!(await readdir(dist, { recursive: true })).some(file => /\.pdf$/i.test(file)), 'PDF files must not enter the deployment artifact');
+  assert.ok(home.includes('href="https://arxiv.org/abs/2608.13190"') && home.includes('/articles/prome-group-robust-learning/'));
 });
 
 test('all local links, images, scripts, fonts, anchor targets and social metadata resolve', async () => {
@@ -79,6 +80,7 @@ test('all local links, images, scripts, fonts, anchor targets and social metadat
       if (hash) assert.ok((await readFile(file, 'utf8')).includes(`id="${hash}"`), `${document}: broken anchor ${url}`);
     }
     assert.doesNotMatch(html, /file:\/\/\/|C:\\Code|C:\\Users|localhost|127\.0\.0\.1/);
+    assert.doesNotMatch(html, /href="[^"<>]*\.pdf(?:[?#][^"<>]*)?"/i);
     assert.ok(html.includes('rel="canonical"'));
     assert.ok(html.includes('name="description"'));
     assert.match(html, /<html\b[^>]*\blang="en"/);

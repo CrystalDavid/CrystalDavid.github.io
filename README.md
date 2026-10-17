@@ -44,17 +44,18 @@ npm run preview
 | 个人信息、项目、联系方式 | `src/data/site.ts` |
 | 首页文字与栏目结构 | `src/pages/index.astro` |
 | 三篇公开文章的原始数据（网站只渲染英文字段） | `src/data/articles.json` |
-| 论文作者、投稿状态、PDF 链接 | `src/data/publications.json` |
+| 论文作者、投稿状态、arXiv 链接 | `src/data/publications.json` |
 | 文章类型与阅读时间计算 | `src/data/articles.ts` |
 | 左栏与文章目录 | `src/components/Sidebar.astro` |
 | 颜色、字体、响应式布局 | `src/styles/global.css` |
 | 标签页圆润闪电图标及声明 | `public/favicon-lightning-large.svg`、`public/favicon-lightning-large-*.png`、`public/favicon.ico`、`src/layouts/BaseLayout.astro` |
 | 滚动目录与复制 | `src/scripts/site.ts` |
 | 项目图片、论文插图和字体 | `public/media/`、`public/fonts/` |
-| 当前公开的 ProME PDF | `public/papers/` |
 | 暂不公开的两篇笔记和 PDF（仅本机，不提交） | `.private/` |
 
 公开文章 slug 会生成 `/articles/<slug>/`，文章返回链接定位到首页对应的条目。GRA-Flow、RECAST 目前仅保留标题、作者、投稿状态和配图，不生成笔记页、下载按钮、标题/图片链接或站点地图记录。
+
+本站不托管论文 PDF，也不显示 PDF 下载按钮。ProME 保留 arXiv 入口和 Notes，论文下载由访客在 arXiv 完成；原 `public/papers/prome.pdf` 网站副本已移除，原始论文文件未修改。
 
 英文统一使用旧站原有的 Nunito 文件，包括代码正文、工具栏标签和 Copy 按钮。代码保留原始空白、换行与局部横向滚动。Noto Sans SC 仍作为非英文字符的后备字体，但不再预加载。使用字体的许可证已保留。原始文章数据中的中文字段保留用于溯源，不生成隐藏中文正文，也不再读取旧版语言缓存。
 

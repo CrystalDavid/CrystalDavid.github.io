@@ -20,7 +20,7 @@ import Authors from '../components/Authors.astro';
       <div class="publication-copy">
         <h3>{publication.notesAvailable ? <a href={`/articles/${publication.slug}/`} data-astro-prefetch>{publication.title}</a> : publication.title}</h3>
         <p class="publication-authors"><Authors authors={publication.authors} /></p><p class="publication-venue">{publication.status.en}</p>
-        {(publication.pdf || publication.preprint || publication.notesAvailable) && <div class="publication-links">{publication.pdf && <a href={publication.pdf} target="_blank" rel="noopener noreferrer">PDF</a>}{publication.preprint && <a href={publication.preprint} target="_blank" rel="noopener noreferrer">arXiv</a>}{publication.notesAvailable && <a href={`/articles/${publication.slug}/`} data-astro-prefetch>Notes</a>}</div>}
+        {(publication.preprint || publication.notesAvailable) && <div class="publication-links">{publication.preprint && <a href={publication.preprint} target="_blank" rel="noopener noreferrer">arXiv</a>}{publication.notesAvailable && <a href={`/articles/${publication.slug}/`} data-astro-prefetch>Notes</a>}</div>}
       </div>
     </article>; })}
   </section>

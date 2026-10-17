@@ -17,7 +17,6 @@
       "zh": "原型边际环境、分类器修复与部署感知的模型选择。",
       "en": "Prototype-margin environments, classifier repair and deployment-aware model selection."
     },
-    "pdf": "/papers/prome.pdf",
     "preprint": "https://arxiv.org/abs/2608.13190",
     "title": "ProME: Prototype-Margin Environments with Repair-Aware Selection for Group-Robust Learning",
     "coverImage": "/media/prome-framework.webp",

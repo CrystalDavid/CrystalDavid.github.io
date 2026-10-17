@@ -45,6 +45,8 @@ Keep the legacy Next.js implementation in Git history, not in the active site.
   order. Do not invent credentials, accepted papers or unavailable code links.
 - Keep public article slugs and all `/#article-card-<slug>` listing anchors stable.
 - Source PDFs and the CV are read-only references. Do not publish the CV.
+- Do not host paper PDFs or render PDF download buttons. Keep the ProME arXiv
+  source link and Notes page; readers obtain the paper from arXiv.
 
 ## Architecture and checks
 

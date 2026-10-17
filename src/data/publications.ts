@@ -11,7 +11,6 @@ export type Publication = {
   authors: string[];
   status: ArticleText;
   description: ArticleText;
-  pdf?: string;
   preprint?: string;
 };
 

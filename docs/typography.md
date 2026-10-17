@@ -36,7 +36,7 @@ CSS 映射：--ink 为深蓝，--accent 为链接蓝，--accent-hover 为悬停�
 
 | 字号 | CSS 变量 | 用途 |
 | --- | --- | --- |
-| 14px | --text-button | PDF / arXiv / Notes / Code / Demo / Article 等胶囊按钮、代码 Copy 按钮 |
+| 14px | --text-button | arXiv / Notes / Code / Demo / Article 等胶囊按钮、代码 Copy 按钮 |
 | 16px | --text-meta；--text-small 引用同一值 | 学校/专业、作者与投稿信息、项目类别、章节序号、目录、返回/来源链接、阅读时间、代码及工具栏标签 |
 | 18px | --text-body | 首页和文章正文、文章摘要、论文/项目标题、404 正文 |
 | 22px | --text-subheading | (Dawei HUANG)、文章内三级标题 |

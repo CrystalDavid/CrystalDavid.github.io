@@ -40,7 +40,7 @@ ProME 展示在 Publications & Manuscripts 中，保留旧文章关于训练群�
 - GRA-Flow：第二作者，准备投稿 Pattern Recognition。
 - RECAST：第三作者，已投稿 ICCBD+AI 2026；正式标题为 Controlled Residual Transport for Frozen-Backbone All-in-One Image Restoration。
 
-`public/papers/` 仅保留 ProME PDF。另外两份网站副本移入 `.private/papers/`，移动前后 SHA-256 一致，源 PDF 和 CV 未修改。`publications.json` 将公开列表标题与配图独立存储；GRA-Flow/RECAST 没有 `pdf` 字段且 `notesAvailable: false`。首页标题和图片均无链接，不生成空按钮行；旧 PDF、Notes 地址返回 404，站点地图不收录两篇。原始笔记及其来源说明保存在本机被忽略的 `.private/`，不会同步到 Sites。
+本站不托管论文 PDF：ProME 的网站副本已从 `public/papers/` 移除，首页 PDF 与文章页 Paper PDF 入口、数据中的 pdf 字段及其类型均已删除。ProME 保留 arXiv 与 Notes，论文原文由访客在 arXiv 下载。GRA-Flow/RECAST 的两份旧网站副本仍位于 `.private/papers/`，源 PDF 和 CV 未修改。`publications.json` 将公开列表标题与配图独立存储；GRA-Flow/RECAST 继续保持 `notesAvailable: false`，首页标题和图片均无链接，不生成空按钮行；旧 PDF、Notes 地址返回 404，站点地图不收录两篇。原始笔记及其来源说明保存在本机被忽略的 `.private/`，不会同步到 Sites。
 
 撤下的是当前网站和当前源码中的完整资料；已公开过的 Git 历史及访客保存的副本不能通过这次常规提交追溯撤回。未改写历史或修改原站。RECAST 展示图仍来自第 3 页图 1，GRA-Flow 展示图仍来自第 10 页图 2。
 
@@ -64,7 +64,7 @@ ProME 展示在 Publications & Manuscripts 中，保留旧文章关于训练群�
 
 ## 构建
 
-npm run check 检查 Astro/TypeScript；npm run build 输出首页、404、三篇公开文章共五个静态页面，以及站点地图与资源；npm test 核对完整英文文章、英文元数据、本地资源/链接/锚点、暂不公开稿件的 PDF/页面/站点地图排除、语言控件和页脚的移除，以及包含内联脚本的浏览器脚本体积。dist 与 node_modules 是生成目录。
+npm run check 检查 Astro/TypeScript；npm run build 输出首页、404、三篇公开文章共五个静态页面，以及站点地图与资源；npm test 核对完整英文文章、英文元数据、本地资源/链接/锚点、全站 PDF 文件与下载入口的排除、ProME 的 arXiv 和 Notes 入口、暂不公开稿件的页面/站点地图排除、语言控件和页脚的移除，以及包含内联脚本的浏览器脚本体积。dist 与 node_modules 是生成目录。
 
 用户于 2026-10-17 明确要求将新版发布至正式网站。`main` 发布当前 Astro 版本，`.github/workflows/pages.yml` 使用 Node.js 24 运行 npm ci、check、build、test，再通过 GitHub Pages 发布 dist。迁移保留 main 的既有提交历史，原 Next.js 代码不进入当前构建。部署维护见 [deployment.md](deployment.md)。
 

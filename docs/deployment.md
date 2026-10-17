@@ -20,7 +20,7 @@ Astro `site` / 构建的 `SITE_URL` 使用 `https://crystaldavid.github.io`，�
 
 ## 公开范围
 
-- 首页、三篇公开文章、ProME PDF 及公开配图进入 dist。
+- 首页、三篇公开文章及公开配图进入 dist；不托管或打包任何 PDF，ProME 原文通过 arXiv 入口访问。
 - GRA-Flow、RECAST 仅保留列表，不生成笔记页、PDF 或 sitemap 项。
 - `.private/`、本机路径、CV、凭据、源码草稿和依赖目录不得进入 Pages 上传产物。
 - Sites 预览为独立历史对比站，版本见 [preview.md](preview.md)。正式发布不自动同步它。
