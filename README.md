@@ -48,6 +48,7 @@ npm run preview
 | 文章类型与阅读时间计算 | `src/data/articles.ts` |
 | 左栏与文章目录 | `src/components/Sidebar.astro` |
 | 颜色、字体、响应式布局 | `src/styles/global.css` |
+| 标签页圆润闪电图标及声明 | `public/favicon-lightning.*`、`public/favicon-lightning-*.png`、`public/favicon.ico`、`src/layouts/BaseLayout.astro` |
 | 滚动目录与复制 | `src/scripts/site.ts` |
 | 项目图片、论文插图和字体 | `public/media/`、`public/fonts/` |
 | 当前公开的 ProME PDF | `public/papers/` |
