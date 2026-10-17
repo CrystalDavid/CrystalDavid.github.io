@@ -7,6 +7,7 @@
 - npm run check、五页生产构建和四项现有检查全部通过；0 错误、0 警告，保留剪贴板兼容 API 的 1 项既有弃用提示。浏览器脚本保持 18,062 bytes raw / 6,754 bytes gzip。
 - Edge 本地检查五页 × 1440/390px，共十种状态，覆盖浅/深色浏览器偏好及同页偏好切换：页面保持白色，无整页横向溢出、图片解码失败或运行时异常。Notes 跳转及 Writing 返回后，图标声明完整保留。
 - 图标资源 HTTP 返回 200，SVG/PNG/ICO 均正常解码；16/32px 渲染包含正确蓝色实心像素，四角透明，像素重心距画布中心小于 0.05px。已检查桌面首页截图及透明闪电预览。
+- 应用提交 `1d361a4036751699a6e45d4e05233b03746b5c50` 已通过普通推送发布到 main；GitHub Actions [39013480681](https://github.com/CrystalDavid/CrystalDavid.github.io/actions/runs/39013480681) 的 build、deploy 均成功。未登录 Edge 在 https://crystaldavid.github.io/ 复核同样十种页面/视口状态、所有图标的下载与像素、文章跳转及返回，全部通过，无运行时异常。正式站 SVG 与 PNG 分别以 image/svg+xml、image/png 返回，ICO 以 image/vnd.microsoft.icon 返回。
 
 ## 2026-10-17 移除浏览器标签页图标（历史版本）
 
