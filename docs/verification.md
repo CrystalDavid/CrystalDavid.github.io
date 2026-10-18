@@ -7,6 +7,7 @@
 - npm run check、五页生产构建和四项现有检查通过，保留剪贴板兼容 API 的 1 项既有弃用提示。三处内容差异已单独核对，所有 JSON 示例可解析；浏览器脚本仍为 18,062 bytes raw / 6,754 bytes gzip。
 - Edge 本地复核五页 × 1440/390px，共十种状态，覆盖浅/深色偏好：HTML 文字无中文、无整页横向溢出或运行时错误。代码仍为 Nunito 16px/26.4px、Copy 为 Nunito 14px/21px；代码保持缩进、换行及局部横向滚动。实际字形来自本地 Nunito；代码块复制内容与英文示例完全一致，并显示 Copied。
 - 同页切换浅/深色偏好后代码块几何尺寸相同；从文章返回首页保留正确条目锚点，ClientRouter 未整页重载。桌面/手机代码截图已检查。
+- 应用提交 `60dfad943c95ea84c1d82d281d3a2d819017e920` 已发布到 main；GitHub Actions [39095377491](https://github.com/CrystalDavid/CrystalDavid.github.io/actions/runs/39095377491) 成功。正式域名重复完成五页 × 1440/390px 的十种状态检查，英文示例、原箭头、字体/字号/行高、固定浅色、局部代码滚动、复制及返回导航均通过，无运行时错误。
 
 ## 2026-10-17 移除 PDF 托管并保留 arXiv 入口（历史版本）
 
