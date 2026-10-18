@@ -3,7 +3,10 @@
 This repository contains David's Astro personal website. The user authorized
 production publication at https://crystaldavid.github.io on 2026-10-17.
 The `main` branch builds and deploys the current Astro site through GitHub Pages.
-Keep the legacy Next.js implementation in Git history, not in the active site.
+The legacy Next.js implementation remains in remote Git history, not in the active site.
+At the user's request, the local checkout retains only the latest synchronized
+snapshot as a shallow repository. Do not restore old branches or fetch the full
+history by default. Keep the current source and GitHub connection intact.
 
 ## Before changing the site
 
@@ -59,6 +62,10 @@ Keep the legacy Next.js implementation in Git history, not in the active site.
   including live preference changes, article navigation, images and overflow.
 - Do not commit dependencies, build output, credentials, private source files,
   browser profiles, scratch scripts or screenshots.
+- Local `node_modules/`, `dist/`, and `.astro/` are disposable. Keep `package.json`
+  and `package-lock.json`; GitHub Actions installs and builds independently.
+  Install with `npm ci` only when local checks or preview are needed. Preserve
+  the user's preference to save local disk space after those checks.
 - Production deployment uses `.github/workflows/pages.yml` on `main`, Node.js
   24, and the checked `dist/` artifact. Read `docs/deployment.md` before release.
   Preserve remote history and unrelated changes; never force-push the main branch.

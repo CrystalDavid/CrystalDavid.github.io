@@ -70,6 +70,8 @@ ProME 展示在 Publications & Manuscripts 中，保留旧文章关于训练群�
 
 npm run check 检查 Astro/TypeScript；npm run build 输出首页、404、三篇公开文章共五个静态页面，以及站点地图与资源；npm test 核对完整英文文章、英文元数据、本地资源/链接/锚点、全站 PDF 文件与下载入口的排除、ProME 的 arXiv 和 Notes 入口、暂不公开稿件的页面/站点地图排除、语言控件和页脚的移除，以及包含内联脚本的浏览器脚本体积。dist 与 node_modules 是生成目录。
 
+2026-10-18 用户选择以 GitHub 构建部署为主，本地仅保留当前版本。开发依赖、构建产物和 `.astro/` 可删除，源码、锁文件与发布工作流仍保留；GitHub 会独立安装依赖并构建。当前本地 Git 已收拢为单个最新快照，清理旧分支引用、reflog 和旧对象，远端历史保持。自动审批拒绝了生成目录与旧 commit-graph 文件的删除；生成目录仍在，失效的 Git 索引缓存已禁用。实际核验见 [verification.md](verification.md)。
+
 用户于 2026-10-17 明确要求将新版发布至正式网站。`main` 发布当前 Astro 版本，`.github/workflows/pages.yml` 使用 Node.js 24 运行 npm ci、check、build、test，再通过 GitHub Pages 发布 dist。迁移保留 main 的既有提交历史，原 Next.js 代码不进入当前构建。部署维护见 [deployment.md](deployment.md)。
 
 此前的独立 Sites 对比预览继续保持 public 权限，地址与版本信息见 [preview.md](preview.md)。GitHub Pages 是正式展示入口；其发布不会自动同步独立预览。

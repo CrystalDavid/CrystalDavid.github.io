@@ -2,20 +2,26 @@
 
 以 markwwen.github.io 为布局参考的双栏英文个人网站，沿用旧站 Nunito 字体。固定白色背景，使用原来的深蓝标题和蓝色链接；浏览器或系统切换深色外观时，网页仍保持浅色。桌面左栏固定，右栏按浏览器原生方式滚动；手机自动变为单栏。
 
-## 启动
+## 日常修改与发布
+
+平时只修改 `src/` 中的内容和 `public/` 中的资源，然后把修改提交并推送到 GitHub 的 `main`。GitHub Actions 会自行安装依赖、检查、构建及部署；不要求电脑上运行网站或保留开发依赖。具体内容文件见下方表格。
+
+本地 Git 按用户要求仅保留最新已同步版本的快照，保留正常的提交和上传能力；旧版本不占用本地对象库，GitHub 上的已有历史未重写。后续不默认拉取全部历史或旧分支。
+
+## 本地预览（可选）
 
 在 Windows 中双击 `start.cmd`，会启动开发服务器并打开浏览器。
 
 也可以在本目录运行：
 
 ```powershell
-npm install
+npm ci
 npm run dev
 ```
 
 默认地址为 `http://127.0.0.1:4321/`。要求 Node.js 22.22+；开发环境已用 Node.js 24 验证。
 
-`node_modules/`、`dist/` 和 `.astro/` 均为可重新生成的本地目录，可以在暂不开发时删除以节省空间。重新开发时先运行 `npm ci` 安装锁定版本，再运行开发或构建命令；双击 `start.cmd` 也会在依赖缺失时自动安装。请保留 `package-lock.json`、源码、当前资源、许可证、文档、`.git/` 版本历史及 `.private/` 私人笔记。
+`node_modules/` 是本地开发和构建工具，`dist/` 是生成的网站，`.astro/` 是 Astro 生成的缓存和类型文件；三者均可重新生成，可以在不需要本地检查或预览时删除以节省空间。需要本地检查时先运行 `npm ci`，再运行开发或构建命令；双击 `start.cmd` 也会在依赖缺失时自动安装。请保留 `package.json`、`package-lock.json`、源码、当前资源、许可证、文档、`.git/` 当前快照及远端配置、`.private/` 私人笔记。实际清理结果见 [验证记录](docs/verification.md)。
 
 ## 构建与验证
 
@@ -28,7 +34,7 @@ npm run preview
 
 `dist/` 是完整的静态网站，可以部署到 GitHub Pages、Cloudflare Pages、Netlify 或任意静态服务器。用 HTTP 服务器预览，不要直接双击生成的 HTML。
 
-正式网站：[crystaldavid.github.io](https://crystaldavid.github.io/)。`main` 是正式发布分支，`.github/workflows/pages.yml` 使用 Node.js 24 安装锁定依赖，完成检查、构建和内容验证后，仅发布 `dist/`。旧版 Next.js 留在 Git 历史中，不再使用 `apps/web/out` 发布路径。发布、验证与回退方式见 [部署说明](docs/deployment.md)。
+正式网站：[crystaldavid.github.io](https://crystaldavid.github.io/)。`main` 是正式发布分支，`.github/workflows/pages.yml` 使用 Node.js 24 安装锁定依赖，完成检查、构建和内容验证后，仅发布 `dist/`。旧版 Next.js 留在远端 Git 历史中，不再使用 `apps/web/out` 发布路径。发布、验证与回退方式见 [部署说明](docs/deployment.md)。
 
 此前的公开对比预览：[David — Astro Preview](https://david-astro-preview-20261016.g2811459442.chatgpt.site)。这是独立 Sites 站点，GitHub Pages 发布不会自动更新它；对外展示以正式网站为准。该预览的版本信息见 [预览记录](docs/preview.md)。
 

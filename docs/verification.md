@@ -1,6 +1,14 @@
 # 验证记录
 
-## 2026-10-18 本地冗余资源清理（当前本地版本）
+## 2026-10-18 精简本地 Git 历史与确认云端构建（当前版本）
+
+- 用户明确要求本地只保留最后版本、不保留旧历史。先将已验证的当前源码 `dbc539df847876febea6c2e34cdf7d17f252842e` 正常推送，再将本地 main 精简为深度 1；删除八个旧本地分支/远端跟踪引用，过期 reflog，回收旧对象。未强推、未删除 GitHub 分支、未改写远端历史。
+- 本地对象库实际只剩一个 commit，`git rev-list --count --all` 为 1，`git fsck --full` 通过；`.git/` 从 132,471,816 bytes 降至约 1.84 MB。保留 main、origin/main 和默认远端关系，后续仍可正常提交和上传。
+- 清理后的 52 个受版本控制文件及私人文件与清理前 SHA-256 完全一致，随后仅更新本轮管理文档。源代码、当前图片、字体、锁文件、部署配置、`.private/` 两份笔记均未丢失；旧站目录与 D 盘资料未修改。
+- GitHub Actions [39099447653](https://github.com/CrystalDavid/CrystalDavid.github.io/actions/runs/39099447653) 的依赖安装、check、build、test 和 deploy 全部成功，证明云端可独立生成并发布当前站点；本机不必常驻开发依赖或运行服务。
+- 按用户新的删除授权再次尝试清理 `node_modules/`、`dist/`、`.astro/`，自动审批仍以 `blocked by policy` 拒绝，未提供具体原因；合计 214,966,843 bytes 仍保留。旧 Git commit-graph 缓存 10,832 bytes 的删除也被同一策略拦截；已用本地 `core.commitGraph=false` 与 `gc.writeCommitGraph=false` 禁用失效缓存，不尝试绕过删除限制。
+
+## 2026-10-18 本地冗余资源清理（历史记录）
 
 - 清理范围仅为 `C:\Code\Web`。删除两张无源码引用的旧项目图片 `public/media/evidence-tracker-report.png`、`public/media/ppt-agent-mac-composite.webp`，以及无调用入口的旧中文字体子集生成脚本 `scripts/subset-font.py`；保留当前页面使用的全部图片、字体、许可证、源码、锁文件、文档、Git 历史和私人笔记。
 - 清理前后逐项比较构建文件 SHA-256：除两张旧图片外，保留的 29 个文件全部逐字节一致。静态产物由 31 个文件、2,015,292 bytes 降至 29 个文件、1,842,040 bytes；未改变页面文字、排版、字体加载或运行时脚本。
