@@ -7,6 +7,7 @@
 - `.private/` 包含两篇未公开笔记及来源说明，共 16,496 bytes，另有空的 `papers/` 子目录。与当时的生成脚本比较，RECAST 一致，GRA-Flow 含后续修改，因此先向用户说明并确认；用户明确回答“永久删除整个 .private 文件夹”。
 - 执行限定为 `C:\Code\Web\.private` 的删除时，自动审批仍以 `blocked by policy` 拒绝，未提供具体原因，文件夹及两个文件仍存在。未改用其他工具绕过。文档已改为记录永久删除授权和实际残留，不再要求保留或重建草稿；`.gitignore` 与防公开检查继续排除该目录。
 - 本轮不安装本地依赖或重新生成缓存；由 GitHub 工作流验证部署。页面源码、字体、资源、锁文件与工作流保持原始 SHA-256，未修改 D 盘源资料或任务目录中的参考文件。
+- 提交 `db5cadc622757979baf43417e0fde9199f200c61` 已正常推送；GitHub Actions [39100178962](https://github.com/CrystalDavid/CrystalDavid.github.io/actions/runs/39100178962) 的 build、deploy 均成功。正式域名五个 HTML 页面、三份字体及 SVG favicon 与此前已验证构建的 SHA-256 完全一致；删除启动脚本未影响线上内容或显示效果。
 
 ## 2026-10-18 精简本地 Git 历史与确认云端构建（历史记录）
 
