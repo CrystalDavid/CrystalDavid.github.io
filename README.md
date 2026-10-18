@@ -23,6 +23,8 @@ npm run dev
 
 `.github/workflows/pages.yml` 是 GitHub 自动检查、构建和部署的入口，必须保留。`tests/`、Astro/UnoCSS/TypeScript 配置和锁文件也会被云端流程使用；它们不属于可删除的本地缓存。
 
+`tests/` 只有一个约 7.1 KB 的 `site.test.mjs`，使用 Node.js 内置测试工具，由云端 `npm test` 检查文章完整性、链接和资源、未公开资料与 PDF 的排除，以及浏览器脚本体积。测试文件不进入 `dist/`，访客不会下载；直接删除会使现有发布流程失败，因此保留。
+
 ## 构建与验证
 
 ```powershell
@@ -59,7 +61,6 @@ npm run preview
 | 标签页圆润闪电图标及声明 | `public/favicon-lightning-large.svg`、`public/favicon-lightning-large-*.png`、`public/favicon.ico`、`src/layouts/BaseLayout.astro` |
 | 滚动目录与复制 | `src/scripts/site.ts` |
 | 项目图片、论文插图和字体 | `public/media/`、`public/fonts/` |
-| 已获永久删除授权的历史草稿（若仍存在，不提交、不公开） | `.private/` |
 
 公开文章 slug 会生成 `/articles/<slug>/`，文章返回链接定位到首页对应的条目。GRA-Flow、RECAST 目前仅保留标题、作者、投稿状态和配图，不生成笔记页、下载按钮、标题/图片链接或站点地图记录。
 
@@ -69,7 +70,7 @@ npm run preview
 
 配色集中在 `src/styles/global.css` 的 CSS 变量中，使用 `color-scheme: only light` 固定浅色。页面元数据声明浅色和白色浏览器主题色，不包含深色媒体查询；禁用 JavaScript 也保持浅色。
 
-论文栏目包含 ProME、GRA-Flow 和 RECAST，作者顺序依据论文，投稿状态依据提供的 CV。2026-10-18 用户明确要求永久删除 `.private/` 中的 GRA-Flow、RECAST 完整笔记及来源说明；它们不属于当前网站所需文件，不再要求保留或重建。删除操作被工具策略拒绝，残留文件仍由 `.gitignore` 排除，具体状态见验证记录。用户明确要求重新公开前，不恢复资源入口或页面。此前已发布的远端 Git 历史不因本地清理自动清除。
+论文栏目包含 ProME、GRA-Flow 和 RECAST，作者顺序依据论文，投稿状态依据提供的 CV。2026-10-18 已按用户要求移除 `.private/` 及其中的 GRA-Flow、RECAST 完整笔记和来源说明，不再保留或重建。`.gitignore` 的排除规则和测试中“构建产物不包含该目录”的检查继续保留，它们不依赖目录存在。用户明确要求重新公开前，不恢复资源入口或页面。此前已发布的远端 Git 历史不因本地清理自动清除。
 
 首页论文、PPT-Agent 和 Evidence Tracker 均不显示额外的短说明，全部配图移除名称标签；左栏使用实心邮件/GitHub 图标。PPT-Agent 展示在线 Demo 的单张真实欢迎界面，Evidence Tracker 使用依据项目文章绘制的 SVG 工作流示意图。文章页摘要与正文保留。图片来源与含义见 `docs/implementation.md`。
 

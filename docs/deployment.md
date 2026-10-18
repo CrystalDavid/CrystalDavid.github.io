@@ -22,6 +22,8 @@ Astro `site` / 构建的 `SITE_URL` 使用 `https://crystaldavid.github.io`，�
 
 `node_modules/`、`dist/`、`.astro/` 只服务本地检查、构建和预览，可以删除。GitHub 在独立的运行环境中依照 `package-lock.json` 安装依赖并生成 `dist/`，不读取本地这三个目录。源码、`package.json`、锁文件、部署工作流、当前资源及许可证必须保留。
 
+`tests/site.test.mjs` 也必须保留：`package.json` 的 `npm test` 指向它，工作流在构建后、上传前执行四项站点检查。文件约 7.1 KB，不上传到 Pages，不增加网页加载体积。测试中的 `.private` 路径用于断言构建产物不含该目录，并不读取已删除的本地草稿。
+
 本地历史清理前先确认最新源码已正常推送，再将 `main` 缩短为深度 1，移除其他本地分支引用与过期 reflog，并回收不再可达的对象。保留 `origin` 和 `main` 的跟踪关系，不新建与远端无关的根提交，不强推 GitHub。以后提交会自然产生新版本；仅在用户要求时再次清理历史。
 
 当前旧 commit-graph 缓存的删除被工具策略拦截；已在本地配置中禁用读取和重建该缓存。Git 完整性检查通过，当前源码及正常提交、推送不受影响；该设置不影响 GitHub Actions。

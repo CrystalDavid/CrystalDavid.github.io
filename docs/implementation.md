@@ -34,13 +34,13 @@ PPT-Agent 首页配图 `public/media/ppt-agent-welcome.png` 是 2026-10-16 从�
 
 ProME 展示在 Publications & Manuscripts 中，保留旧文章关于训练群体标签、带群体标签的验证集、跨协议实验报告和代码开放状态的边界。Evidence Tracker 原文团队致谢保留。
 
-先前曾新增 GRA-Flow 与 RECAST 研究笔记，现按用户要求暂不公开。当前公开三篇文章、18 个章节、100 个内容块；用户于 2026-10-18 明确要求永久删除两篇本地草稿，不再保留或重建 `.private/`。删除执行状态见验证记录。当前 `src/data/articles.json` 只包含三篇公开文章，所有页面仅输出英文。三篇论文的列表信息保留，标题、作者及图示来自用户提供的 PDF，投稿状态来自 CV 第 1 页：
+先前曾新增 GRA-Flow 与 RECAST 研究笔记，现按用户要求暂不公开。当前公开三篇文章、18 个章节、100 个内容块；2026-10-18 已核验两篇本地草稿及 `.private/` 目录均已移除，不再保留或重建。当前 `src/data/articles.json` 只包含三篇公开文章，所有页面仅输出英文。三篇论文的列表信息保留，标题、作者及图示来自用户提供的 PDF，投稿状态来自 CV 第 1 页：
 
 - ProME：第三作者，已投稿 Neurocomputing；保留 arXiv:2608.13190 链接。
 - GRA-Flow：第二作者，准备投稿 Pattern Recognition。
 - RECAST：第三作者，已投稿 ICCBD+AI 2026；正式标题为 Controlled Residual Transport for Frozen-Backbone All-in-One Image Restoration。
 
-本站不托管论文 PDF：ProME 的网站副本已从 `public/papers/` 移除，首页 PDF 与文章页 Paper PDF 入口、数据中的 pdf 字段及其类型均已删除。ProME 保留 arXiv 与 Notes，论文原文由访客在 arXiv 下载。2026-10-18 本地清理前检查时，GRA-Flow/RECAST 的两份私人 PDF 副本已不在工作目录；本轮不处理 D 盘源 PDF 或 CV。`publications.json` 将公开列表标题与配图独立存储；GRA-Flow/RECAST 继续保持 `notesAvailable: false`，首页标题和图片均无链接，不生成空按钮行；旧 PDF、Notes 地址返回 404，站点地图不收录两篇。本地两份草稿文件的删除已获明确授权，但被工具策略拒绝，当前残留仍在被忽略的 `.private/`，不会同步到 Sites 或 GitHub。
+本站不托管论文 PDF：ProME 的网站副本已从 `public/papers/` 移除，首页 PDF 与文章页 Paper PDF 入口、数据中的 pdf 字段及其类型均已删除。ProME 保留 arXiv 与 Notes，论文原文由访客在 arXiv 下载。2026-10-18 本地清理前检查时，GRA-Flow/RECAST 的两份私人 PDF 副本已不在工作目录；本轮不处理 D 盘源 PDF 或 CV。`publications.json` 将公开列表标题与配图独立存储；GRA-Flow/RECAST 继续保持 `notesAvailable: false`，首页标题和图片均无链接，不生成空按钮行；旧 PDF、Notes 地址返回 404，站点地图不收录两篇。本地两份草稿及其目录已移除，源码、配置和构建流程均不依赖它们；忽略规则和测试仅继续禁止私有目录进入部署产物。
 
 撤下的是当前网站和当前源码中的完整资料；已公开过的 Git 历史及访客保存的副本不能通过这次常规提交追溯撤回。未改写历史或修改原站。RECAST 展示图仍来自第 3 页图 1，GRA-Flow 展示图仍来自第 10 页图 2。
 

@@ -35,10 +35,10 @@ history by default. Keep the current source and GitHub connection intact.
   and the documented workflow figure for Evidence Tracker.
 - GRA-Flow and RECAST are listing-only until the user explicitly republishes them.
   Do not expose their PDFs, Notes pages, title/image links or sitemap entries.
-  The user explicitly requested permanent deletion of the local `.private/`
-  drafts on 2026-10-18. Do not recreate or back up that directory. If deletion
-  is blocked and files remain, keep them ignored and never copy them into
-  public resources, tracked article data, or a hosted checkout.
+  The local `.private/` drafts were permanently removed at the user's request
+  on 2026-10-18. Do not recreate or restore them. Retain the ignore rule and
+  deployment exclusion check to prevent accidental future publication; neither
+  rule requires that directory to exist.
 - Keep every author list on one line without reducing its specified type size. Allow it to
   extend into the desktop right margin; scroll only the author line when the
   viewport cannot fit it. Preserve author order and the bold personal name.
@@ -71,5 +71,7 @@ history by default. Keep the current source and GitHub connection intact.
 - Production deployment uses `.github/workflows/pages.yml` on `main`, Node.js
   24, and the checked `dist/` artifact. Read `docs/deployment.md` before release.
   Preserve remote history and unrelated changes; never force-push the main branch.
+- Keep `tests/site.test.mjs`: GitHub runs it through `npm test` before deployment.
+  It is source for release checks, not generated cache or browser runtime code.
 - The Sites comparison preview is independent; a GitHub Pages release does not
   automatically update it. Do not confuse its URL with the production website.
