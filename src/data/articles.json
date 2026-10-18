@@ -236,7 +236,7 @@
     "sourceLabelZh": "GitHub：CrystalDavid/PPT-Agent.git",
     "sourceLabelEn": "GitHub: CrystalDavid/PPT-Agent.git",
     "sourceHref": "https://github.com/CrystalDavid/PPT-Agent.git",
-    "coverImage": "/media/ppt-agent-report.png",
+    "coverImage": "/media/ppt-agent-report.webp",
     "coverAltZh": "PPT-Agent 页面渲染与 AI 输出日志界面",
     "coverAltEn": "PPT-Agent page rendering and AI output log interface",
     "sections": [

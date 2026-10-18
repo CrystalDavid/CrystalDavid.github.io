@@ -57,7 +57,7 @@ ClientRouter 负责站内页面切换，可预取链接使用 hover 策略。正
 | `public/media/gra-flow-correction.webp` | GRA-Flow 第 10 页图 2 的修正分解 |
 | `public/media/recast-framework.webp` | RECAST 第 3 页图 1 的方法框架 |
 | `public/media/ppt-agent-welcome.png` | PPT-Agent 首页使用的单张真实欢迎界面 |
-| `public/media/ppt-agent-report.png` | PPT-Agent 文章使用的设计与日志界面 |
+| `public/media/ppt-agent-report.webp` | PPT-Agent 文章使用的设计与日志界面，无损 WebP |
 | `public/media/evidence-tracker-workflow.svg` | 根据项目文章绘制的工作流示意图 |
 
 Evidence Tracker 示意图表示论文身份核对、全文证据检索、支持度审查与审计报告，包含 RED/BLOCKED 等失败状态；它是流程说明，不是产品截图或实验结果。
