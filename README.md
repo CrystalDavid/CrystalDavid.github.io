@@ -1,83 +1,53 @@
 # David 的个人网站
 
-以 markwwen.github.io 为布局参考的双栏英文个人网站，沿用旧站 Nunito 字体。固定白色背景，使用原来的深蓝标题和蓝色链接；浏览器或系统切换深色外观时，网页仍保持浅色。桌面左栏固定，右栏按浏览器原生方式滚动；手机自动变为单栏。
+正式网站：[crystaldavid.github.io](https://crystaldavid.github.io/)。
 
-## 日常修改与发布
+这是一个英文个人网站，使用 Nunito 字体、白色背景和蓝色链接。桌面左侧个人信息采用 sticky 布局，右侧随浏览器原生滚动；小屏幕使用单栏。
 
-平时只修改 `src/` 中的内容和 `public/` 中的资源，然后把修改提交并推送到 GitHub 的 `main`。GitHub Actions 会自行安装依赖、检查、构建及部署；不要求电脑上运行网站或保留开发依赖。具体内容文件见下方表格。
+## 修改与发布
 
-本地 Git 按用户要求仅保留最新已同步版本的快照，保留正常的提交和上传能力；旧版本不占用本地对象库，GitHub 上的已有历史未重写。后续不默认拉取全部历史或旧分支。
+修改源码和资源后，提交并推送到 GitHub 的 `main`。GitHub Actions 会安装锁定依赖，完成检查、构建和测试后发布静态网站。仅修改 Markdown 文档不会触发部署。完整流程见 [部署说明](docs/deployment.md)。
+
+| 修改内容 | 文件 |
+| --- | --- |
+| 个人信息、项目、联系方式 | `src/data/site.ts` |
+| 首页文字与栏目结构 | `src/pages/index.astro` |
+| 公开文章内容 | `src/data/articles.json` |
+| 论文标题、作者、投稿状态和资源入口 | `src/data/publications.json` |
+| 文章类型与阅读时间 | `src/data/articles.ts` |
+| 左栏与文章目录 | `src/components/Sidebar.astro` |
+| 字体、颜色、间距与响应式布局 | `src/styles/global.css` |
+| 页面元数据与 favicon 声明 | `src/layouts/BaseLayout.astro` |
+| 目录跟随与代码复制 | `src/scripts/site.ts` |
+| 图片、字体与图标 | `public/` |
+
+页面只渲染英文字段。公开内容及资料使用边界见 [研究资料来源](docs/research-sources.md)。
 
 ## 本地预览（可选）
 
-需要临时检查或预览时，可在本目录运行：
+建议使用与 GitHub Actions 一致的 Node.js 24，项目最低要求为 Node.js 22.22。
 
 ```powershell
 npm ci
 npm run dev
 ```
 
-默认地址为 `http://127.0.0.1:4321/`。要求 Node.js 22.22+；开发环境已用 Node.js 24 验证。
+默认预览地址为 `http://127.0.0.1:4321/`。构建与验证命令见 [部署说明](docs/deployment.md)。
 
-`node_modules/` 是本地开发和构建工具，`dist/` 是生成的网站，`.astro/` 是 Astro 生成的缓存和类型文件；三者均可重新生成，可以在不需要本地检查或预览时删除以节省空间。需要本地检查时先运行 `npm ci`，再运行开发或构建命令。请保留 `package.json`、`package-lock.json`、源码、当前资源、许可证、文档、`.git/` 当前快照及远端配置。实际清理结果见 [验证记录](docs/verification.md)。
+`node_modules/`、`dist/` 和 `.astro/` 可按需生成，不必长期保留。GitHub 独立安装依赖和构建；源码、当前资源与许可证、包清单和锁文件、配置、`.github/workflows/pages.yml`、`tests/` 必须保留。
 
-`.github/workflows/pages.yml` 是 GitHub 自动检查、构建和部署的入口，必须保留。`tests/`、Astro/UnoCSS/TypeScript 配置和锁文件也会被云端流程使用；它们不属于可删除的本地缓存。
+`tests/site.test.mjs` 由发布流程执行，检查内容、链接、公开范围与浏览器脚本体积，不进入访客下载的网站文件。
 
-`tests/` 只有一个约 7.1 KB 的 `site.test.mjs`，使用 Node.js 内置测试工具，由云端 `npm test` 检查文章完整性、链接和资源、未公开资料与 PDF 的排除，以及浏览器脚本体积。测试文件不进入 `dist/`，访客不会下载；直接删除会使现有发布流程失败，因此保留。
+## 文档
 
-## 构建与验证
-
-```powershell
-npm run check
-npm run build
-npm test
-npm run preview
-```
-
-`dist/` 是完整的静态网站，可以部署到 GitHub Pages、Cloudflare Pages、Netlify 或任意静态服务器。用 HTTP 服务器预览，不要直接双击生成的 HTML。
-
-正式网站：[crystaldavid.github.io](https://crystaldavid.github.io/)。`main` 是正式发布分支，`.github/workflows/pages.yml` 使用 Node.js 24 安装锁定依赖，完成检查、构建和内容验证后，仅发布 `dist/`。旧版 Next.js 留在远端 Git 历史中，不再使用 `apps/web/out` 发布路径。发布、验证与回退方式见 [部署说明](docs/deployment.md)。
-
-此前的公开对比预览：[David — Astro Preview](https://david-astro-preview-20261016.g2811459442.chatgpt.site)。这是独立 Sites 站点，GitHub Pages 发布不会自动更新它；对外展示以正式网站为准。该预览的版本信息见 [预览记录](docs/preview.md)。
+- [视觉规范](docs/typography.md)：全站字体、颜色、字号、行高与间距的唯一规范。
+- [实现说明](docs/implementation.md)：代码结构、页面行为、字体加载与配图。
+- [部署说明](docs/deployment.md)：发布、验证和本地开发方式。
+- [研究资料来源](docs/research-sources.md)：论文与文章依据、署名及公开范围。
+- [AGENTS.md](AGENTS.md)：修改本项目时遵守的维护规则。
 
 ## 技术与参考
 
-- 排版参考 [Weihuang Wen 的主页](https://markwwen.github.io/)：左侧个人信息固定，右侧内容自然滚动。
-- 技术参考 [Kyaw 的网站](https://kyswtn.com/) 和 [源代码](https://github.com/kyswtn/kyswtn.com)：Astro、UnoCSS、`ClientRouter`、View Transitions、本地字体和静态内容。
-- 参考仓库的 Astro 5 已更新为 Astro 7.4，使用相同的轻量架构。没有引入旧站的 Next.js、React hydration、GSAP、ScrollMagic 或虚拟滚动库。
-- 拉取并检查的参考提交：`25e66b8faaae1d8a29d16aa86aade45ecded3c31`。本项目重新实现布局与交互，未复制参考作者的个人内容或私有 notes 子模块。
+使用 Astro 静态生成、UnoCSS、ClientRouter、View Transitions 和本地字体。依赖版本以 `package.json` 与 `package-lock.json` 为准。
 
-## 内容在哪里修改
-
-| 内容 | 文件 |
-| --- | --- |
-| 个人信息、项目、联系方式 | `src/data/site.ts` |
-| 首页文字与栏目结构 | `src/pages/index.astro` |
-| 三篇公开文章的原始数据（网站只渲染英文字段） | `src/data/articles.json` |
-| 论文作者、投稿状态、arXiv 链接 | `src/data/publications.json` |
-| 文章类型与阅读时间计算 | `src/data/articles.ts` |
-| 左栏与文章目录 | `src/components/Sidebar.astro` |
-| 颜色、字体、响应式布局 | `src/styles/global.css` |
-| 标签页圆润闪电图标及声明 | `public/favicon-lightning-large.svg`、`public/favicon-lightning-large-*.png`、`public/favicon.ico`、`src/layouts/BaseLayout.astro` |
-| 滚动目录与复制 | `src/scripts/site.ts` |
-| 项目图片、论文插图和字体 | `public/media/`、`public/fonts/` |
-
-公开文章 slug 会生成 `/articles/<slug>/`，文章返回链接定位到首页对应的条目。GRA-Flow、RECAST 目前仅保留标题、作者、投稿状态和配图，不生成笔记页、下载按钮、标题/图片链接或站点地图记录。
-
-本站不托管论文 PDF，也不显示 PDF 下载按钮。ProME 保留 arXiv 入口和 Notes，论文下载由访客在 arXiv 完成；原 `public/papers/prome.pdf` 网站副本已移除，原始论文文件未修改。
-
-英文统一使用旧站原有的 Nunito 文件，包括代码正文、工具栏标签和 Copy 按钮。代码示例中的中文说明已译为英文，保留键名、结构、缩进、换行与局部横向滚动。现有 Nunito 文件没有箭头字形，正文保留原来的 `→`，继续由 Noto Sans SC 后备字体显示。字体文件、预加载和 `font-display: block` 均保持，优先维持稳定字形和排版；Noto Sans SC 不预加载。使用字体的许可证已保留。原始文章数据中的中文字段保留用于溯源，不生成隐藏中文正文，也不再读取旧版语言缓存。
-
-配色集中在 `src/styles/global.css` 的 CSS 变量中，使用 `color-scheme: only light` 固定浅色。页面元数据声明浅色和白色浏览器主题色，不包含深色媒体查询；禁用 JavaScript 也保持浅色。
-
-论文栏目包含 ProME、GRA-Flow 和 RECAST，作者顺序依据论文，投稿状态依据提供的 CV。2026-10-18 已按用户要求移除 `.private/` 及其中的 GRA-Flow、RECAST 完整笔记和来源说明，不再保留或重建。`.gitignore` 的排除规则和测试中“构建产物不包含该目录”的检查继续保留，它们不依赖目录存在。用户明确要求重新公开前，不恢复资源入口或页面。此前已发布的远端 Git 历史不因本地清理自动清除。
-
-首页论文、PPT-Agent 和 Evidence Tracker 均不显示额外的短说明，全部配图移除名称标签；左栏使用实心邮件/GitHub 图标。PPT-Agent 展示在线 Demo 的单张真实欢迎界面，Evidence Tracker 使用依据项目文章绘制的 SVG 工作流示意图。文章页摘要与正文保留。图片来源与含义见 `docs/implementation.md`。
-
-## 视觉规范
-
-完整的字体、颜色、字号、行高、间距与响应式规则统一维护在 **[视觉规范](docs/typography.md)**。这是视觉设计的唯一规范入口；`AGENTS.md` 要求后续修改遵守并同步更新它，README 只保留入口，避免多份数值漂移。
-
-默认正式域名沿用旧站 `https://crystaldavid.github.io`。更换域名时，设置 `SITE_URL` 后构建，并同步 `public/robots.txt` 和社交分享图中的域名。本站按域名根路径部署。
-
-详细说明见 [实现依据](docs/implementation.md)、[验证记录](docs/verification.md) 与 [视觉规范](docs/typography.md)。
+布局参考 [Weihuang Wen 的主页](https://markwwen.github.io/)；技术参考 [Kyaw 的网站](https://kyswtn.com/)及其[源代码](https://github.com/kyswtn/kyswtn.com)。
