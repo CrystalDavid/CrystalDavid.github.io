@@ -35,8 +35,10 @@ history by default. Keep the current source and GitHub connection intact.
   and the documented workflow figure for Evidence Tracker.
 - GRA-Flow and RECAST are listing-only until the user explicitly republishes them.
   Do not expose their PDFs, Notes pages, title/image links or sitemap entries.
-  Keep drafts in the ignored local `.private/` directory, outside public resources
-  and tracked article data. Never copy that directory to a hosted checkout.
+  The user explicitly requested permanent deletion of the local `.private/`
+  drafts on 2026-10-18. Do not recreate or back up that directory. If deletion
+  is blocked and files remain, keep them ignored and never copy them into
+  public resources, tracked article data, or a hosted checkout.
 - Keep every author list on one line without reducing its specified type size. Allow it to
   extend into the desktop right margin; scroll only the author line when the
   viewport cannot fit it. Preserve author order and the bold personal name.

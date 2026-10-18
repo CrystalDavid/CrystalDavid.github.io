@@ -34,13 +34,13 @@ PPT-Agent 首页配图 `public/media/ppt-agent-welcome.png` 是 2026-10-16 从�
 
 ProME 展示在 Publications & Manuscripts 中，保留旧文章关于训练群体标签、带群体标签的验证集、跨协议实验报告和代码开放状态的边界。Evidence Tracker 原文团队致谢保留。
 
-先前曾新增 GRA-Flow 与 RECAST 研究笔记，现按用户要求暂不公开。当前公开三篇文章、18 个章节、100 个内容块；两篇草稿及原始双语内容仅保留本机 `.private/articles.json`。当前 `src/data/articles.json` 只包含三篇公开文章，所有页面仅输出英文。三篇论文的列表信息保留，标题、作者及图示来自用户提供的 PDF，投稿状态来自 CV 第 1 页：
+先前曾新增 GRA-Flow 与 RECAST 研究笔记，现按用户要求暂不公开。当前公开三篇文章、18 个章节、100 个内容块；用户于 2026-10-18 明确要求永久删除两篇本地草稿，不再保留或重建 `.private/`。删除执行状态见验证记录。当前 `src/data/articles.json` 只包含三篇公开文章，所有页面仅输出英文。三篇论文的列表信息保留，标题、作者及图示来自用户提供的 PDF，投稿状态来自 CV 第 1 页：
 
 - ProME：第三作者，已投稿 Neurocomputing；保留 arXiv:2608.13190 链接。
 - GRA-Flow：第二作者，准备投稿 Pattern Recognition。
 - RECAST：第三作者，已投稿 ICCBD+AI 2026；正式标题为 Controlled Residual Transport for Frozen-Backbone All-in-One Image Restoration。
 
-本站不托管论文 PDF：ProME 的网站副本已从 `public/papers/` 移除，首页 PDF 与文章页 Paper PDF 入口、数据中的 pdf 字段及其类型均已删除。ProME 保留 arXiv 与 Notes，论文原文由访客在 arXiv 下载。2026-10-18 本地清理前检查时，GRA-Flow/RECAST 的两份私人 PDF 副本已不在工作目录；`.private/` 仅保留两篇笔记数据和来源说明，本轮不处理 D 盘源 PDF 或 CV。`publications.json` 将公开列表标题与配图独立存储；GRA-Flow/RECAST 继续保持 `notesAvailable: false`，首页标题和图片均无链接，不生成空按钮行；旧 PDF、Notes 地址返回 404，站点地图不收录两篇。原始笔记及其来源说明保存在本机被忽略的 `.private/`，不会同步到 Sites。
+本站不托管论文 PDF：ProME 的网站副本已从 `public/papers/` 移除，首页 PDF 与文章页 Paper PDF 入口、数据中的 pdf 字段及其类型均已删除。ProME 保留 arXiv 与 Notes，论文原文由访客在 arXiv 下载。2026-10-18 本地清理前检查时，GRA-Flow/RECAST 的两份私人 PDF 副本已不在工作目录；本轮不处理 D 盘源 PDF 或 CV。`publications.json` 将公开列表标题与配图独立存储；GRA-Flow/RECAST 继续保持 `notesAvailable: false`，首页标题和图片均无链接，不生成空按钮行；旧 PDF、Notes 地址返回 404，站点地图不收录两篇。本地两份草稿文件的删除已获明确授权，但被工具策略拒绝，当前残留仍在被忽略的 `.private/`，不会同步到 Sites 或 GitHub。
 
 撤下的是当前网站和当前源码中的完整资料；已公开过的 Git 历史及访客保存的副本不能通过这次常规提交追溯撤回。未改写历史或修改原站。RECAST 展示图仍来自第 3 页图 1，GRA-Flow 展示图仍来自第 10 页图 2。
 
@@ -70,7 +70,7 @@ ProME 展示在 Publications & Manuscripts 中，保留旧文章关于训练群�
 
 npm run check 检查 Astro/TypeScript；npm run build 输出首页、404、三篇公开文章共五个静态页面，以及站点地图与资源；npm test 核对完整英文文章、英文元数据、本地资源/链接/锚点、全站 PDF 文件与下载入口的排除、ProME 的 arXiv 和 Notes 入口、暂不公开稿件的页面/站点地图排除、语言控件和页脚的移除，以及包含内联脚本的浏览器脚本体积。dist 与 node_modules 是生成目录。
 
-2026-10-18 用户选择以 GitHub 构建部署为主，本地仅保留当前版本。开发依赖、构建产物和 `.astro/` 可删除，源码、锁文件与发布工作流仍保留；GitHub 会独立安装依赖并构建。当前本地 Git 已收拢为单个最新快照，清理旧分支引用、reflog 和旧对象，远端历史保持。自动审批拒绝了生成目录与旧 commit-graph 文件的删除；生成目录仍在，失效的 Git 索引缓存已禁用。实际核验见 [verification.md](verification.md)。
+2026-10-18 用户选择以 GitHub 构建部署为主，本地仅保留当前版本。开发依赖、构建产物和 `.astro/` 可删除，源码、锁文件与发布工作流仍保留；GitHub 会独立安装依赖并构建。当前本地 Git 已收拢为单个最新快照，清理旧分支引用、reflog 和旧对象，远端历史保持。上轮删除生成目录的操作被自动审批拒绝，后续检查时这些目录已不存在，不将其记作本轮删除；失效的 Git 索引缓存仍禁用。本轮删除本地启动脚本 `start.cmd`，保留云端部署所必需的 `.github/workflows/pages.yml`、配置、锁文件和测试。实际核验见 [verification.md](verification.md)。
 
 用户于 2026-10-17 明确要求将新版发布至正式网站。`main` 发布当前 Astro 版本，`.github/workflows/pages.yml` 使用 Node.js 24 运行 npm ci、check、build、test，再通过 GitHub Pages 发布 dist。迁移保留 main 的既有提交历史，原 Next.js 代码不进入当前构建。部署维护见 [deployment.md](deployment.md)。
 
