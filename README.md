@@ -15,6 +15,8 @@ npm run dev
 
 默认地址为 `http://127.0.0.1:4321/`。要求 Node.js 22.22+；开发环境已用 Node.js 24 验证。
 
+`node_modules/`、`dist/` 和 `.astro/` 均为可重新生成的本地目录，可以在暂不开发时删除以节省空间。重新开发时先运行 `npm ci` 安装锁定版本，再运行开发或构建命令；双击 `start.cmd` 也会在依赖缺失时自动安装。请保留 `package-lock.json`、源码、当前资源、许可证、文档、`.git/` 版本历史及 `.private/` 私人笔记。
+
 ## 构建与验证
 
 ```powershell
@@ -51,7 +53,7 @@ npm run preview
 | 标签页圆润闪电图标及声明 | `public/favicon-lightning-large.svg`、`public/favicon-lightning-large-*.png`、`public/favicon.ico`、`src/layouts/BaseLayout.astro` |
 | 滚动目录与复制 | `src/scripts/site.ts` |
 | 项目图片、论文插图和字体 | `public/media/`、`public/fonts/` |
-| 暂不公开的两篇笔记和 PDF（仅本机，不提交） | `.private/` |
+| 暂不公开的两篇笔记及来源说明（仅本机，不提交） | `.private/` |
 
 公开文章 slug 会生成 `/articles/<slug>/`，文章返回链接定位到首页对应的条目。GRA-Flow、RECAST 目前仅保留标题、作者、投稿状态和配图，不生成笔记页、下载按钮、标题/图片链接或站点地图记录。
 
@@ -61,7 +63,7 @@ npm run preview
 
 配色集中在 `src/styles/global.css` 的 CSS 变量中，使用 `color-scheme: only light` 固定浅色。页面元数据声明浅色和白色浏览器主题色，不包含深色媒体查询；禁用 JavaScript 也保持浅色。
 
-论文栏目包含 ProME、GRA-Flow 和 RECAST，作者顺序依据论文，投稿状态依据提供的 CV。GRA-Flow 和 RECAST 的完整笔记及 PDF 已移入本机 `.private/`，不进入构建或 Git 当前版本；其 PDF 移动前后 SHA-256 一致。用户明确要求重新公开前，不恢复资源入口或页面。此前已发布的 Git 历史不因当前版本的删除自动清除。
+论文栏目包含 ProME、GRA-Flow 和 RECAST，作者顺序依据论文，投稿状态依据提供的 CV。GRA-Flow 和 RECAST 的完整笔记及来源说明仅保留在本机 `.private/`，不进入构建或 Git 当前版本；该目录现已不含 PDF 副本。用户明确要求重新公开前，不恢复资源入口或页面。此前已发布的 Git 历史不因当前版本的删除自动清除。
 
 首页论文、PPT-Agent 和 Evidence Tracker 均不显示额外的短说明，全部配图移除名称标签；左栏使用实心邮件/GitHub 图标。PPT-Agent 展示在线 Demo 的单张真实欢迎界面，Evidence Tracker 使用依据项目文章绘制的 SVG 工作流示意图。文章页摘要与正文保留。图片来源与含义见 `docs/implementation.md`。
 

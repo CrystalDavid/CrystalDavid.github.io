@@ -40,7 +40,7 @@ ProME 展示在 Publications & Manuscripts 中，保留旧文章关于训练群�
 - GRA-Flow：第二作者，准备投稿 Pattern Recognition。
 - RECAST：第三作者，已投稿 ICCBD+AI 2026；正式标题为 Controlled Residual Transport for Frozen-Backbone All-in-One Image Restoration。
 
-本站不托管论文 PDF：ProME 的网站副本已从 `public/papers/` 移除，首页 PDF 与文章页 Paper PDF 入口、数据中的 pdf 字段及其类型均已删除。ProME 保留 arXiv 与 Notes，论文原文由访客在 arXiv 下载。GRA-Flow/RECAST 的两份旧网站副本仍位于 `.private/papers/`，源 PDF 和 CV 未修改。`publications.json` 将公开列表标题与配图独立存储；GRA-Flow/RECAST 继续保持 `notesAvailable: false`，首页标题和图片均无链接，不生成空按钮行；旧 PDF、Notes 地址返回 404，站点地图不收录两篇。原始笔记及其来源说明保存在本机被忽略的 `.private/`，不会同步到 Sites。
+本站不托管论文 PDF：ProME 的网站副本已从 `public/papers/` 移除，首页 PDF 与文章页 Paper PDF 入口、数据中的 pdf 字段及其类型均已删除。ProME 保留 arXiv 与 Notes，论文原文由访客在 arXiv 下载。2026-10-18 本地清理前检查时，GRA-Flow/RECAST 的两份私人 PDF 副本已不在工作目录；`.private/` 仅保留两篇笔记数据和来源说明，本轮不处理 D 盘源 PDF 或 CV。`publications.json` 将公开列表标题与配图独立存储；GRA-Flow/RECAST 继续保持 `notesAvailable: false`，首页标题和图片均无链接，不生成空按钮行；旧 PDF、Notes 地址返回 404，站点地图不收录两篇。原始笔记及其来源说明保存在本机被忽略的 `.private/`，不会同步到 Sites。
 
 撤下的是当前网站和当前源码中的完整资料；已公开过的 Git 历史及访客保存的副本不能通过这次常规提交追溯撤回。未改写历史或修改原站。RECAST 展示图仍来自第 3 页图 1，GRA-Flow 展示图仍来自第 10 页图 2。
 
@@ -63,6 +63,8 @@ ProME 展示在 Publications & Manuscripts 中，保留旧文章关于训练群�
 用户明确优先保证字体统一和稳定体验：字体文件与加载策略均保持。Nunito latin 在首屏本地预加载，使用 font-display: block，不切换为 swap，不引入整页隐藏脚本。Noto Sans SC 不预加载，但 PPT-Agent 和 Evidence Tracker 中的 `→` 仍会触发该字体；此次英文翻译不宣称消除了后备字体请求。字体、真实项目截图、论文图和头像均由本站提供。使用字体的 OFL 许可证位于 public/fonts。
 
 没有第三方字体 CDN、追踪器、登录或运行时后端依赖。
+
+2026-10-18 删除当前页面和构建均未引用的两张旧项目图片，以及不再使用的旧版中文字体子集生成脚本；现有字体文件和加载方式保持。后续资源清理应先检查源码与构建引用，再验证保留页面及资源的内容一致，不能只按最近访问次数删除字体、许可证或分享图。
 
 ## 构建
 
