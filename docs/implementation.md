@@ -58,7 +58,9 @@ ProME 展示在 Publications & Manuscripts 中，保留旧文章关于训练群�
 
 ## 字体与资源
 
-英文 Nunito 的 latin 与 latin-ext 文件直接复制旧站，全站文字统一使用，包括代码正文、语言标签和 Copy。代码仍保持原始内容与空白，通过 pre 的局部横向滚动容纳长行。Nunito latin 在首屏本地预加载，使用 font-display: block，不引入整页隐藏脚本。Noto Sans SC 子集仅保留作非英文字符后备，不再预加载。字体、真实项目截图、论文图和头像均由本站提供。使用字体的 OFL 许可证位于 public/fonts。
+英文 Nunito 的 latin 与 latin-ext 文件直接复制旧站，全站文字统一使用，包括代码正文、语言标签和 Copy。2026-10-18 按用户要求，将 PPT-Agent 三处代码示例中的中文字符串和提示词译为英文；JSON 键名、结构及代码缩进、换行保持，通过 pre 的局部横向滚动容纳长行。两份 Nunito 文件均没有箭头字形，正文继续保留原来的 `→`，由 Noto Sans SC 后备显示，不改成 ASCII 拼接符号或系统字体。
+
+用户明确优先保证字体统一和稳定体验：字体文件与加载策略均保持。Nunito latin 在首屏本地预加载，使用 font-display: block，不切换为 swap，不引入整页隐藏脚本。Noto Sans SC 不预加载，但 PPT-Agent 和 Evidence Tracker 中的 `→` 仍会触发该字体；此次英文翻译不宣称消除了后备字体请求。字体、真实项目截图、论文图和头像均由本站提供。使用字体的 OFL 许可证位于 public/fonts。
 
 没有第三方字体 CDN、追踪器、登录或运行时后端依赖。
 

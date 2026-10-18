@@ -347,7 +347,7 @@
           {
             "type": "code",
             "language": "json",
-            "code": "{\n  \"topic_summary\": \"主题一句话概括\",\n  \"typical_scenes\": [\"场景1\", \"场景2\"],\n  \"typical_audiences\": [\"受众1\", \"受众2\"],\n  \"common_sections\": [\"板块1\", \"板块2\"],\n  \"typical_styles\": [\"风格1\", \"风格2\"]\n}"
+            "code": "{\n  \"topic_summary\": \"One-sentence summary of the topic\",\n  \"typical_scenes\": [\"Scenario 1\", \"Scenario 2\"],\n  \"typical_audiences\": [\"Audience 1\", \"Audience 2\"],\n  \"common_sections\": [\"Section 1\", \"Section 2\"],\n  \"typical_styles\": [\"Style 1\", \"Style 2\"]\n}"
           },
           {
             "type": "subheading",
@@ -357,7 +357,7 @@
           {
             "type": "code",
             "language": "text",
-            "code": "- 语气自然亲切，像真人对话，不要列表式提问\n- 先简短回应用户主题，再抛出有引导性的问题\n- 问题要具体，给出 2-3 个方向让用户容易回答\n- 一次只问一个核心问题"
+            "code": "- Use a natural, friendly tone, like a real conversation. Avoid asking questions as a checklist.\n- Briefly acknowledge the user's topic, then ask a guiding question.\n- Make questions specific and offer 2-3 directions so the user can answer easily.\n- Ask only one core question at a time."
           },
           {
             "type": "subheading",
@@ -454,7 +454,7 @@
           {
             "type": "code",
             "language": "json",
-            "code": "{\n  \"page_number\": 1,\n  \"title\": \"页面标题\",\n  \"goal\": \"页面最重要的结论\",\n  \"core_messages\": [\"核心信息1\", \"核心信息2\"],\n  \"evidence_suggestions\": [\"证据建议\"],\n  \"visual_type\": \"推荐表达方式\",\n  \"layout_direction\": \"布局方向\",\n  \"keywords\": [\"关键词\"],\n  \"design_notes\": \"设计注意事项\"\n}"
+            "code": "{\n  \"page_number\": 1,\n  \"title\": \"Slide title\",\n  \"goal\": \"The slide's main takeaway\",\n  \"core_messages\": [\"Key message 1\", \"Key message 2\"],\n  \"evidence_suggestions\": [\"Suggested evidence\"],\n  \"visual_type\": \"Recommended visual format\",\n  \"layout_direction\": \"Layout direction\",\n  \"keywords\": [\"Keyword\"],\n  \"design_notes\": \"Design considerations\"\n}"
           },
           {
             "type": "subheading",
