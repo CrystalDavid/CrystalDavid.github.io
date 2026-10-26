@@ -29,6 +29,10 @@ https://crystaldavid.github.io/. The `main` branch publishes through GitHub Page
   rounded lightning favicon.
 - Keep the homepage free of emojis, image badges, a footer and extra paper or
   project descriptions. Article summaries and full text remain visible.
+- Order the homepage as About Me, Education, Research Interests, Publications &
+  Manuscripts and Projects. Store English education details in `src/data/site.ts`.
+  The homepage sidebar shows the avatar, name and social icons; the article
+  sidebar also includes the school and section navigation.
 - Use one real interface screenshot for PPT-Agent and the documented workflow
   figure for Evidence Tracker.
 - Keep author lists on one line, in the verified order, with the personal name

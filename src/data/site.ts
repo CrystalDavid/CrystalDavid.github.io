@@ -7,12 +7,12 @@ export const profile = {
   major: { zh: '数据科学与大数据技术', en: 'Data Science & Big Data Technology' },
 };
 
-export const navigation = [
-  { id: 'about', number: '01', zh: '关于我', en: 'About' },
-  { id: 'projects', number: '02', zh: '项目实践', en: 'Projects' },
-  { id: 'writing', number: '03', zh: '文章与笔记', en: 'Writing' },
-  { id: 'offscreen', number: '04', zh: '屏幕之外', en: 'Offscreen' },
-];
+export const education = {
+  school: profile.school.en,
+  degree: 'Bachelor’s degree',
+  major: 'Data Science and Big Data Technology',
+  period: '2023–2027',
+};
 
 export const projects = [
   {

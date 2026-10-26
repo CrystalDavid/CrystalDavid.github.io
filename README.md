@@ -10,7 +10,7 @@
 
 | 修改内容 | 文件 |
 | --- | --- |
-| 个人信息、项目、联系方式 | `src/data/site.ts` |
+| 个人信息、教育经历、项目、联系方式 | `src/data/site.ts` |
 | 首页文字与栏目结构 | `src/pages/index.astro` |
 | 公开文章内容 | `src/data/articles.json` |
 | 论文标题、作者、投稿状态和资源入口 | `src/data/publications.json` |

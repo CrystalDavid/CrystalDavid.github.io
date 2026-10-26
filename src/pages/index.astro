@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { profile, projects } from '../data/site';
+import { education, projects } from '../data/site';
 import { publications } from '../data/publications';
 import Authors from '../components/Authors.astro';
 ---
@@ -8,6 +8,14 @@ import Authors from '../components/Authors.astro';
   <section id="about" class="home-section" data-section aria-labelledby="about-title">
     <h2 id="about-title">About Me</h2>
     <p>I’m David, a student in Data Science and Big Data Technology at <a href="https://www.sustech.edu.cn/en/" target="_blank" rel="noopener noreferrer">Southern University of Science and Technology (SUSTech)</a>, Shenzhen. I focus on building AI agents and turning complex workflows into clear, polished and efficient products. I enjoy making tools that reduce repetitive work and help people get things done.</p>
+  </section>
+  <section id="education" class="home-section" data-section aria-labelledby="education-title">
+    <h2 id="education-title">Education</h2>
+    <div class="education-entry">
+      <p class="education-school"><strong>{education.school}</strong></p>
+      <p class="education-period">{education.period}</p>
+      <p class="education-degree">{education.degree} in {education.major}</p>
+    </div>
   </section>
   <section id="interests" class="home-section" data-section aria-labelledby="interests-title">
     <h2 id="interests-title">Research Interests</h2>
@@ -30,10 +38,5 @@ import Authors from '../components/Authors.astro';
       <a class="publication-image project-image" href={`/articles/${project.article}/`} data-astro-prefetch aria-label={project.name}><img src={project.image} alt={project.alt.en} width="900" height="600" loading="lazy" decoding="async" /></a>
       <div class="publication-copy"><h3><a href={`/articles/${project.article}/`} data-astro-prefetch>{project.name}</a></h3><p class="publication-venue">{project.type.en}</p><div class="publication-links"><a href={project.github} target="_blank" rel="noopener noreferrer">Code</a>{project.demo && <a href={project.demo} target="_blank" rel="noopener noreferrer">Demo</a>}<a href={`/articles/${project.article}/`} data-astro-prefetch>Article</a></div></div>
     </article>)}
-  </section>
-  <section id="offscreen" class="home-section" data-section aria-labelledby="offscreen-title">
-    <h2 id="offscreen-title">Beyond Research</h2>
-    <p>Away from the screen, I run and play badminton. My personal best for 1,000 metres is 3:05. Coding and training feel similar to me: both reward steady practice, good rhythm and small improvements that become visible over time.</p>
-    <p>Feel free to get in touch via <a href={`mailto:${profile.email}`}>email</a> or find my work on <a href={profile.github} target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
   </section>
 </BaseLayout>

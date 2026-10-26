@@ -6,7 +6,7 @@
 
 | 位置 | 职责 |
 | --- | --- |
-| `src/pages/index.astro` | 首页介绍、研究兴趣、论文、项目和个人兴趣 |
+| `src/pages/index.astro` | 首页介绍、教育经历、研究兴趣、论文和项目 |
 | `src/pages/articles/[slug].astro` | 从公开文章数据生成正文页面 |
 | `src/pages/404.astro` | 未找到页面 |
 | `src/layouts/BaseLayout.astro` | 页面框架、元数据、字体预加载、favicon 和路由 |
@@ -16,13 +16,15 @@
 | `src/scripts/site.ts` | 目录当前项、代码复制与页面切换生命周期 |
 | `public/` | 本地字体、许可证、图片、图标、分享图和 robots |
 
-表中路径均相对于仓库根目录。颜色、字号、行高、间距和断点只在 [视觉规范](typography.md) 维护。
+表中路径均相对于项目根目录。颜色、字号、行高、间距和断点只在 [视觉规范](typography.md) 维护。
 
 ## 页面与交互
 
 桌面采用左侧 sticky 个人信息栏和右侧内容栏，小屏幕使用单栏。页面原生滚动；作者名单和代码长行在各自区域内横向滚动，不让整页横向溢出。
 
 首页论文条目展示配图、标题、作者、投稿状态及可用资源入口；项目条目展示单张配图、名称、类别及链接。配图完整显示，不叠加名称标签。文章页面保留摘要、正文、来源和目录。
+
+首页按 About Me、Education、Research Interests、Publications & Manuscripts、Projects 排列。Education 使用 `src/data/site.ts` 中的英文学校、学位、专业和就读年份。首页侧栏展示头像、姓名与 Email/GitHub 图标；文章侧栏保留学校和章节目录。
 
 全站只输出英文，并固定浅色背景。外观由 CSS 和页面元数据控制，不依赖脚本或保存的主题偏好。
 
