@@ -21,34 +21,33 @@ https://crystaldavid.github.io/. The `main` branch publishes through GitHub Page
 - Keep the restrained two-column desktop layout, sticky sidebar and native
   scrolling. Use one column on small screens.
 - Render English only, including metadata, alternative text and accessibility
-  labels. Bilingual source fields may remain, but only English fields render.
-- Keep a white background with the blue palette, CSS `color-scheme: only light`
-  and light metadata. No theme or language controls.
-- Preserve Nunito throughout the interface and code, `(Dawei HUANG)`, the two
-  solid Email/GitHub icons, capsule resource links and the transparent blue
-  rounded lightning favicon.
+  labels. Only English fields from bilingual source data render.
+- Keep the white background, blue palette, `color-scheme: only light`
+  and light metadata, without theme or language controls.
+- Preserve Nunito throughout the interface, `(Dawei HUANG)`, the
+  solid Email/GitHub icons, capsule resource links and transparent blue rounded
+  lightning favicon.
 - Keep the homepage free of emojis, image badges, a footer and extra paper or
-  project descriptions. Article summaries and full text remain visible.
-- Order the homepage as About Me, Education, Research Interests, Publications &
-  Manuscripts and Projects. Store English education details in `src/data/site.ts`.
-  The homepage sidebar shows the avatar, name and social icons; the article
-  sidebar also includes the school and section navigation.
+  project descriptions.
+- Order the homepage as About Me, Education, Research Interests, Publications
+  and Projects. Store English education details in `src/data/site.ts`.
+  The sidebar shows the avatar, name, social icons and matching section links.
+  Keep native anchor navigation functional without JavaScript, and accurately
+  highlight the current section when scrolling or choosing a destination.
 - Use one real interface screenshot for PPT-Agent and the documented workflow
   figure for Evidence Tracker.
-- Keep author lists on one line, in the verified order, with the personal name
-  bold. Allow desktop overflow into the right margin and local horizontal
-  scrolling when needed; do not shrink, truncate or wrap the names.
-- Follow the visual specification for fonts, colors, sizes, line heights,
-  spacing and responsive behavior. Preserve code characters, whitespace,
-  newlines and local horizontal scrolling.
+- Keep author lists on one line in the verified order, with the personal name
+  bold. Allow desktop overflow into the right margin and local scrolling when
+  needed; do not shrink, truncate or wrap names.
 - Preserve verified claims, conclusions, limitations, citations and attribution.
   Do not invent credentials, acceptance decisions or unavailable code links.
-- Keep public article slugs and `/#article-card-<slug>` anchors stable.
-- GRA-Flow and RECAST are listing-only. Do not expose their PDFs, full Notes,
-  title/image links or sitemap entries without an explicit publication request.
-- Do not host paper PDFs or render PDF download buttons. ProME has arXiv and
-  Notes links. Source papers and the CV are read-only references; the CV is not
-  public website content.
+- Publish the single-page profile and 404 only. Keep section IDs and links in
+  sync; the sitemap contains only the homepage.
+- Do not publish article detail pages, Notes/Article buttons, paper PDFs or
+  submission-status information. ProME links to arXiv; projects link to their
+  repositories and available demos. GRA-Flow and RECAST remain listing-only.
+- Source papers and the CV are read-only references; the CV is not public
+  website content.
 
 ## Architecture and verification
 

@@ -2,7 +2,7 @@
 
 正式网站：[crystaldavid.github.io](https://crystaldavid.github.io/)。
 
-这是一个英文个人网站，使用 Nunito 字体、白色背景和蓝色链接。桌面左侧个人信息采用 sticky 布局，右侧随浏览器原生滚动；小屏幕使用单栏。
+这是一个英文单页个人网站，使用 Nunito 字体、白色背景、海军蓝标题、蓝黑正文和蓝色链接。桌面左侧个人信息与栏目导航采用 sticky 布局，右侧原生滚动；小屏幕使用单栏和换行导航。
 
 ## 修改与发布
 
@@ -12,16 +12,14 @@
 | --- | --- |
 | 个人信息、教育经历、项目、联系方式 | `src/data/site.ts` |
 | 首页文字与栏目结构 | `src/pages/index.astro` |
-| 公开文章内容 | `src/data/articles.json` |
-| 论文标题、作者、投稿状态和资源入口 | `src/data/publications.json` |
-| 文章类型与阅读时间 | `src/data/articles.ts` |
-| 左栏与文章目录 | `src/components/Sidebar.astro` |
+| 论文标题、作者、配图和 arXiv 地址 | `src/data/publications.json` |
+| 左栏与栏目导航 | `src/components/Sidebar.astro` |
 | 字体、颜色、间距与响应式布局 | `src/styles/global.css` |
 | 页面元数据与 favicon 声明 | `src/layouts/BaseLayout.astro` |
-| 目录跟随与代码复制 | `src/scripts/site.ts` |
+| 导航当前项与页面切换 | `src/scripts/site.ts` |
 | 图片、字体与图标 | `public/` |
 
-页面只渲染英文字段。公开内容及资料使用边界见 [研究资料来源](docs/research-sources.md)。
+首页依次展示 About Me、Education、Research Interests、Publications 和 Projects。构建仅生成首页与 404，站点地图收录首页。论文保留标题、作者、配图及已有 arXiv 外链，项目提供 Code/Demo。公开内容及资料使用边界见 [研究资料来源](docs/research-sources.md)。
 
 ## 本地预览（可选）
 
@@ -43,7 +41,7 @@ npm run dev
 - [视觉规范](docs/typography.md)：全站字体、颜色、字号、行高与间距的唯一规范。
 - [实现说明](docs/implementation.md)：代码结构、页面行为、字体加载与配图。
 - [部署说明](docs/deployment.md)：发布、验证和本地开发方式。
-- [研究资料来源](docs/research-sources.md)：论文与文章依据、署名及公开范围。
+- [研究资料来源](docs/research-sources.md)：研究依据、署名及公开范围。
 - [AGENTS.md](AGENTS.md)：修改本项目时遵守的维护规则。
 
 ## 技术与参考

@@ -1,31 +1,23 @@
 # 研究资料来源与公开范围
 
-论文标题、作者顺序和展示图片依据用户提供的论文原件；列表中的投稿状态依据所提供 CV 第 1 页。论文原件和 CV 是只读参考资料，CV 不作为网站公开内容。
+论文标题、作者顺序和展示图片依据作者提供的论文原件。论文原件和 CV 是只读参考资料；CV 不属于公开网站资源。教育信息依据作者提供的南方科技大学本科、数据科学与大数据技术专业、2023–2027 就读年份。
 
 ## 论文列表
 
-列表数据位于 `src/data/publications.json`。
+数据位于 `src/data/publications.json`。Publications 展示标题、作者、配图和可用外部链接，栏目名称不代表论文已获录用。
 
-| 论文 | 当前网站展示的状态 | 公开入口 |
-| --- | --- | --- |
-| ProME | Submitted to Neurocomputing · arXiv:2608.13190 | arXiv、Notes |
-| GRA-Flow | In preparation for submission to Pattern Recognition | 仅标题、作者、状态与配图 |
-| RECAST | Submitted to ICCBD+AI 2026 | 仅标题、作者、状态与配图 |
+| 论文 | 公开入口 |
+| --- | --- |
+| ProME | [arXiv:2608.13190](https://arxiv.org/abs/2608.13190) |
+| GRA-Flow | 标题、作者与配图 |
+| RECAST | 标题、作者与配图 |
 
 署名按论文原顺序展示，Dawei Huang 在 ProME、GRA-Flow、RECAST 中分别为第三、第二、第三作者。RECAST 的正式标题为 *Controlled Residual Transport for Frozen-Backbone All-in-One Image Restoration*。
 
-本站不托管 PDF；访客通过 [ProME arXiv 页面](https://arxiv.org/abs/2608.13190) 获取论文原文。GRA-Flow 和 RECAST 不公开完整笔记，标题和配图不链接到文章，也不生成文章路由或站点地图条目。扩大公开范围须有用户明确要求，并重新核对来源与投稿状态。
+本站不展示投稿状态，不托管论文 PDF 或文章详情。论文原文通过已有外部链接访问；扩大公开范围须有作者明确要求，并核对新依据。不能添加未经确认的录用结果、履历、独立贡献或代码地址。
 
-## 公开文章
+## 项目与图片
 
-正文数据位于 `src/data/articles.json`，网站只渲染英文字段。
+PPT-Agent 信息依据 [PPT-Agent](https://github.com/CrystalDavid/PPT-Agent) 项目资料，Evidence Tracker 信息依据 [OpenClaw Evidence Tracker](https://github.com/CrystalDavid/OpenClaw-Evidence-Tracker) 项目资料。Code 指向对应仓库，Demo 使用作者提供的演示地址。
 
-| 文章 | 内容依据 |
-| --- | --- |
-| ProME | arXiv:2608.13190 v1 及作者提供的研究说明 |
-| PPT-Agent Report | [PPT-Agent](https://github.com/CrystalDavid/PPT-Agent) 项目资料 |
-| Research Evidence Tracker | [OpenClaw Evidence Tracker](https://github.com/CrystalDavid/OpenClaw-Evidence-Tracker) 项目资料 |
-
-维护文章时保留方法的适用条件、实验协议、结论边界、局限、引用与团队致谢。ProME 中训练群体标签、带群体标签的验证集、跨协议实验及代码开放状态应分别表述。不能把投稿写成录用、把团队成果写成个人独立成果，或添加未经确认的履历与代码链接。
-
-个人信息与项目介绍以作者提供的资料为准；投稿状态或个人经历更新时，需要对应的新依据。图片用途与来源见 [实现说明](implementation.md)。
+项目配图和论文插图的用途见 [实现说明](implementation.md)。个人经历及研究信息更新需要对应的新依据。

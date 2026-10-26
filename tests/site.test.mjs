@@ -7,62 +7,47 @@ import { gzipSync } from 'node:zlib';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist');
-const articles = JSON.parse(await readFile(path.join(root, 'src/data/articles.json'), 'utf8'));
+const publications = JSON.parse(await readFile(path.join(root, 'src/data/publications.json'), 'utf8'));
 const home = await readFile(path.join(dist, 'index.html'), 'utf8');
 const escape = value => value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
-const documents = ['index.html', '404.html', ...articles.map(article => `articles/${article.slug}/index.html`)];
+const documents = ['index.html', '404.html'];
 
-test('all three public English articles are statically rendered, with their sources and return anchors', async () => {
-  assert.equal(articles.length, 3);
-  let sectionCount = 0;
-  let blockCount = 0;
-  for (const article of articles) {
-    const html = await readFile(path.join(dist, 'articles', article.slug, 'index.html'), 'utf8');
-    for (const key of ['titleEn', 'summaryEn', 'coverAltEn']) assert.ok(html.includes(escape(article[key])), `${article.slug}: missing ${key}`);
-    assert.ok(html.includes(`<title>${escape(article.titleEn)} — David</title>`));
-    assert.ok(html.includes(`name="description" content="${escape(article.summaryEn)}"`));
-    assert.ok(!html.includes(escape(article.titleZh)), `${article.slug}: Chinese title still rendered`);
-    assert.ok(html.includes(article.sourceHref));
-    assert.ok(html.includes(`/#article-card-${article.slug}`));
-    assert.ok(home.includes(`id="article-card-${article.slug}"`));
-    for (const section of article.sections) {
-      sectionCount++;
-      assert.ok(html.includes(escape(section.headingEn)));
-      for (const block of section.blocks) {
-        blockCount++;
-        if (block.type === 'code') assert.ok(html.includes(escape(block.code)), `${article.slug}: missing code`);
-        else if (block.type === 'list') for (const item of block.items) assert.ok(html.includes(escape(item.en)));
-        else assert.ok(html.includes(escape(block.en)));
-      }
-    }
+test('the single-page profile preserves education, publications and section navigation', () => {
+  const headings = [...home.matchAll(/<h2\b[^>]*>([^<]+)<\/h2>/g)].map(match => match[1]);
+  assert.deepEqual(headings, ['About Me', 'Education', 'Research Interests', 'Publications', 'Projects']);
+  assert.match(home, /Bachelor’s degree in Data Science and Big Data Technology/);
+  assert.match(home, /Southern University of Science and Technology/);
+  assert.match(home, /2023–2027/);
+  for (const id of ['about', 'education', 'interests', 'publications', 'projects']) {
+    assert.ok(home.includes(`href="#${id}"`), `Missing section link: ${id}`);
+    assert.ok(home.includes(`id="${id}"`), `Missing section: ${id}`);
   }
-  assert.equal(sectionCount, 18);
-  assert.equal(blockCount, 100);
+  assert.equal(publications.length, 3);
+  for (const publication of publications) {
+    assert.ok(home.includes(escape(publication.title)));
+    assert.ok(home.includes(publication.coverImage));
+    for (const author of publication.authors) assert.ok(home.includes(escape(author)));
+  }
+  assert.match(home, /href="mailto:g2811459442@gmail.com"/);
+  assert.match(home, /href="https:\/\/github.com\/CrystalDavid\/PPT-Agent"/);
+  assert.match(home, /href="https:\/\/github.com\/CrystalDavid\/OpenClaw-Evidence-Tracker"/);
+  assert.doesNotMatch(home, /Beyond Research|Publications &amp; Manuscripts|profile-school|profile-major/);
 });
 
-test('withheld manuscripts stay listing-only and paper downloads use arXiv without hosted PDFs', async () => {
-  const withheld = [
-    { slug: 'gra-flow-image-restoration', pdf: 'gra-flow.pdf' },
-    { slug: 'recast-image-restoration', pdf: 'recast.pdf' },
-  ];
-  const publications = JSON.parse(await readFile(path.join(root, 'src/data/publications.json'), 'utf8'));
-  const sitemap = await readFile(path.join(dist, 'sitemap-0.xml'), 'utf8');
-  for (const paper of withheld) {
-    const metadata = publications.find(p => p.slug === paper.slug);
-    assert.ok(metadata && !metadata.notesAvailable);
-    assert.ok(home.includes(escape(metadata.title)));
-    assert.ok(home.includes(`id="article-card-${paper.slug}"`));
-    assert.ok(!home.includes(`/articles/${paper.slug}/`));
-    assert.ok(!home.includes(`/papers/${paper.pdf}`));
-    assert.ok(!sitemap.includes(paper.slug));
-    assert.ok(!articles.some(article => article.slug === paper.slug));
-    await assert.rejects(access(path.join(dist, 'articles', paper.slug, 'index.html')), { code: 'ENOENT' });
-    await assert.rejects(access(path.join(dist, 'papers', paper.pdf)), { code: 'ENOENT' });
-  }
+test('only the homepage and 404 ship, with external research links and no publication status or PDFs', async () => {
+  const files = await readdir(dist, { recursive: true });
+  assert.deepEqual(files.filter(file => file.endsWith('.html')).sort(), [...documents].sort());
+  assert.ok(!files.some(file => /(^|[\\/])articles([\\/]|$)|\.pdf$/i.test(file)));
   await assert.rejects(access(path.join(dist, '.private')), { code: 'ENOENT' });
-  assert.ok(publications.every(publication => !('pdf' in publication)));
-  assert.ok(!(await readdir(dist, { recursive: true })).some(file => /\.pdf$/i.test(file)), 'PDF files must not enter the deployment artifact');
-  assert.ok(home.includes('href="https://arxiv.org/abs/2608.13190"') && home.includes('/articles/prome-group-robust-learning/'));
+  const sitemap = await readFile(path.join(dist, 'sitemap-0.xml'), 'utf8');
+  assert.doesNotMatch(sitemap, /\/articles\/|404/);
+  assert.match(sitemap, /https:\/\/crystaldavid.github.io\//);
+  assert.ok(publications.every(publication => !('pdf' in publication) && !('status' in publication) && !('notesAvailable' in publication)));
+  for (const document of documents) {
+    const html = await readFile(path.join(dist, document), 'utf8');
+    assert.doesNotMatch(html, /\/articles\/|>\s*(Notes|Article|PDF)\s*<\/a>|Submitted to|In preparation for submission|data-copy-code/i);
+  }
+  assert.ok(home.includes('href="https://arxiv.org/abs/2608.13190"'));
 });
 
 test('all local links, images, scripts, fonts, anchor targets and social metadata resolve', async () => {

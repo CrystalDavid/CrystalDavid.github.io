@@ -14,6 +14,14 @@ export const education = {
   period: '2023–2027',
 };
 
+export const navigation = [
+  { id: 'about', label: 'About Me' },
+  { id: 'education', label: 'Education' },
+  { id: 'interests', label: 'Research Interests' },
+  { id: 'publications', label: 'Publications' },
+  { id: 'projects', label: 'Projects' },
+];
+
 export const projects = [
   {
     name: 'PPT-Agent',
@@ -26,7 +34,7 @@ export const projects = [
     alt: { zh: 'PPT-Agent 欢迎界面，提供新建设计和导入项目入口', en: 'PPT-Agent welcome screen with options to start a design or import a project' },
     github: 'https://github.com/CrystalDavid/PPT-Agent',
     demo: 'https://lambent-zabaione-8eab6b.netlify.app/',
-    article: 'ppt-agent-report',
+    slug: 'ppt-agent',
   },
   {
     name: 'Evidence Tracker',
@@ -39,6 +47,6 @@ export const projects = [
     alt: { zh: 'Evidence Tracker 的论文身份核对、全文检索、Claim 核验和审计报告流程', en: 'Evidence Tracker workflow: paper identity checks, full-text evidence retrieval, claim review and an auditable report' },
     github: 'https://github.com/CrystalDavid/OpenClaw-Evidence-Tracker',
     demo: null,
-    article: 'openclaw-evidence-tracker',
+    slug: 'evidence-tracker',
   },
 ];

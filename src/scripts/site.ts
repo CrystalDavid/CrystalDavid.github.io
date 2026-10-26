@@ -1,64 +1,70 @@
-let observer: IntersectionObserver | undefined;
 let pageEvents: AbortController | undefined;
+let frame = 0;
+let restoredHref: string | undefined;
 
-function announce(message: string) {
-  const region = document.querySelector('#announcement');
-  if (region) region.textContent = message;
-}
-function setActiveSection(id: string) {
-  document.querySelectorAll<HTMLAnchorElement>('[data-section-link]').forEach(link => {
-    if (link.dataset.sectionLink === id) link.setAttribute('aria-current', 'location');
-    else link.removeAttribute('aria-current');
-  });
-}
-async function copyText(text: string) {
-  try {
-    await navigator.clipboard.writeText(text);
-    return true;
-  } catch {
-    // Also works on a local HTTP LAN preview where Clipboard API is unavailable.
-    const field = document.createElement('textarea');
-    field.value = text;
-    field.style.cssText = 'position:fixed;inset:0 auto auto -9999px';
-    document.body.append(field);
-    field.select();
-    const copied = document.execCommand('copy');
-    field.remove();
-    return copied;
-  }
-}
 function initializePage() {
   pageEvents?.abort();
+  cancelAnimationFrame(frame);
+  frame = 0;
   pageEvents = new AbortController();
   const { signal } = pageEvents;
-  observer?.disconnect();
-  document.documentElement.classList.remove('is-navigating');
-
   const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-section]'));
-  if (sections.length) {
-    const nearest = [...sections].reverse().find(section => section.getBoundingClientRect().top < innerHeight * .4) || sections[0];
-    setActiveSection(nearest.id);
-    observer = new IntersectionObserver(entries => {
-      const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-      if (visible[0]) setActiveSection(visible[0].target.id);
-    }, { rootMargin: '-10% 0px -65% 0px', threshold: 0 });
-    sections.forEach(section => observer!.observe(section));
-  }
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-section-link]'));
+  if (!sections.length) return;
 
-  document.querySelectorAll<HTMLButtonElement>('[data-copy-code]').forEach(button => button.addEventListener('click', async () => {
-    const text = button.closest('.code-block')?.querySelector('code')?.textContent || '';
-    const success = await copyText(text);
-    const message = success ? 'Copied' : 'Copy manually';
-    const original = button.innerHTML;
-    button.textContent = message;
-    announce(message);
-    setTimeout(() => { if (button.isConnected) button.innerHTML = original; }, 2000);
+  let activeId = '';
+  let selectedId: string | undefined;
+  const setActive = (id: string) => {
+    if (id === activeId) return;
+    activeId = id;
+    links.forEach(link => {
+      if (link.dataset.sectionLink === id) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    });
+  };
+  const update = () => {
+    frame = 0;
+    if (selectedId) return setActive(selectedId);
+    const atBottom = scrollY > 0 && scrollY + innerHeight >= document.documentElement.scrollHeight - 2;
+    const current = atBottom ? sections.at(-1)! : [...sections].reverse().find(section => section.getBoundingClientRect().top <= 120) || sections[0];
+    setActive(current.id);
+  };
+  const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
+  const selectHash = () => {
+    const id = location.hash.slice(1);
+    selectedId = restoredHref === location.href ? undefined : sections.find(section => section.id === id)?.id;
+    schedule();
+  };
+  // Keep a clicked destination selected when it cannot reach the top near the
+  // page end. Resume tracking as soon as the reader scrolls manually.
+  const resumeTracking = () => { selectedId = undefined; schedule(); };
+  links.forEach(link => link.addEventListener('click', event => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+    restoredHref = undefined;
+    selectedId = link.dataset.sectionLink;
+    if (selectedId) setActive(selectedId);
   }, { signal }));
+  window.addEventListener('scroll', schedule, { passive: true, signal });
+  window.addEventListener('resize', resumeTracking, { signal });
+  window.addEventListener('hashchange', selectHash, { signal });
+  window.addEventListener('popstate', event => { if (event.state) resumeTracking(); }, { signal });
+  window.addEventListener('pageshow', event => {
+    if (event.persisted) restoredHref = location.href;
+    selectHash();
+  }, { signal });
+  for (const event of ['wheel', 'touchstart', 'pointerdown']) window.addEventListener(event, resumeTracking, { passive: true, signal });
+  window.addEventListener('keydown', event => {
+    if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) resumeTracking();
+  }, { signal });
+  document.fonts.ready.then(() => { if (!signal.aborted) schedule(); });
+  selectHash();
 }
 
-document.addEventListener('astro:before-preparation', () => document.documentElement.classList.add('is-navigating'));
+// History may restore a manually scrolled position different from the URL hash.
+window.addEventListener('popstate', event => { restoredHref = event.state ? location.href : undefined; });
 document.addEventListener('astro:before-swap', () => {
-  observer?.disconnect();
   pageEvents?.abort();
+  cancelAnimationFrame(frame);
+  frame = 0;
 });
 document.addEventListener('astro:page-load', initializePage);
