@@ -25,7 +25,7 @@
 
 桌面为左侧 sticky 个人资料和导航、右侧原生滚动内容；小屏幕导航在个人信息下方自然换行。导航顺序与正文一致，使用 `#about`、`#education`、`#interests`、`#publications`、`#projects`。404 中的导航链接指向首页对应位置。
 
-Education 默认按年份、分隔线、南科大校徽、学位与 Data Science 专业排列。校徽替代文字保留学校全称。侧栏默认为加粗的圆角按钮。`src/data/presentation.ts` 中两项均可单独设为 `classic`，分别恢复学校文字布局和编号链接导航；两个组件在构建时选择对应结构，无运行时切换依赖。样式细节及切换方法见 [视觉规范](typography.md)。
+Education 使用时间轴布局，桌面按年份、分隔线、南科大校徽、学校及学位专业排列。学校全称 Southern University of Science and Technology 与完整学位专业 Bachelor’s degree in Data Science and Big Data Technology 均直接显示。手机将年份独立放在上方，为下方完整文字留出空间。侧栏使用经典编号链接导航。`src/data/presentation.ts` 可独立选择 Education 的 `timeline` / `classic` 和导航的 `classic` / `buttons`；两个组件在构建时选择对应结构，无运行时切换依赖。样式细节及切换方法见 [视觉规范](typography.md)。
 
 论文只展示标题、作者、配图及可用外链；项目展示单张配图、名称、类别和 Code/Demo 链接。ProME 标题与 arXiv 按钮指向外部预印本页，项目标题和图片指向 GitHub；无外链的论文使用普通标题和图片。作者名单在自身区域横向滚动。
 

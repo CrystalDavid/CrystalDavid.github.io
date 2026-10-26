@@ -83,14 +83,13 @@ ol { list-style: decimal; padding-left: 30px; }
 .education-school { color: var(--ink); font-size: var(--text-body); }
 .education-period { font-size: var(--text-meta); line-height: var(--line-meta); white-space: nowrap; }
 .education-degree { grid-column: 1 / -1; font-size: var(--text-meta); line-height: var(--line-meta); }
-.education-timeline { display: grid; grid-template-columns: max-content 2px 72px minmax(0, 1fr); align-items: center; gap: 24px; min-height: 88px; }
+.education-timeline { display: grid; grid-template-columns: max-content 2px 56px minmax(0, 1fr); align-items: center; gap: 16px; min-height: 80px; }
 .education-timeline p { margin: 0; }
 .education-years { color: var(--ink); font-size: var(--text-meta); font-weight: 700; line-height: var(--line-meta); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .education-divider { align-self: stretch; background: var(--line); border-radius: 999px; }
-.education-emblem { display: block; width: 72px; height: 72px; object-fit: contain; }
+.education-emblem { display: block; width: 56px; height: 56px; object-fit: contain; }
 .education-details { min-width: 0; }
-.education-qualification { color: var(--ink); font-size: var(--text-body); }
-.education-timeline .education-subject { margin-top: 4px; font-size: var(--text-meta); line-height: var(--line-meta); }
+.education-timeline .education-degree { margin-top: 4px; }
 .interest-list { color: var(--body); font-weight: inherit; }
 .publication-row { display: grid; grid-template-columns: 195px minmax(0, 1fr); align-items: center; gap: 28px; margin: 0 0 42px; scroll-margin-top: 70px; }
 /* Show the complete figures and screenshots without image overlays or cropping. */
@@ -135,8 +134,9 @@ ol { list-style: decimal; padding-left: 30px; }
   .profile-avatar img { width: 88px; height: 88px; }
   .education-entry { grid-template-columns: 1fr; }
   .education-period { order: 1; }
-  .education-timeline { grid-template-columns: max-content 2px 48px minmax(0, 1fr); gap: 12px; }
-  .education-emblem { width: 48px; height: 48px; }
+  .education-timeline { grid-template-columns: 2px 40px minmax(0, 1fr); gap: 12px; }
+  .education-years { grid-column: 1 / -1; }
+  .education-emblem { width: 40px; height: 40px; }
   .publication-row { grid-template-columns: 1fr; gap: 18px; margin: 0 0 32px; }
   .publication-image { width: 230px; margin: 0 auto; }
   .publication-image img { width: 230px; height: 150px; }

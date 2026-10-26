@@ -17,9 +17,8 @@ test('the single-page profile preserves education, publications and section navi
   assert.deepEqual(headings, ['About Me', 'Education', 'Research Interests', 'Publications', 'Projects']);
   const education = home.match(/<section\b[^>]*id="education"[^>]*>([\s\S]*?)<\/section>/)?.[1];
   assert.ok(education, 'Missing Education section');
-  assert.match(education, /Bachelor’s degree/);
-  assert.match(education, /Data Science/);
-  assert.doesNotMatch(education, /Big Data/);
+  assert.match(education, />Southern University of Science and Technology</);
+  assert.match(education, /Bachelor’s degree in Data Science and Big Data Technology/);
   assert.match(home, /Southern University of Science and Technology/);
   assert.match(home, /2023–2027/);
   for (const id of ['about', 'education', 'interests', 'publications', 'projects']) {
