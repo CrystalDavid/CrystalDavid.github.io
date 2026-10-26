@@ -62,7 +62,7 @@ ol { list-style: decimal; padding-left: 32px; }
 .profile-name { font-size: var(--text-title); font-weight: 700; line-height: var(--line-title); margin: 0; }
 .profile-name a { color: var(--ink); }
 .profile-handle { display: block; font-size: var(--text-subheading); line-height: var(--line-meta); margin-top: 4px; white-space: nowrap; }
-.social-icons { display: flex; justify-content: center; gap: 8px; margin: 24px 0 0; }
+.social-icons { display: flex; justify-content: center; gap: 8px; margin: 32px 0 0; }
 .social-icons a { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; color: var(--ink); }
 .social-icons a:hover { color: var(--accent); }
 .section-nav { display: grid; gap: 4px; margin: 32px 0 24px; padding: 0 16px; text-align: left; font-size: var(--text-meta); font-weight: 700; line-height: var(--line-meta); }
@@ -72,7 +72,7 @@ ol { list-style: decimal; padding-left: 32px; }
 .section-nav--buttons { gap: 8px; }
 .section-nav--buttons .nav-link { display: flex; align-items: center; justify-content: center; min-height: 48px; padding: 8px 16px; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); background: var(--paper); font-weight: 700; }
 .section-nav--buttons .nav-link:hover, .section-nav--buttons .nav-link[aria-current='location'] { color: var(--accent); border-color: var(--accent); background: var(--nav-surface); }
-.main-content { width: 648px; min-width: 0; padding-top: 64px; padding-bottom: 48px; }
+.main-content { width: 648px; min-width: 0; padding-top: 64px; padding-bottom: 64px; }
 .home-section { display: flow-root; scroll-margin-top: 32px; margin: 0; font-size: var(--text-body); line-height: var(--line-body); }
 .home-section + .home-section { margin-top: var(--section-gap); }
 /* Compensate for the thumbnail shadow so the visible gap matches text-led sections. */
@@ -84,11 +84,11 @@ ol { list-style: decimal; padding-left: 32px; }
 .education-school { color: var(--ink); font-size: var(--text-body); }
 .education-period { font-size: var(--text-meta); line-height: var(--line-meta); white-space: nowrap; }
 .education-degree { grid-column: 1 / -1; font-size: var(--text-meta); line-height: var(--line-meta); }
-.education-timeline { display: grid; grid-template-columns: max-content 2px 72px minmax(0, 1fr); align-items: center; gap: 24px; min-height: 80px; }
+.education-timeline { display: grid; grid-template-columns: max-content 2px 88px minmax(0, 1fr); align-items: center; gap: 24px; min-height: 80px; }
 .education-timeline p { margin: 0; }
 .education-years { color: var(--ink); font-size: var(--text-meta); font-weight: 700; line-height: var(--line-meta); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .education-divider { align-self: stretch; background: var(--line); border-radius: 999px; }
-.education-emblem { display: block; width: 72px; height: 72px; object-fit: contain; }
+.education-emblem { display: block; width: 88px; height: 88px; object-fit: contain; }
 .education-details { min-width: 0; }
 .education-timeline .education-degree { margin-top: 8px; }
 .about-copy, .interest-list { font-weight: 400; }
@@ -107,7 +107,7 @@ ol { list-style: decimal; padding-left: 32px; }
 .project-type { font-size: var(--text-meta); line-height: var(--line-meta); }
 /* Balance visible text gaps with the button edge, accounting for font leading. */
 .publication-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-.publication-links a { display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--button-border); color: var(--ink); font-size: var(--text-button); line-height: var(--line-compact); padding: 5px 12px; border-radius: 50%; }
+.publication-links a { display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--button-border); color: var(--ink); font-size: var(--text-button); line-height: var(--line-compact); padding: 5px 14px; border-radius: 18px; }
 .publication-links a:hover { color: var(--accent); border-color: var(--accent); }
 .source-link { display: block; width: fit-content; font-size: var(--text-meta); line-height: var(--line-meta); }
 .not-found { padding-top: 32px; }
@@ -117,8 +117,8 @@ ol { list-style: decimal; padding-left: 32px; }
   :root { --section-gap: 48px; --figure-section-gap: 56px; }
   .site-shell { width: auto; max-width: 720px; display: block; margin-inline: auto; padding: 0 24px; }
   .sidebar { position: static; width: auto; max-height: none; overflow: visible; padding-top: 48px; padding-bottom: 32px; }
-  .profile-avatar { width: 128px; height: 128px; padding: 12px; margin-bottom: 8px; }
-  .section-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 24px; margin: 24px 0 0; padding: 0; }
+  .profile-avatar { width: 128px; height: 128px; padding: 12px; margin-bottom: 20px; }
+  .section-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 24px; margin: 32px 0 0; padding: 0; }
   .section-nav--classic .nav-link { border-left: 0; border-bottom: 2px solid transparent; padding: 6px 0; }
   .section-nav--buttons { gap: 8px; }
   .nav-number { display: none; }
@@ -133,9 +133,9 @@ ol { list-style: decimal; padding-left: 32px; }
   .profile-avatar img { width: 88px; height: 88px; }
   .education-entry { grid-template-columns: 1fr; }
   .education-period { order: 1; }
-  .education-timeline { grid-template-columns: 2px 56px minmax(0, 1fr); gap: 16px; }
+  .education-timeline { grid-template-columns: 2px 64px minmax(0, 1fr); gap: 16px; }
   .education-years { grid-column: 1 / -1; }
-  .education-emblem { width: 56px; height: 56px; }
+  .education-emblem { width: 64px; height: 64px; }
   .publication-row { grid-template-columns: 1fr; gap: 24px; margin: 0 0 40px; }
   .publication-image { width: 240px; margin: 0 auto; }
   .publication-image img { width: 240px; height: 160px; }

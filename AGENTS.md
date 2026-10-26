@@ -25,7 +25,7 @@ https://crystaldavid.github.io/. The `main` branch publishes through GitHub Page
 - Keep the white background, blue palette, `color-scheme: only light`
   and light metadata, without theme or language controls.
 - Preserve Nunito throughout the interface, `(Dawei HUANG)`, the
-  solid Email/GitHub icons, elliptical resource links and transparent blue rounded
+  solid Email/GitHub icons, capsule resource links and transparent blue rounded
   lightning favicon.
 - Keep the homepage free of emojis, image badges, a footer and extra paper or
   project descriptions.
