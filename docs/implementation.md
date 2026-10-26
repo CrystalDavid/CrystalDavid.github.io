@@ -27,7 +27,7 @@
 
 Education 使用时间轴布局，桌面按年份、分隔线、南科大校徽、学校及学位专业排列。学校全称 Southern University of Science and Technology 与完整学位专业 Bachelor’s degree in Data Science and Big Data Technology 均直接显示。手机将年份独立放在上方，为下方完整文字留出空间。侧栏使用经典编号链接导航。`src/data/presentation.ts` 可独立选择 Education 的 `timeline` / `classic` 和导航的 `classic` / `buttons`；两个组件在构建时选择对应结构，无运行时切换依赖。样式细节及切换方法见 [视觉规范](typography.md)。
 
-论文只展示标题、作者、配图及可用外链；项目展示单张配图、名称、类别和 Code/Demo 链接。所有论文及项目标题均为无链接的深蓝色文字；ProME 通过 arXiv 按钮访问外部预印本页，项目图片及 Code 按钮指向 GitHub。About Me 中的学校名称为普通正文，不带链接。侧栏导航、About Me 正文和研究兴趣使用加粗字重。作者名单在自身区域横向滚动。
+论文只展示标题、作者、配图及可用外链；项目展示单张配图、名称、类别和 Code/Demo 链接。所有论文及项目标题均为无链接的蓝黑色文字；ProME 通过 arXiv 按钮访问外部预印本页，项目图片及 Code 按钮指向 GitHub。About Me 中的学校名称为普通正文，不带链接。侧栏导航保持加粗，About Me 正文和研究兴趣使用普通字重。作者名单在自身区域横向滚动。
 
 导航原生改变 hash 并定位章节。脚本使用 passive 滚动监听和 requestAnimationFrame 合并更新，每帧最多检查五个板块；仅当前项变化时更新 `aria-current`。点击靠近页尾的栏目后保持所选项，手动滚动时恢复位置跟踪；直接链接、浏览器历史恢复和窗口变化均重新校准。页面切换前取消动画帧和事件监听，切换后初始化。
 

@@ -9,7 +9,7 @@ const NameTag = isHome ? 'h1' : 'div';
 <aside class="sidebar" transition:name="sidebar" transition:animate="none">
   <div class="profile">
     <a class="profile-avatar" href="/" aria-label="David home" data-astro-prefetch><img src="/media/avatar.png" alt="David’s GitHub avatar" width="104" height="104" fetchpriority="high" /></a>
-    <NameTag class="profile-name"><a href="/" data-astro-prefetch>David<br /><span class="profile-handle">(Dawei HUANG)</span></a></NameTag>
+    <NameTag class="profile-name"><a href="/" data-astro-prefetch>David<span class="profile-handle">(Dawei HUANG)</span></a></NameTag>
     <div class="social-icons">
       <a href={`mailto:${profile.email}`} aria-label="Email" title="Email"><Icon name="mail" size={24} /></a>
       <a href={profile.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><Icon name="github" size={24} /></a>

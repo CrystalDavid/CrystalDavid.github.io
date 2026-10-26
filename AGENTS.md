@@ -30,7 +30,8 @@ https://crystaldavid.github.io/. The `main` branch publishes through GitHub Page
 - Keep the homepage free of emojis, image badges, a footer and extra paper or
   project descriptions.
 - Keep publication/project titles and the About Me school name as plain text.
-  Emphasize sidebar navigation, About Me copy and research interests.
+  Emphasize sidebar navigation; keep About Me copy and research interests at
+  regular weight. Use one blue-black text color and one blue interaction color.
 - Order the homepage as About Me, Education, Research Interests, Publications
   and Projects. Store English education details in `src/data/site.ts`.
   The sidebar shows the avatar, name, social icons and matching section links.

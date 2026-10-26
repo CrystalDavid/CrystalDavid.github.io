@@ -11,7 +11,7 @@ export const education = {
   school: profile.school.en,
   degree: 'Bachelor’s degree',
   major: 'Data Science and Big Data Technology',
-  period: '2023–2027',
+  period: '2023 - 2027',
   emblem: '/media/sustech-emblem.png',
 };
 

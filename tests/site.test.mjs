@@ -20,7 +20,7 @@ test('the single-page profile preserves education, publications and section navi
   assert.match(education, />Southern University of Science and Technology</);
   assert.match(education, /Bachelor’s degree in Data Science and Big Data Technology/);
   assert.match(home, /Southern University of Science and Technology/);
-  assert.match(home, /2023–2027/);
+  assert.match(home, /2023 - 2027/);
   for (const id of ['about', 'education', 'interests', 'publications', 'projects']) {
     assert.ok(home.includes(`href="#${id}"`), `Missing section link: ${id}`);
     assert.ok(home.includes(`id="${id}"`), `Missing section: ${id}`);
