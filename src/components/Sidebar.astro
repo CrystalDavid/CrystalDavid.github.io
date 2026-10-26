@@ -1,5 +1,6 @@
 ---
 import { profile, navigation } from '../data/site';
+import { presentation } from '../data/presentation';
 import Icon from './Icon.astro';
 interface Props { isHome: boolean; }
 const { isHome } = Astro.props;
@@ -14,7 +15,7 @@ const NameTag = isHome ? 'h1' : 'div';
       <a href={profile.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><Icon name="github" size={24} /></a>
     </div>
   </div>
-  <nav class="section-nav" aria-label="Page sections">
-    {navigation.map((item, index) => <a href={`${isHome ? '' : '/'}#${item.id}`} data-section-link={item.id} class="nav-link"><span class="nav-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span><span>{item.label}</span></a>)}
+  <nav class:list={['section-nav', `section-nav--${presentation.navigation}`]} aria-label="Page sections">
+    {navigation.map((item, index) => <a href={`${isHome ? '' : '/'}#${item.id}`} data-section-link={item.id} class="nav-link">{presentation.navigation === 'classic' && <span class="nav-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>}<span>{item.label}</span></a>)}
   </nav>
 </aside>

@@ -1,0 +1,21 @@
+---
+import { education } from '../data/site';
+import { presentation } from '../data/presentation';
+---
+{presentation.education === 'timeline' ? (
+  <div class="education-timeline">
+    <p class="education-years">{education.period}</p>
+    <span class="education-divider" aria-hidden="true"></span>
+    <img class="education-emblem" src={education.emblem} alt={`${education.school} emblem`} width="190" height="190" decoding="async" />
+    <div class="education-details">
+      <p class="education-qualification"><strong>{education.degree}</strong></p>
+      <p class="education-subject">{education.major}</p>
+    </div>
+  </div>
+) : (
+  <div class="education-entry">
+    <p class="education-school"><strong>{education.school}</strong></p>
+    <p class="education-period">{education.period}</p>
+    <p class="education-degree">{education.degree} in {education.major}</p>
+  </div>
+)}

@@ -15,7 +15,11 @@ const documents = ['index.html', '404.html'];
 test('the single-page profile preserves education, publications and section navigation', () => {
   const headings = [...home.matchAll(/<h2\b[^>]*>([^<]+)<\/h2>/g)].map(match => match[1]);
   assert.deepEqual(headings, ['About Me', 'Education', 'Research Interests', 'Publications', 'Projects']);
-  assert.match(home, /Bachelor’s degree in Data Science and Big Data Technology/);
+  const education = home.match(/<section\b[^>]*id="education"[^>]*>([\s\S]*?)<\/section>/)?.[1];
+  assert.ok(education, 'Missing Education section');
+  assert.match(education, /Bachelor’s degree/);
+  assert.match(education, /Data Science/);
+  assert.doesNotMatch(education, /Big Data/);
   assert.match(home, /Southern University of Science and Technology/);
   assert.match(home, /2023–2027/);
   for (const id of ['about', 'education', 'interests', 'publications', 'projects']) {

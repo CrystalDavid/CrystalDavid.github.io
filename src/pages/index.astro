@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { education, projects } from '../data/site';
+import { projects } from '../data/site';
 import { publications } from '../data/publications';
 import Authors from '../components/Authors.astro';
+import Education from '../components/Education.astro';
 ---
 <BaseLayout>
   <section id="about" class="home-section" data-section aria-labelledby="about-title" tabindex="-1">
@@ -11,11 +12,7 @@ import Authors from '../components/Authors.astro';
   </section>
   <section id="education" class="home-section" data-section aria-labelledby="education-title" tabindex="-1">
     <h2 id="education-title">Education</h2>
-    <div class="education-entry">
-      <p class="education-school"><strong>{education.school}</strong></p>
-      <p class="education-period">{education.period}</p>
-      <p class="education-degree">{education.degree} in {education.major}</p>
-    </div>
+    <Education />
   </section>
   <section id="interests" class="home-section" data-section aria-labelledby="interests-title" tabindex="-1">
     <h2 id="interests-title">Research Interests</h2>
