@@ -37,11 +37,9 @@ https://crystaldavid.github.io/. The `main` branch publishes through GitHub Page
   The sidebar shows the avatar, name, social icons and matching section links.
   Keep native anchor navigation functional without JavaScript, and accurately
   highlight the current section when scrolling or choosing a destination.
-- Preserve both Education and navigation variants. Select them independently
-  in `src/data/presentation.ts`; retain the classic markup and styles so either
-  layout can be restored without reverting unrelated content changes.
-- Preserve the independent `homeAlignment` choice in the same file; `classic`
-  restores the previous desktop homepage position without changing other styles.
+- Keep the confirmed Education timeline and numbered sidebar navigation.
+  Align desktop section destinations with the avatar, fully clear the previous
+  section, and provide enough scroll range for the final section.
 - Use one real interface screenshot for PPT-Agent and the documented workflow
   figure for Evidence Tracker.
 - Keep author lists on one line in the verified order, with the personal name
@@ -61,6 +59,8 @@ https://crystaldavid.github.io/. The `main` branch publishes through GitHub Page
 
 - Astro pages, components, data and scripts live in `src/`; static resources
   live in `public/`. Use the existing UnoCSS and ClientRouter setup.
+- Keep original thumbnail sources in `src/assets/`; generate responsive images
+  during the build. Preserve figure contents and verify their displayed quality.
 - Keep fonts self-hosted and preserve their files and loading strategy.
   Respect reduced motion; all reading content must work without JavaScript.
 - For relevant source or configuration changes, run `npm run check`,

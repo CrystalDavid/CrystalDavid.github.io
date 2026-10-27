@@ -14,6 +14,9 @@ function initializePage() {
 
   let activeId = '';
   let selectedId: string | undefined;
+  let positionsDirty = true;
+  let sectionTops: number[] = [];
+  let anchorOffset = 0;
   const setActive = (id: string) => {
     if (id === activeId) return;
     activeId = id;
@@ -24,19 +27,25 @@ function initializePage() {
   };
   const update = () => {
     frame = 0;
+    if (positionsDirty) {
+      anchorOffset = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+      sectionTops = sections.map(section => section.getBoundingClientRect().top + scrollY);
+      positionsDirty = false;
+    }
     if (selectedId) return setActive(selectedId);
     const atBottom = scrollY > 0 && scrollY + innerHeight >= document.documentElement.scrollHeight - 2;
-    const current = atBottom ? sections.at(-1)! : [...sections].reverse().find(section => section.getBoundingClientRect().top <= 120) || sections[0];
-    setActive(current.id);
+    let index = sections.length - 1;
+    if (!atBottom) while (index > 0 && sectionTops[index] > scrollY + anchorOffset + 1) index--;
+    setActive(sections[index].id);
   };
   const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
+  const measure = () => { positionsDirty = true; schedule(); };
   const selectHash = () => {
     const id = location.hash.slice(1);
     selectedId = restoredHref === location.href ? undefined : sections.find(section => section.id === id)?.id;
     schedule();
   };
-  // Keep a clicked destination selected when it cannot reach the top near the
-  // page end. Resume tracking as soon as the reader scrolls manually.
+  // Keep the clicked destination selected during native smooth scrolling.
   const resumeTracking = () => { selectedId = undefined; schedule(); };
   links.forEach(link => link.addEventListener('click', event => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
@@ -45,7 +54,7 @@ function initializePage() {
     if (selectedId) setActive(selectedId);
   }, { signal }));
   window.addEventListener('scroll', schedule, { passive: true, signal });
-  window.addEventListener('resize', resumeTracking, { signal });
+  window.addEventListener('resize', () => { selectedId = undefined; measure(); }, { signal });
   window.addEventListener('hashchange', selectHash, { signal });
   window.addEventListener('popstate', event => { if (event.state) resumeTracking(); }, { signal });
   window.addEventListener('pageshow', event => {
@@ -56,7 +65,10 @@ function initializePage() {
   window.addEventListener('keydown', event => {
     if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) resumeTracking();
   }, { signal });
-  document.fonts.ready.then(() => { if (!signal.aborted) schedule(); });
+  const resizeObserver = new ResizeObserver(measure);
+  resizeObserver.observe(document.querySelector('.site-shell')!);
+  signal.addEventListener('abort', () => resizeObserver.disconnect(), { once: true });
+  document.fonts.ready.then(() => { if (!signal.aborted) measure(); });
   selectHash();
 }
 

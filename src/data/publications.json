@@ -11,7 +11,7 @@
     ],
     "preprint": "https://arxiv.org/abs/2608.13190",
     "title": "ProME: Prototype-Margin Environments with Repair-Aware Selection for Group-Robust Learning",
-    "coverImage": "/media/prome-framework.webp",
+    "coverImage": "prome-framework.webp",
     "coverAlt": "The two-stage ProME training, classifier-repair and deployment framework from the paper"
   },
   {
@@ -26,7 +26,7 @@
       "Lili Yang"
     ],
     "title": "GRA-Flow: Gain-Risk Aligned Rectified-Flow Refinement for Task-Free OOD Image Restoration",
-    "coverImage": "/media/gra-flow-correction.webp",
+    "coverImage": "gra-flow-correction.webp",
     "coverAlt": "Figure 2 from GRA-Flow: image-space correction decomposition under low-light and spatial haze, including channel-mean and centered components and pixelwise error changes."
   },
   {
@@ -41,7 +41,7 @@
       "Lili Yang"
     ],
     "title": "Controlled Residual Transport for Frozen-Backbone All-in-One Image Restoration",
-    "coverImage": "/media/recast-framework.webp",
+    "coverImage": "recast-framework.webp",
     "coverAlt": "Figure 1 from RECAST: residual-transport training, full- and half-resolution inference, scale-consistency fusion and view averaging on a frozen backbone."
   }
 ]

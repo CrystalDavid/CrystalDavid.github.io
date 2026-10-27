@@ -4,6 +4,7 @@ import { projects } from '../data/site';
 import { publications } from '../data/publications';
 import Authors from '../components/Authors.astro';
 import Education from '../components/Education.astro';
+import Thumbnail from '../components/Thumbnail.astro';
 ---
 <BaseLayout>
   <section id="about" class="home-section" data-section aria-labelledby="about-title" tabindex="-1">
@@ -21,7 +22,7 @@ import Education from '../components/Education.astro';
   <section id="publications" class="home-section publications" data-section aria-labelledby="publications-title" tabindex="-1">
     <h2 id="publications-title">Publications</h2>
     {publications.map(publication => <article class="publication-row" id={`publication-${publication.slug}`}>
-      <div class="publication-image"><img src={publication.coverImage} alt={publication.coverAlt} width="1280" height="720" loading="lazy" decoding="async" /></div>
+      <div class="publication-image"><Thumbnail src={publication.cover} alt={publication.coverAlt} /></div>
       <div class="publication-copy">
         <h3>{publication.title}</h3>
         <p class="publication-authors"><Authors authors={publication.authors} /></p>
@@ -32,7 +33,7 @@ import Education from '../components/Education.astro';
   <section id="projects" class="home-section publications" data-section aria-labelledby="projects-title" tabindex="-1">
     <h2 id="projects-title">Projects</h2>
     {projects.map(project => <article class="publication-row" id={`project-${project.slug}`}>
-      <a class="publication-image project-image" href={project.github} target="_blank" rel="noopener noreferrer" aria-label={`${project.name} on GitHub`}><img src={project.image} alt={project.alt.en} width="900" height="600" loading="lazy" decoding="async" /></a>
+      <a class="publication-image project-image" href={project.github} target="_blank" rel="noopener noreferrer" aria-label={`${project.name} on GitHub`}><Thumbnail src={project.image} alt={project.alt.en} /></a>
       <div class="publication-copy"><h3>{project.name}</h3><p class="project-type">{project.type.en}</p><div class="publication-links"><a href={project.github} target="_blank" rel="noopener noreferrer">Code</a>{project.demo && <a href={project.demo} target="_blank" rel="noopener noreferrer">Demo</a>}</div></div>
     </article>)}
   </section>

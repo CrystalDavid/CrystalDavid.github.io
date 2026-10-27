@@ -1,8 +1,6 @@
 ---
 import { education } from '../data/site';
-import { presentation } from '../data/presentation';
 ---
-{presentation.education === 'timeline' ? (
   <div class="education-timeline">
     <p class="education-years">{education.period}</p>
     <span class="education-divider" aria-hidden="true"></span>
@@ -12,10 +10,3 @@ import { presentation } from '../data/presentation';
       <p class="education-degree">{education.degree} in {education.major}</p>
     </div>
   </div>
-) : (
-  <div class="education-entry">
-    <p class="education-school"><strong>{education.school}</strong></p>
-    <p class="education-period">{education.period}</p>
-    <p class="education-degree">{education.degree} in {education.major}</p>
-  </div>
-)}

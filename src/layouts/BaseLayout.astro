@@ -2,7 +2,6 @@
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 import Sidebar from '../components/Sidebar.astro';
-import { presentation } from '../data/presentation';
 interface Props { title?: string; description?: string; }
 const { title = 'David — Personal Homepage', description = 'David’s personal homepage. AI agents, data science, research and projects.' } = Astro.props;
 const isHome = Astro.url.pathname === '/';
@@ -37,7 +36,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <a class="skip-link" href="#main">Skip to content</a>
     <div class="site-shell">
       <Sidebar isHome={isHome} />
-      <main id="main" class:list={['main-content', { 'main-content--avatar-aligned': isHome && presentation.homeAlignment === 'avatar' }]} tabindex="-1" transition:name="content" transition:animate="fade">
+      <main id="main" class:list={['main-content', { 'main-content--home': isHome }]} tabindex="-1" transition:name="content" transition:animate="fade">
         <slot />
       </main>
     </div>

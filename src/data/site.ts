@@ -1,3 +1,5 @@
+import pptAgentWelcome from '../assets/ppt-agent-welcome.png';
+
 export const profile = {
   name: 'David',
   email: 'g2811459442@gmail.com',
@@ -31,7 +33,7 @@ export const projects = [
       zh: '从需求澄清、资料调研到设计与导出，把想法逐步变成真正可编辑的演示文稿。每一步，都可以停下来认真打磨。',
       en: 'From discovery and research to design and export. A step-by-step workflow that turns an idea into genuinely editable slides, with room to review along the way.',
     },
-    image: '/media/ppt-agent-welcome.png',
+    image: pptAgentWelcome,
     alt: { zh: 'PPT-Agent 欢迎界面，提供新建设计和导入项目入口', en: 'PPT-Agent welcome screen with options to start a design or import a project' },
     github: 'https://github.com/CrystalDavid/PPT-Agent',
     demo: 'https://lambent-zabaione-8eab6b.netlify.app/',

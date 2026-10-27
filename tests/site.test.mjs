@@ -25,10 +25,14 @@ test('the single-page profile preserves education, publications and section navi
     assert.ok(home.includes(`href="#${id}"`), `Missing section link: ${id}`);
     assert.ok(home.includes(`id="${id}"`), `Missing section: ${id}`);
   }
+  const numbers = [...home.matchAll(/<span class="nav-number"[^>]*>(\d{2})<\/span>/g)].map(match => match[1]);
+  assert.deepEqual(numbers, ['01', '02', '03', '04', '05']);
+  assertResponsiveImage('ppt-agent-welcome.png');
   assert.equal(publications.length, 3);
   for (const publication of publications) {
     assert.ok(home.includes(escape(publication.title)));
-    assert.ok(home.includes(publication.coverImage));
+    assert.ok(home.includes(`alt="${escape(publication.coverAlt)}"`));
+    assertResponsiveImage(publication.coverImage);
     for (const author of publication.authors) assert.ok(home.includes(escape(author)));
   }
   assert.match(home, /href="mailto:g2811459442@gmail.com"/);
@@ -36,6 +40,11 @@ test('the single-page profile preserves education, publications and section navi
   assert.match(home, /href="https:\/\/github.com\/CrystalDavid\/OpenClaw-Evidence-Tracker"/);
   assert.doesNotMatch(home, /Beyond Research|Publications &amp; Manuscripts|profile-school|profile-major/);
 });
+
+function assertResponsiveImage(filename) {
+  const stem = path.parse(filename).name;
+  assert.match(home, new RegExp(`srcset="[^\"]*${stem}[^\"]+240w[^\"]+480w[^\"]+720w`), `${filename}: missing responsive image sizes`);
+}
 
 test('only the homepage and 404 ship, with external research links and no publication status or PDFs', async () => {
   const files = await readdir(dist, { recursive: true });
@@ -66,6 +75,13 @@ test('all local links, images, scripts, fonts, anchor targets and social metadat
       if ((await stat(file)).isDirectory()) file = path.join(file, 'index.html');
       await access(file);
       if (hash) assert.ok((await readFile(file, 'utf8')).includes(`id="${hash}"`), `${document}: broken anchor ${url}`);
+    }
+    for (const [, srcset] of html.matchAll(/srcset="([^"<>]+)"/g)) {
+      for (const candidate of srcset.split(',')) {
+        const url = candidate.trim().split(/\s+/)[0];
+        assert.ok(url.startsWith('/_astro/'), `${document}: unexpected responsive image source ${url}`);
+        await access(path.join(dist, url.slice(1)));
+      }
     }
     assert.doesNotMatch(html, /file:\/\/\/|C:\\Code|C:\\Users|localhost|127\.0\.0\.1/);
     assert.doesNotMatch(html, /href="[^"<>]*\.pdf(?:[?#][^"<>]*)?"/i);

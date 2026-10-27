@@ -15,11 +15,11 @@
 | 论文标题、作者、配图和 arXiv 地址 | `src/data/publications.json` |
 | 左栏与栏目导航 | `src/components/Sidebar.astro` |
 | 教育布局 | `src/components/Education.astro` |
-| 独立选择教育、导航样式及首页顶部对齐 | `src/data/presentation.ts`；对应选项设为 `classic` 即可恢复该处原版 |
 | 字体、颜色、间距与响应式布局 | `src/styles/global.css` |
 | 页面元数据与 favicon 声明 | `src/layouts/BaseLayout.astro` |
-| 导航当前项与页面切换 | `src/scripts/site.ts` |
-| 图片、字体与图标 | `public/` |
+| 导航当前项、滚动位置缓存与页面切换 | `src/scripts/site.ts` |
+| 原始缩略图 | `src/assets/`，构建时生成响应式图片 |
+| 头像、校徽、SVG、字体与图标 | `public/` |
 
 首页依次展示 About Me、Education、Research Interests、Publications 和 Projects。构建仅生成首页与 404，站点地图收录首页。论文保留标题、作者、配图及已有 arXiv 外链，项目提供 Code/Demo。公开内容及资料使用边界见 [研究资料来源](docs/research-sources.md)。
 
