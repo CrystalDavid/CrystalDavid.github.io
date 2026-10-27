@@ -38,8 +38,9 @@ https://crystaldavid.github.io/. The `main` branch publishes through GitHub Page
   Keep native anchor navigation functional without JavaScript, and accurately
   highlight the current section when scrolling or choosing a destination.
 - Keep the confirmed Education timeline and numbered sidebar navigation.
-  Align desktop section destinations with the avatar, fully clear the previous
-  section, and provide enough scroll range for the final section.
+  Align desktop destinations with the avatar when scroll range allows. Keep the
+  page-end whitespace equal to the top content inset instead of padding sections
+  to viewport height; allow native clamping near the end of the page.
 - Use one real interface screenshot for PPT-Agent and the documented workflow
   figure for Evidence Tracker.
 - Keep author lists on one line in the verified order, with the personal name
@@ -58,10 +59,12 @@ https://crystaldavid.github.io/. The `main` branch publishes through GitHub Page
 ## Architecture and verification
 
 - Astro pages, components, data and scripts live in `src/`; static resources
-  live in `public/`. Use the existing UnoCSS and ClientRouter setup.
+  live in `public/`. Keep UnoCSS, native document navigation and direct anchor
+  jumps, with boundary-based section highlighting.
 - Keep original thumbnail sources in `src/assets/`; generate responsive images
   during the build. Preserve figure contents and verify their displayed quality.
-- Keep fonts self-hosted and preserve their files and loading strategy.
+- Keep the fixed-weight Nunito fonts self-hosted; preserve their files, loading
+  strategy and licenses.
   Respect reduced motion; all reading content must work without JavaScript.
 - For relevant source or configuration changes, run `npm run check`,
   `npm run build` and `npm test`.

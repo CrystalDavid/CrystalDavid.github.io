@@ -2,13 +2,13 @@
 
 ## 结构
 
-网站使用 Astro 静态生成、UnoCSS、ClientRouter 和本地 Nunito 字体。依赖版本由包清单和锁文件管理；访客下载静态 HTML、样式、资源及少量导航脚本。
+网站使用 Astro 静态生成、UnoCSS、浏览器原生导航和本地 Nunito 字体。依赖版本由包清单和锁文件管理；访客下载静态 HTML、样式、资源及少量导航高亮脚本。
 
 | 位置 | 职责 |
 | --- | --- |
 | `src/pages/index.astro` | About Me、Education、Research Interests、Publications、Projects |
 | `src/pages/404.astro` | 未找到页面及返回首页入口 |
-| `src/layouts/BaseLayout.astro` | 页面框架、元数据、字体预加载、favicon 和路由 |
+| `src/layouts/BaseLayout.astro` | 页面框架、元数据、字体预加载和 favicon |
 | `src/components/Sidebar.astro` | 头像、姓名、Email/GitHub 图标与栏目导航 |
 | `src/components/Education.astro` | 教育时间轴 |
 | `src/components/Thumbnail.astro` | 响应式缩略图与 SVG 展示 |
@@ -17,7 +17,7 @@
 | `src/data/site.ts` | 个人信息、教育经历、导航和项目资料 |
 | `src/data/publications.json` | 论文标题、署名、配图和 arXiv 地址 |
 | `src/styles/global.css` | 全站视觉与响应式规则 |
-| `src/scripts/site.ts` | 导航当前项及页面切换生命周期 |
+| `src/scripts/site.ts` | 根据栏目位置更新导航当前项 |
 | `public/` | 字体与许可证、图片、图标、分享图和 robots |
 
 构建仅生成首页和 404 两个 HTML 页面，站点地图仅收录首页。数值设计规则统一维护在 [视觉规范](typography.md)。
@@ -26,17 +26,17 @@
 
 桌面为左侧 sticky 个人资料和导航、右侧原生滚动内容；小屏幕导航在个人信息下方自然换行。导航顺序与正文一致，使用 `#about`、`#education`、`#interests`、`#publications`、`#projects`。404 中的导航链接指向首页对应位置。
 
-Education 使用时间轴布局，桌面按年份、分隔线、南科大校徽、学校及学位专业排列。学校全称 Southern University of Science and Technology 与完整学位专业 Bachelor’s degree in Data Science and Big Data Technology 均直接显示。学位名称始终保持单行，桌面可向右侧留白延伸，窄屏只在学位行内横向滚动；手机将年份独立放在上方。侧栏使用编号导航，当前项高亮。各栏目在桌面跳转至头像上沿，单栏跳转至统一顶部留白；上一板块完全退出视口。最后一节的最小高度补足滚动范围。样式及尺寸见 [视觉规范](typography.md)。
+Education 使用时间轴布局，桌面按年份、分隔线、南科大校徽、学校及学位专业排列。学校全称 Southern University of Science and Technology 与完整学位专业 Bachelor’s degree in Data Science and Big Data Technology 均直接显示。学位名称始终保持单行，桌面可向右侧留白延伸，窄屏只在学位行内横向滚动；手机将年份独立放在上方。侧栏使用编号导航，当前项高亮。栏目在滚动范围允许时对齐桌面头像上沿或单栏顶部留白；页尾留白与 About Me 上方的布局留白相同。板块保持实际内容高度，接近页尾的锚点遵循浏览器的滚动范围限制。样式及尺寸见 [视觉规范](typography.md)。
 
 论文只展示标题、作者、配图及可用外链；项目展示单张配图、名称、类别和 Code/Demo 链接。所有论文及项目标题均为无链接的蓝黑色文字；ProME 通过 arXiv 按钮访问外部预印本页，项目图片及 Code 按钮指向 GitHub。About Me 中的学校名称为普通正文，不带链接。侧栏导航保持加粗，About Me 正文和研究兴趣使用普通字重。作者名单在自身区域横向滚动。
 
-导航原生改变 hash 并定位章节。脚本缓存栏目位置，仅在字体就绪、窗口变化或 ResizeObserver 检测到布局尺寸变化时重新测量。passive 滚动监听通过 requestAnimationFrame 合并更新，普通滚动只比较缓存坐标；仅当前项变化时更新 aria-current。点击后保持目标高亮，手动滚动恢复跟踪；直接链接和历史恢复保留原生行为。页面切换前取消动画帧、监听和尺寸观察，切换后重新初始化。
+导航通过浏览器原生 hash 直接定位章节。IntersectionObserver 观察标题是否越过顶部定位线，以及最后一个项目是否到达页尾留白线，仅在越过这些边界时读取位置并更新 aria-current；到达页底时高亮 Projects，离开页底时恢复栏目位置判断。requestAnimationFrame 合并同一帧中的观察回调。ResizeObserver 在布局尺寸改变后更新观察范围，字体就绪、窗口变化和历史页面恢复时也会校准。没有逐帧滚动监听、滚轮接管或持续运行的动画循环。直接链接、键盘操作和浏览器前进后退均保留原生行为。
 
-ClientRouter 处理站内切换，正文保留轻量 View Transitions。所有页面固定浅色，仅输出英文。减少动态效果偏好关闭平滑滚动和过渡；禁用 JavaScript 时栏目锚点和外链仍正常工作。
+首页与 404 之间使用普通文档导航，栏目点击直接定位，不添加平滑跳转、整页淡入淡出或惯性滚动。所有页面固定浅色，仅输出英文，并尊重减少动态效果偏好。禁用 JavaScript 时栏目锚点和外链仍正常工作；脚本只负责当前栏目的视觉提示。
 
 ## 字体与资源
 
-保留本地 Nunito 的 latin 预加载、latin-ext 字符范围与 `font-display: block`。缺字使用现有 Noto Sans SC 后备，不预加载；许可证在 `public/fonts/`。404 返回箭头使用现有 SVG 图标，避免为单个箭头字形加载后备字体。
+本地 Nunito 分为固定字重的 latin 与 latin-ext WOFF2 文件，由 Nunito 的相应字重静态化生成，保留完整字符范围和字体度量。使用的字重及加载规则见 [视觉规范](typography.md)。页面预加载实际使用的 latin 字体，保留 `font-display: block` 和 `font-synthesis: none`，减少加载期间的字形切换并禁用合成字重。临时后备 `Nunito Fallback` 使用本机 Arial，通过 size-adjust 和字体度量覆盖减少字体就绪时的布局变化，不增加字体网络请求；最终字形始终优先使用 Nunito。latin-ext 和 Noto Sans SC 后备按字符需要加载，许可证保存在 `public/fonts/`。主内容、侧栏及条目文字区域保持不透明白色背景，不对正文使用 transform、图层提升或透明度动画。404 返回箭头使用现有 SVG 图标，避免为单个箭头字形加载后备字体。
 
 | 图片 | 用途 |
 | --- | --- |

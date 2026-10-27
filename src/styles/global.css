@@ -1,6 +1,11 @@
-@font-face { font-family: 'Nunito'; src: url('/fonts/nunito-latin-ext.woff2') format('woff2'); font-style: normal; font-weight: 400 800; font-display: block; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
-@font-face { font-family: 'Nunito'; src: url('/fonts/nunito-latin.woff2') format('woff2'); font-style: normal; font-weight: 400 800; font-display: block; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Nunito'; src: url('/fonts/nunito-latin-ext-400.woff2') format('woff2'); font-style: normal; font-weight: 400; font-display: block; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Nunito'; src: url('/fonts/nunito-latin-ext-700.woff2') format('woff2'); font-style: normal; font-weight: 700; font-display: block; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Nunito'; src: url('/fonts/nunito-latin-400.woff2') format('woff2'); font-style: normal; font-weight: 400; font-display: block; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Nunito'; src: url('/fonts/nunito-latin-700.woff2') format('woff2'); font-style: normal; font-weight: 700; font-display: block; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 @font-face { font-family: 'Noto Sans SC'; src: url('/fonts/noto-sans-sc-site.woff2') format('woff2'); font-style: normal; font-weight: 400 700; font-display: block; }
+/* Match the temporary local font to Nunito without changing the loaded typeface. */
+@font-face { font-family: 'Nunito Fallback'; src: local('Arial'), local('ArialMT'); font-style: normal; font-weight: 400; size-adjust: 101.02%; ascent-override: 100.08%; descent-override: 34.94%; line-gap-override: 0%; }
+@font-face { font-family: 'Nunito Fallback'; src: local('Arial Bold'), local('Arial-BoldMT'); font-style: normal; font-weight: 700; size-adjust: 97.77%; ascent-override: 103.41%; descent-override: 36.10%; line-gap-override: 0%; }
 :root {
   color-scheme: only light;
   --paper: #fff;
@@ -30,15 +35,15 @@
   --heading-content-gap: 24px;
   --section-gap: 96px;
   --anchor-offset: 76px;
-  --content-bottom: 64px;
-  --font-interface: 'Nunito', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei UI', 'Microsoft YaHei', sans-serif;
+  --content-bottom: var(--anchor-offset);
+  --font-interface: 'Nunito', 'Nunito Fallback', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei UI', 'Microsoft YaHei', sans-serif;
   font-family: var(--font-interface);
   color: var(--body);
   background: var(--paper);
   font-synthesis: none;
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: var(--anchor-offset); }
+html { scroll-behavior: auto; scroll-padding-top: var(--anchor-offset); }
 body { padding: 0; margin: 0; font: 400 var(--text-body)/var(--line-body) var(--font-interface); background: var(--paper); color: var(--body); font-kerning: normal; font-optical-sizing: auto; -webkit-font-smoothing: antialiased; }
 a { color: var(--accent); text-decoration: none; }
 a:hover { color: var(--accent); }
@@ -74,10 +79,10 @@ ol { list-style: decimal; padding-left: 32px; }
 .nav-number { flex-shrink: 0; font-variant-numeric: tabular-nums; }
 .section-nav .nav-link[aria-current='location'] { border-color: var(--accent); color: var(--accent); font-weight: 700; }
 .main-content { width: 648px; min-width: 0; padding-top: 64px; padding-bottom: var(--content-bottom); }
+/* Keep the reading surfaces opaque without promoting or transforming text layers. */
+.main-content, .sidebar, .publication-copy { background: var(--paper); }
 .home-section { display: flow-root; margin: 0; font-size: var(--text-body); line-height: var(--line-body); }
 .home-section + .home-section { margin-top: var(--section-gap); }
-/* The final heading needs enough scroll range to reach the same anchor line. */
-.home-section:last-child { min-height: calc(100svh - var(--anchor-offset) - var(--content-bottom)); }
 .home-section > :last-child { margin-bottom: 0; }
 .home-section > h2 { margin-top: 0; margin-bottom: var(--heading-content-gap); }
 .education-school { color: var(--ink); font-size: var(--text-body); }
@@ -113,8 +118,6 @@ ol { list-style: decimal; padding-left: 32px; }
 .publication-links a:hover { color: var(--accent); border-color: var(--accent); }
 .source-link { display: flex; align-items: center; gap: 8px; width: fit-content; font-size: var(--text-meta); line-height: var(--line-meta); }
 .not-found { padding-top: 32px; }
-::view-transition-old(content) { animation-duration: 120ms; }
-::view-transition-new(content) { animation-duration: 180ms; }
 @media (min-width: 1001px) {
   /* Align the title's visible letter tops with the avatar, accounting for Nunito's leading. */
   .main-content--home { padding-top: var(--anchor-offset); }
@@ -144,7 +147,5 @@ ol { list-style: decimal; padding-left: 32px; }
   .publication-image img { width: 240px; height: 160px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
-  ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 }

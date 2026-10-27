@@ -1,23 +1,22 @@
-let pageEvents: AbortController | undefined;
-let frame = 0;
-let restoredHref: string | undefined;
+const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-section]'));
+const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-section-link]'));
 
-function initializePage() {
-  pageEvents?.abort();
-  cancelAnimationFrame(frame);
-  frame = 0;
-  pageEvents = new AbortController();
-  const { signal } = pageEvents;
-  const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-section]'));
-  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-section-link]'));
-  if (!sections.length) return;
-
+if (sections.length) {
   let activeId = '';
-  let selectedId: string | undefined;
-  let positionsDirty = true;
-  let sectionTops: number[] = [];
+  let frame = 0;
   let anchorOffset = 0;
-  const setActive = (id: string) => {
+  let observer: IntersectionObserver | undefined;
+  let endObserver: IntersectionObserver | undefined;
+
+  const update = () => {
+    frame = 0;
+    // Read only at section boundaries or the page end, not on every scroll frame.
+    let index = sections.length - 1;
+    const atEnd = window.scrollY > 0 && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 1;
+    if (!atEnd) {
+      while (index > 0 && sections[index].getBoundingClientRect().top > anchorOffset + 1) index--;
+    }
+    const id = sections[index].id;
     if (id === activeId) return;
     activeId = id;
     links.forEach(link => {
@@ -25,58 +24,34 @@ function initializePage() {
       else link.removeAttribute('aria-current');
     });
   };
-  const update = () => {
-    frame = 0;
-    if (positionsDirty) {
-      anchorOffset = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
-      sectionTops = sections.map(section => section.getBoundingClientRect().top + scrollY);
-      positionsDirty = false;
-    }
-    if (selectedId) return setActive(selectedId);
-    const atBottom = scrollY > 0 && scrollY + innerHeight >= document.documentElement.scrollHeight - 2;
-    let index = sections.length - 1;
-    if (!atBottom) while (index > 0 && sectionTops[index] > scrollY + anchorOffset + 1) index--;
-    setActive(sections[index].id);
-  };
   const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
-  const measure = () => { positionsDirty = true; schedule(); };
-  const selectHash = () => {
-    const id = location.hash.slice(1);
-    selectedId = restoredHref === location.href ? undefined : sections.find(section => section.id === id)?.id;
+  const observeHeadings = () => {
+    observer?.disconnect();
+    endObserver?.disconnect();
+    anchorOffset = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+    // Extend the observation area below the whole page. A heading's full visibility
+    // then changes only at the top anchor line, including large jumps over sections.
+    observer = new IntersectionObserver(schedule, {
+      rootMargin: `-${anchorOffset + 1}px 0px ${document.documentElement.scrollHeight}px 0px`,
+      threshold: 1,
+    });
+    sections.forEach(section => observer!.observe(section.querySelector('h2')!));
+    // A short final section stops at the page end instead of adding empty scroll space.
+    // Observe its last row at the bottom-padding line to keep the current link accurate.
+    const bottom = parseFloat(getComputedStyle(document.querySelector('main')!).paddingBottom) || 0;
+    endObserver = new IntersectionObserver(schedule, {
+      rootMargin: `0px 0px -${Math.max(0, bottom - 1)}px 0px`,
+      threshold: 1,
+    });
+    endObserver.observe(sections[sections.length - 1].lastElementChild!);
     schedule();
   };
-  // Keep the clicked destination selected during native smooth scrolling.
-  const resumeTracking = () => { selectedId = undefined; schedule(); };
-  links.forEach(link => link.addEventListener('click', event => {
-    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
-    restoredHref = undefined;
-    selectedId = link.dataset.sectionLink;
-    if (selectedId) setActive(selectedId);
-  }, { signal }));
-  window.addEventListener('scroll', schedule, { passive: true, signal });
-  window.addEventListener('resize', () => { selectedId = undefined; measure(); }, { signal });
-  window.addEventListener('hashchange', selectHash, { signal });
-  window.addEventListener('popstate', event => { if (event.state) resumeTracking(); }, { signal });
-  window.addEventListener('pageshow', event => {
-    if (event.persisted) restoredHref = location.href;
-    selectHash();
-  }, { signal });
-  for (const event of ['wheel', 'touchstart', 'pointerdown']) window.addEventListener(event, resumeTracking, { passive: true, signal });
-  window.addEventListener('keydown', event => {
-    if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) resumeTracking();
-  }, { signal });
-  const resizeObserver = new ResizeObserver(measure);
-  resizeObserver.observe(document.querySelector('.site-shell')!);
-  signal.addEventListener('abort', () => resizeObserver.disconnect(), { once: true });
-  document.fonts.ready.then(() => { if (!signal.aborted) measure(); });
-  selectHash();
-}
 
-// History may restore a manually scrolled position different from the URL hash.
-window.addEventListener('popstate', event => { restoredHref = event.state ? location.href : undefined; });
-document.addEventListener('astro:before-swap', () => {
-  pageEvents?.abort();
-  cancelAnimationFrame(frame);
-  frame = 0;
-});
-document.addEventListener('astro:page-load', initializePage);
+  const layoutObserver = new ResizeObserver(observeHeadings);
+  layoutObserver.observe(document.querySelector('.site-shell')!);
+  window.addEventListener('resize', observeHeadings);
+  window.addEventListener('hashchange', schedule);
+  window.addEventListener('pageshow', observeHeadings);
+  document.fonts.ready.then(observeHeadings);
+  observeHeadings();
+}

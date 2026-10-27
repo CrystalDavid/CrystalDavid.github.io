@@ -7,7 +7,6 @@ export default defineConfig({
   output: 'static',
   trailingSlash: 'always',
   devToolbar: { enabled: false },
-  prefetch: { prefetchAll: false, defaultStrategy: 'hover' },
   integrations: [UnoCSS({ injectReset: true }), sitemap()],
   build: { inlineStylesheets: 'auto' },
 });

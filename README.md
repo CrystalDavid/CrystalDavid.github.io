@@ -17,7 +17,7 @@
 | 教育布局 | `src/components/Education.astro` |
 | 字体、颜色、间距与响应式布局 | `src/styles/global.css` |
 | 页面元数据与 favicon 声明 | `src/layouts/BaseLayout.astro` |
-| 导航当前项、滚动位置缓存与页面切换 | `src/scripts/site.ts` |
+| 根据栏目位置更新导航当前项 | `src/scripts/site.ts` |
 | 原始缩略图 | `src/assets/`，构建时生成响应式图片 |
 | 头像、校徽、SVG、字体与图标 | `public/` |
 
@@ -48,6 +48,6 @@ npm run dev
 
 ## 技术与参考
 
-使用 Astro 静态生成、UnoCSS、ClientRouter、View Transitions 和本地字体。依赖版本以 `package.json` 与 `package-lock.json` 为准。
+使用 Astro 静态生成、UnoCSS、浏览器原生导航和本地字体。依赖版本以 `package.json` 与 `package-lock.json` 为准。
 
 布局参考 [Weihuang Wen 的主页](https://markwwen.github.io/)；技术参考 [Kyaw 的网站](https://kyswtn.com/)及其[源代码](https://github.com/kyswtn/kyswtn.com)。

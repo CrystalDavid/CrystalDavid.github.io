@@ -123,7 +123,7 @@ test('the static site keeps the browser JavaScript small and has no React hydrat
     compressed += gzipSync(source).length;
     assert.doesNotMatch(source, /david-site-language|data-lang-toggle|colorScheme\s*=/);
   }
-  assert.ok(raw < 40_000, `Browser JS is ${raw} bytes`);
-  assert.ok(compressed < 15_000, `Gzipped browser JS is ${compressed} bytes`);
+  assert.ok(raw < 4_000, `Browser JS is ${raw} bytes`);
+  assert.ok(compressed < 2_000, `Gzipped browser JS is ${compressed} bytes`);
   console.log(`Browser JavaScript: ${raw} bytes raw / ${compressed} bytes gzip (${scripts.length} files + ${inlineScripts.size} unique inline scripts).`);
 });
