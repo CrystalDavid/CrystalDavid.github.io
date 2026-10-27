@@ -19,7 +19,7 @@
 | 页面元数据与 favicon 声明 | `src/layouts/BaseLayout.astro` |
 | 根据栏目位置更新导航当前项 | `src/scripts/site.ts` |
 | 原始缩略图与常用字体 | `src/assets/`，构建时生成响应式图片和带内容哈希的字体资源 |
-| 头像、校徽、SVG、扩展字体、许可证与图标 | `public/` |
+| 头像、校徽、SVG、许可证与图标 | `public/` |
 
 首页依次展示 About Me、Education、Research Interests、Publications 和 Projects。构建仅生成首页与 404，站点地图收录首页。论文保留标题、作者、配图及已有 arXiv 外链，项目提供 Code/Demo。公开内容及资料使用边界见 [研究资料来源](docs/research-sources.md)。
 

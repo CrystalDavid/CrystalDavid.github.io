@@ -65,6 +65,9 @@ https://crystaldavid.github.io/. The `main` branch publishes through GitHub Page
   during the build. Preserve figure contents and verify their displayed quality.
 - Keep the fixed-weight Nunito fonts self-hosted; preserve their files, loading
   strategy and licenses.
+  Use unmodified upstream font files and standard browser rendering. Do not add
+  custom hinting, rasterizer flags, per-font fallback metric overrides or
+  platform-specific font smoothing rules.
   Respect reduced motion; all reading content must work without JavaScript.
 - For relevant source or configuration changes, run `npm run check`,
   `npm run build` and `npm test`.

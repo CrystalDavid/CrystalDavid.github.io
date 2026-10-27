@@ -95,7 +95,6 @@ test('all local links, images, scripts, fonts, anchor targets and social metadat
   }
   await access(path.join(dist, 'social.png'));
   await access(path.join(dist, 'sitemap-index.xml'));
-  await access(path.join(dist, 'fonts/noto-sans-sc-license.txt'));
   await access(path.join(dist, 'fonts/nunito-license.txt'));
 });
 
