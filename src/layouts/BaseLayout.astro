@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import nunitoRegular from '../assets/fonts/nunito-core-400.woff2';
+import nunitoBold from '../assets/fonts/nunito-core-700.woff2';
 import Sidebar from '../components/Sidebar.astro';
 interface Props { title?: string; description?: string; }
 const { title = 'David — Personal Homepage', description = 'David’s personal homepage. AI agents, data science, research and projects.' } = Astro.props;
@@ -28,8 +30,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={new URL('/social.png', Astro.site)} />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="preload" href="/fonts/nunito-latin-400.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/nunito-latin-700.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={nunitoRegular} as="font" type="font/woff2" crossorigin fetchpriority="high" />
+    <link rel="preload" href={nunitoBold} as="font" type="font/woff2" crossorigin fetchpriority="high" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>

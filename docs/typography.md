@@ -6,9 +6,18 @@
 
 全站使用本地 Nunito，仅使用 400 和 700 两档字重。About Me 正文、研究兴趣、学位专业、其他作者、项目类别、资源按钮与 404 辅助文字使用 400；姓名、栏目标题、论文/项目标题、学校、本人署名、时间轴年份、全部导航使用 700。切换当前导航项不改变字重，避免文字宽度变化。
 
-Nunito 使用 400、700 两个固定字重的 WOFF2 文件，每档保留完整 latin 与 latin-ext 字符范围；不使用可变字重或浏览器合成粗体。预加载两档 latin 文件，使用 `font-display: block`，保留字体许可证。latin-ext 与 Noto Sans SC 后备仅在出现对应字符时加载，不预加载。首页现有文字只请求两个 latin 文件。
+Nunito 使用 400、700 两个固定字重，每档分为常用英文 core、Latin supplement 和 latin-ext WOFF2，合起来保留完整字符覆盖；不使用可变字重或浏览器合成粗体。core 与 supplement 保留像素对齐指令，字形轮廓、字宽、字距及垂直度量不变。预加载两档 core 文件并设置高请求优先级，使用 `font-display: block`，保留字体许可证。core 和 supplement 从 `src/assets/fonts/` 构建为带内容哈希的资源，避免更新后复用旧字体。补充字符、latin-ext 与 Noto Sans SC 仅按需加载；首页与 404 当前文字只下载两份 core，共 28,740 bytes。
 
-加载期间优先用本机 Arial 作为 `Nunito Fallback` 占位，通过字体度量修正减少换行与位置变化；不增加下载资源，也不改变加载完成后的 Nunito。常规字重使用 `size-adjust: 101.02%`、`ascent-override: 100.08%`、`descent-override: 34.94%`；粗体分别为 `97.77%`、`103.41%`、`36.10%`；两者 `line-gap-override` 均为 `0%`。这些是后备字体校准参数，不是界面的字号或行高档位；本机没有 Arial 时继续使用其余后备字体。
+加载期间用本机 Arial / Arial Bold 占位，通过字体度量校准减少换行和位置变化，不增加字体下载，也不改变最终使用的 Nunito。普通文字、紧凑标签和等宽数字分别校准，避免年份栏加载后改变宽度、挤动校徽或使校名临时换行。
+
+| 后备用途 | size-adjust | ascent-override | descent-override |
+| --- | --- | --- | --- |
+| `Nunito Fallback` 常规文字 400 | 101.02% | 100.08% | 34.94% |
+| `Nunito Fallback` 粗体文字 700 | 97.77% | 103.41% | 36.10% |
+| `Nunito UI Fallback` 学校及导航标签 700 | 96.28% | 105% | 36.66% |
+| `Nunito Numeric Fallback` 年份及导航编号 700 | 108.21% | 93.43% | 32.62% |
+
+所有后备的 `line-gap-override` 为 `0%`。这些是临时字体的度量参数，不是新的界面字号或行高；没有 Arial 时继续使用其余后备字体。最终排版始终优先使用同一套 Nunito。
 
 背景固定白色，使用 `color-scheme: only light` 和浅色页面元数据，不随系统外观切换。主内容、侧栏和图文条目的文字区明确使用不透明白色背景，不添加文字层 transform、强制 GPU 图层或透明度动画。
 
