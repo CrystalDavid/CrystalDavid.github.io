@@ -40,7 +40,7 @@ Education 使用时间轴布局，桌面按年份、分隔线、南科大校徽�
 
 本地 Nunito 使用固定字重，分为常用英文 core、Latin supplement 和 latin-ext。两份 core 覆盖完整 ASCII、常用英文标点及原有箭头/符号，其余字符保存在补充字体中，通过 unicode-range 按需选择；不能按当前文案任意删除将来可能使用的字符。页面高优先级预加载实际使用的 core 字体，字体和样式使用相同的构建资源地址；内容哈希使字体更新能正确失效缓存。补充字体不预加载。使用的字重及加载规则见 [视觉规范](typography.md)。
 
-core 和 supplement 从固定字重的 Nunito Latin 经 ttfautohint 1.8.4.16-eb64（ttfautohint-py 0.6.1）处理，再用 fontTools 分集。处理使用 `--increase-x-height=0 --stem-width-mode=sss`，将横向笔画厚度及字形对齐区域尽可能对齐整数像素，保留抗锯齿、原有轮廓数据、字宽、字距和垂直度量。分集保留全部布局特性和原字符映射，两个集合的并集与原 Latin 字体一致。许可证保存在 `public/fonts/`。
+core 和 supplement 从固定字重的 Nunito Latin 经 ttfautohint 1.8.4.16-eb64（ttfautohint-py 0.6.1）处理，再用 fontTools 分集。处理使用 `--increase-x-height=0 --stem-width-mode=sss`，将横向笔画厚度及字形对齐区域尽可能对齐整数像素，保留抗锯齿、原有轮廓数据、字宽、字距和垂直度量。core 保留字距、连字与本地化字形（`layout_features=['kern', 'liga', 'locl']`），supplement 保留全部布局特性；两者均保留像素对齐指令和原字符映射，两个集合的字符并集与原 Latin 字体一致。core 中的普通 `1/2` 等字符仍可直接显示；排版不使用 OpenType 自动分数格式。许可证保存在 `public/fonts/`。
 
 保留 `font-display: block` 和 `font-synthesis: none`。临时后备使用本机 Arial，分别校准普通文字、紧凑标签和数字，通过 size-adjust 与字体度量覆盖减少加载时的换行和位置变化；不增加后备字体网络请求，加载完成后统一使用 Nunito。latin-ext 和 Noto Sans SC 后备按字符需要加载。主内容、侧栏及条目文字区域保持不透明白色背景，不对正文使用 transform、图层提升或透明度动画。404 返回箭头使用现有 SVG 图标，避免为单个箭头字形加载后备字体。
 
