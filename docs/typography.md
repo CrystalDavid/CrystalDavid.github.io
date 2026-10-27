@@ -6,7 +6,7 @@
 
 全站使用本地 Nunito，仅使用 400 和 700 两档字重。About Me 正文、研究兴趣、学位专业、其他作者、项目类别、资源按钮与 404 辅助文字使用 400；姓名、栏目标题、论文/项目标题、学校、本人署名、时间轴年份、全部导航使用 700。切换当前导航项不改变字重，避免文字宽度变化。
 
-Nunito 使用 400、700 两个固定字重，每档分为常用英文 core、Latin supplement 和 latin-ext WOFF2，合起来保留完整字符覆盖；不使用可变字重或浏览器合成粗体。core 与 supplement 使用强化整数像素对齐指令，同时保留抗锯齿，字形轮廓、字宽、字距及垂直度量不变。预加载两档 core 文件并设置高请求优先级，使用 `font-display: block`，保留字体许可证。core 和 supplement 从 `src/assets/fonts/` 构建为带内容哈希的资源，避免更新后复用旧字体。补充字符、latin-ext 与 Noto Sans SC 仅按需加载；首页与 404 当前文字只下载两份 core，共 26,344 bytes。
+Nunito 使用 400、700 两个固定字重，每档分为常用英文 core、Latin supplement 和 latin-ext WOFF2，合起来保留完整字符覆盖；不使用可变字重或浏览器合成粗体。core 与 supplement 使用强化整数像素对齐指令，保留字形轮廓、字宽、字距及垂直度量；常用显示尺寸在 Windows 上采用自然 ClearType 边缘绘制，减弱纵向平滑，同时保留横向抗锯齿。预加载两档 core 文件并设置高请求优先级，使用 `font-display: block`，保留字体许可证。core 和 supplement 从 `src/assets/fonts/` 构建为带内容哈希的资源，避免更新后复用旧字体。补充字符、latin-ext 与 Noto Sans SC 仅按需加载；首页与 404 当前文字只下载两份 core，共 26,428 bytes。
 
 加载期间用本机 Arial / Arial Bold 占位，通过字体度量校准减少换行和位置变化，不增加字体下载，也不改变最终使用的 Nunito。普通文字、紧凑标签和等宽数字分别校准，避免年份栏加载后改变宽度、挤动校徽或使校名临时换行。
 

@@ -42,6 +42,8 @@ Education 使用时间轴布局，桌面按年份、分隔线、南科大校徽�
 
 core 和 supplement 从固定字重的 Nunito Latin 经 ttfautohint 1.8.4.16-eb64（ttfautohint-py 0.6.1）处理，再用 fontTools 分集。处理使用 `--increase-x-height=0 --stem-width-mode=sss`，将横向笔画厚度及字形对齐区域尽可能对齐整数像素，保留抗锯齿、原有轮廓数据、字宽、字距和垂直度量。core 保留字距、连字与本地化字形（`layout_features=['kern', 'liga', 'locl']`），supplement 保留全部布局特性；两者均保留像素对齐指令和原字符映射，两个集合的字符并集与原 Latin 字体一致。core 中的普通 `1/2` 等字符仍可直接显示；排版不使用 OpenType 自动分数格式。许可证保存在 `public/fonts/`。
 
+core 和 supplement 的 `gasp` 表使用 version 1、`{13: 15, 64: 7, 65535: 15}`：14–64 PPEM 保留 grid fitting、灰度及 ClearType grid fitting，关闭 symmetric smoothing；其余尺寸保留全部四项。PPEM 指字体在设备像素中的显示尺寸，不是新的 CSS 字号。这使 Windows 的 Skia / DirectWrite 在常用尺寸采用 `NATURAL` 而非 `NATURAL_SYMMETRIC` 绘制，保留自然字宽与横向平滑，减少纵向平滑造成的软边。字形轮廓、hint 程序和布局表不变，不通过 CSS transform、文字描边或滚动脚本实现。浏览器和系统决定是否采用这些字体提示；更新后仍需在实际 Edge 窗口核对滚动观感，并检查各像素密度下的字宽、换行和排版。
+
 保留 `font-display: block` 和 `font-synthesis: none`。临时后备使用本机 Arial，分别校准普通文字、紧凑标签和数字，通过 size-adjust 与字体度量覆盖减少加载时的换行和位置变化；不增加后备字体网络请求，加载完成后统一使用 Nunito。latin-ext 和 Noto Sans SC 后备按字符需要加载。主内容、侧栏及条目文字区域保持不透明白色背景，不对正文使用 transform、图层提升或透明度动画。404 返回箭头使用现有 SVG 图标，避免为单个箭头字形加载后备字体。
 
 | 图片 | 用途 |
