@@ -24,6 +24,7 @@
   --line-body: 32px;
   --line-heading: 36px;
   --line-title: 40px;
+  --control-gap: 16px;
   --item-gap: 24px;
   --media-gap: 32px;
   --paragraph-gap: 24px;
@@ -69,10 +70,10 @@ ol { list-style: decimal; padding-left: 32px; }
 .social-icons a { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; color: var(--ink); }
 .social-icons a:hover { color: var(--accent); }
 .section-nav { display: grid; gap: 4px; margin: 32px 0 24px; padding: 0 16px; text-align: left; font-size: var(--text-meta); font-weight: 700; line-height: var(--line-meta); }
-.section-nav--classic .nav-link { display: flex; align-items: center; min-height: 44px; gap: var(--item-gap); padding: 6px 0 6px 12px; border-left: 2px solid transparent; color: var(--body); }
+.section-nav--plain .nav-link, .section-nav--classic .nav-link { display: flex; align-items: center; min-height: 44px; gap: var(--item-gap); padding: 6px 0 6px 12px; border-left: 2px solid transparent; color: var(--body); }
 .nav-number { flex-shrink: 0; font-variant-numeric: tabular-nums; }
-.section-nav--classic .nav-link[aria-current='location'] { border-color: var(--accent); color: var(--accent); font-weight: 700; }
-.section-nav--buttons { gap: 8px var(--item-gap); }
+.section-nav--plain .nav-link[aria-current='location'], .section-nav--classic .nav-link[aria-current='location'] { border-color: var(--accent); color: var(--accent); font-weight: 700; }
+.section-nav--buttons { gap: 8px var(--control-gap); }
 .section-nav--buttons .nav-link { display: flex; align-items: center; justify-content: center; min-height: 48px; padding: 8px 16px; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); background: var(--paper); font-weight: 700; }
 .section-nav--buttons .nav-link:hover, .section-nav--buttons .nav-link[aria-current='location'] { color: var(--accent); border-color: var(--accent); background: var(--nav-surface); }
 .main-content { width: 648px; min-width: 0; padding-top: 64px; padding-bottom: 64px; }
@@ -113,8 +114,8 @@ ol { list-style: decimal; padding-left: 32px; }
 .publication-authors strong { color: var(--ink); }
 .project-type { font-size: var(--text-meta); line-height: var(--line-meta); }
 /* Balance visible text gaps with the button edge, accounting for font leading. */
-.publication-links { display: flex; flex-wrap: wrap; gap: var(--item-gap); margin-top: 16px; }
-.publication-links a { display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--button-border); color: var(--ink); font-size: var(--text-button); line-height: var(--line-compact); padding: 1px 10px; border-radius: 14px; }
+.publication-links { display: flex; flex-wrap: wrap; gap: var(--control-gap); margin-top: 16px; }
+.publication-links a { display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--button-border); color: var(--ink); font-size: var(--text-button); line-height: var(--line-compact); padding: 0 8px; border-radius: 13px; }
 .publication-links a:hover { color: var(--accent); border-color: var(--accent); }
 .source-link { display: block; width: fit-content; font-size: var(--text-meta); line-height: var(--line-meta); }
 .not-found { padding-top: 32px; }
@@ -130,8 +131,8 @@ ol { list-style: decimal; padding-left: 32px; }
   .sidebar { position: static; width: auto; max-height: none; overflow: visible; padding-top: 48px; padding-bottom: 32px; }
   .profile-avatar { width: 128px; height: 128px; padding: 12px; margin-bottom: 20px; }
   .section-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px var(--item-gap); margin: 32px 0 0; padding: 0; }
-  .section-nav--classic .nav-link { border-left: 0; border-bottom: 2px solid transparent; padding: 6px 0; }
-  .section-nav--buttons { gap: 8px var(--item-gap); }
+  .section-nav--plain .nav-link, .section-nav--classic .nav-link { border-left: 0; border-bottom: 2px solid transparent; padding: 6px 0; }
+  .section-nav--buttons { gap: 8px var(--control-gap); }
   .nav-number { display: none; }
   .main-content { width: auto; padding-top: 32px; border-top: 1px solid var(--line); }
   .publication-authors { max-width: 100%; }

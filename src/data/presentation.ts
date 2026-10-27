@@ -1,5 +1,5 @@
 export type EducationVariant = 'timeline' | 'classic';
-export type NavigationVariant = 'buttons' | 'classic';
+export type NavigationVariant = 'plain' | 'buttons' | 'classic';
 export type HomeAlignment = 'avatar' | 'classic';
 
 // Select each option independently; classic layouts and alignment remain available.
@@ -9,6 +9,6 @@ export const presentation: {
   homeAlignment: HomeAlignment;
 } = {
   education: 'timeline',
-  navigation: 'classic',
+  navigation: 'plain',
   homeAlignment: 'avatar',
 };

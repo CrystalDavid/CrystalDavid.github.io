@@ -25,7 +25,7 @@
 
 桌面为左侧 sticky 个人资料和导航、右侧原生滚动内容；小屏幕导航在个人信息下方自然换行。导航顺序与正文一致，使用 `#about`、`#education`、`#interests`、`#publications`、`#projects`。404 中的导航链接指向首页对应位置。
 
-Education 使用时间轴布局，桌面按年份、分隔线、南科大校徽、学校及学位专业排列。学校全称 Southern University of Science and Technology 与完整学位专业 Bachelor’s degree in Data Science and Big Data Technology 均直接显示。学位名称始终保持单行，桌面可向右侧留白延伸，窄屏只在学位行内横向滚动；手机将年份独立放在上方。侧栏使用经典编号链接导航。`src/data/presentation.ts` 可独立选择 Education 的 `timeline` / `classic`、导航的 `classic` / `buttons` 和首页顶部对齐的 `avatar` / `classic`。默认首页标题的可见字形上沿与头像图片上沿对齐；将 `homeAlignment` 设为 `classic` 可单独恢复原来的顶部位置，不影响其他样式。所有选择在构建时完成，无运行时切换依赖。样式细节及切换方法见 [视觉规范](typography.md)。
+Education 使用时间轴布局，桌面按年份、分隔线、南科大校徽、学校及学位专业排列。学校全称 Southern University of Science and Technology 与完整学位专业 Bachelor’s degree in Data Science and Big Data Technology 均直接显示。学位名称始终保持单行，桌面可向右侧留白延伸，窄屏只在学位行内横向滚动；手机将年份独立放在上方。侧栏使用无序号链接导航，所有标签左对齐。`src/data/presentation.ts` 可独立选择 Education 的 `timeline` / `classic`、导航的 `plain` / `classic` / `buttons` 和首页顶部对齐的 `avatar` / `classic`；导航选用 `classic` 可恢复编号样式。默认首页标题的可见字形上沿与头像图片上沿对齐；将 `homeAlignment` 设为 `classic` 可单独恢复原来的顶部位置，不影响其他样式。所有选择在构建时完成，无运行时切换依赖。样式细节及切换方法见 [视觉规范](typography.md)。
 
 论文只展示标题、作者、配图及可用外链；项目展示单张配图、名称、类别和 Code/Demo 链接。所有论文及项目标题均为无链接的蓝黑色文字；ProME 通过 arXiv 按钮访问外部预印本页，项目图片及 Code 按钮指向 GitHub。About Me 中的学校名称为普通正文，不带链接。侧栏导航保持加粗，About Me 正文和研究兴趣使用普通字重。作者名单在自身区域横向滚动。
 
