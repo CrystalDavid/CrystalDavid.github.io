@@ -15,7 +15,7 @@
 | 论文标题、作者、配图和 arXiv 地址 | `src/data/publications.json` |
 | 左栏与栏目导航 | `src/components/Sidebar.astro` |
 | 教育布局 | `src/components/Education.astro` |
-| 独立选择教育和导航样式 | `src/data/presentation.ts`；任一项设为 `classic` 即可恢复该处原版 |
+| 独立选择教育、导航样式及首页顶部对齐 | `src/data/presentation.ts`；对应选项设为 `classic` 即可恢复该处原版 |
 | 字体、颜色、间距与响应式布局 | `src/styles/global.css` |
 | 页面元数据与 favicon 声明 | `src/layouts/BaseLayout.astro` |
 | 导航当前项与页面切换 | `src/scripts/site.ts` |

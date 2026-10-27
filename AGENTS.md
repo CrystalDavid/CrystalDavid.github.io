@@ -40,6 +40,8 @@ https://crystaldavid.github.io/. The `main` branch publishes through GitHub Page
 - Preserve both Education and navigation variants. Select them independently
   in `src/data/presentation.ts`; retain the classic markup and styles so either
   layout can be restored without reverting unrelated content changes.
+- Preserve the independent `homeAlignment` choice in the same file; `classic`
+  restores the previous desktop homepage position without changing other styles.
 - Use one real interface screenshot for PPT-Agent and the documented workflow
   figure for Evidence Tracker.
 - Keep author lists on one line in the verified order, with the personal name
