@@ -3,7 +3,6 @@ import type { ImageMetadata } from 'astro';
 
 export type Publication = {
   slug: string;
-  name: string;
   title: string;
   coverImage: string;
   coverAlt: string;

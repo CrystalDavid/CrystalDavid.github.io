@@ -19,7 +19,7 @@ import Thumbnail from '../components/Thumbnail.astro';
     <h2 id="interests-title">Research Interests</h2>
     <ul class="interest-list" role="list"><li><span>Large Language Models and AI Agents</span></li><li><span>Agent Workflows and Tool Use</span></li><li><span>Group-Robust Learning</span></li></ul>
   </section>
-  <section id="publications" class="home-section publications" data-section aria-labelledby="publications-title" tabindex="-1">
+  <section id="publications" class="home-section" data-section aria-labelledby="publications-title" tabindex="-1">
     <h2 id="publications-title">Publications</h2>
     {publications.map(publication => <article class="publication-row" id={`publication-${publication.slug}`}>
       <div class="publication-image"><Thumbnail src={publication.cover} alt={publication.coverAlt} /></div>
@@ -30,11 +30,14 @@ import Thumbnail from '../components/Thumbnail.astro';
       </div>
     </article>)}
   </section>
-  <section id="projects" class="home-section publications" data-section aria-labelledby="projects-title" tabindex="-1">
+  <section id="projects" class="home-section" data-section aria-labelledby="projects-title" tabindex="-1">
     <h2 id="projects-title">Projects</h2>
     {projects.map(project => <article class="publication-row" id={`project-${project.slug}`}>
-      <a class="publication-image project-image" href={project.github} target="_blank" rel="noopener noreferrer" aria-label={`${project.name} on GitHub`}><Thumbnail src={project.image} alt={project.alt.en} /></a>
-      <div class="publication-copy"><h3>{project.name}</h3><p class="project-type">{project.type.en}</p><div class="publication-links"><a href={project.github} target="_blank" rel="noopener noreferrer">Code</a>{project.demo && <a href={project.demo} target="_blank" rel="noopener noreferrer">Demo</a>}</div></div>
+      <a class="publication-image project-image" href={project.github} target="_blank" rel="noopener noreferrer" aria-label={`${project.name} on GitHub`}><Thumbnail src={project.image} alt={project.alt} /></a>
+      <div class="publication-copy"><h3>{project.name}</h3><p class="project-type">{project.type}</p><div class="publication-links"><a href={project.github} target="_blank" rel="noopener noreferrer">Code</a>{project.demo && <a href={project.demo} target="_blank" rel="noopener noreferrer">Demo</a>}</div></div>
     </article>)}
   </section>
+  <script>
+    import '../scripts/site';
+  </script>
 </BaseLayout>

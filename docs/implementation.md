@@ -12,7 +12,7 @@
 | `src/components/Sidebar.astro` | 头像、姓名、Email/GitHub 图标与栏目导航 |
 | `src/components/Education.astro` | 教育时间轴 |
 | `src/components/Thumbnail.astro` | 响应式缩略图与 SVG 展示 |
-| `src/assets/` | 论文与 PPT-Agent 原始图片、构建时加内容哈希的标准 Nunito 字体 |
+| `src/assets/` | 头像和论文／PPT-Agent 原始图片、无损 WebP 校徽及标准 Nunito 字体 |
 | `src/components/Authors.astro` | 作者顺序与本人姓名强调 |
 | `src/data/site.ts` | 个人信息、教育经历、导航和项目资料 |
 | `src/data/publications.json` | 论文标题、署名、配图和 arXiv 地址 |
@@ -20,7 +20,7 @@
 | `src/scripts/site.ts` | 根据栏目位置更新导航当前项 |
 | `public/` | 字体许可证、图片、图标、分享图和 robots |
 
-构建仅生成首页和 404 两个 HTML 页面，站点地图仅收录首页。小体积公共样式在构建时内联到 HTML，避免首次渲染等待额外的样式表请求；字体与图片仍使用独立缓存资源。数值设计规则统一维护在 [视觉规范](typography.md)。
+构建仅生成首页和 404 两个 HTML 页面，站点地图仅收录首页。数据仅保留当前英文内容。UnoCSS 按需生成 preflight，保留基础 reset；小体积公共样式在构建时内联到 HTML，避免首次渲染等待额外的样式表请求。字体与图片使用独立缓存资源。数值设计规则统一维护在 [视觉规范](typography.md)。
 
 ## 页面与交互
 
@@ -34,7 +34,7 @@ Education 使用时间轴布局，桌面按年份、分隔线、南科大校徽�
 
 在支持 overflow-clip-margin 的浏览器中，导航使用布局与绘制包含，将当前项更新的独立绘制范围限制在导航内，不对正文提升图层。裁剪留白覆盖键盘焦点轮廓；不支持时保留普通导航绘制，避免裁掉焦点提示。
 
-首页与 404 之间使用普通文档导航，栏目点击直接定位，不添加平滑跳转、整页淡入淡出或惯性滚动。所有页面固定浅色，仅输出英文，并尊重减少动态效果偏好。禁用 JavaScript 时栏目锚点和外链仍正常工作；脚本只负责当前栏目的视觉提示。
+首页与 404 之间使用普通文档导航，栏目点击直接定位，不添加平滑跳转、整页淡入淡出或惯性滚动。所有页面固定浅色，仅输出英文，并尊重减少动态效果偏好。禁用 JavaScript 时栏目锚点和外链仍正常工作；导航脚本仅在首页加载，负责当前栏目的视觉提示。404 不加载 JavaScript，导航直接链接到首页对应栏目。
 
 ## 字体与资源
 
@@ -44,16 +44,16 @@ Education 使用时间轴布局，桌面按年份、分隔线、南科大校徽�
 
 | 图片 | 用途 |
 | --- | --- |
-| `public/media/avatar.png` | CrystalDavid 的 GitHub 头像 |
-| `public/media/sustech-emblem.png` | 南方科技大学官方校徽，用于教育经历 |
+| `src/assets/avatar.png` | CrystalDavid 的 GitHub 头像原图 |
+| `src/assets/sustech-emblem.webp` | 南方科技大学官方校徽的无损 WebP，用于教育经历 |
 | `src/assets/prome-framework.webp` | ProME 两阶段方法框架 |
 | `src/assets/gra-flow-correction.webp` | GRA-Flow 第 10 页图 2 的修正分解 |
 | `src/assets/recast-framework.webp` | RECAST 第 3 页图 1 的方法框架 |
 | `src/assets/ppt-agent-welcome.png` | PPT-Agent 单张真实欢迎界面 |
 | `public/media/evidence-tracker-workflow.svg` | Evidence Tracker 的证据核查与审计流程示意图 |
 
-Evidence Tracker 图示包含失败状态，是流程说明，不是产品截图或实验结果。全部配图完整显示，不叠加标签。论文与 PPT-Agent 图片通过 Astro Image 在构建时生成响应式 WebP；浏览器按显示宽度及像素密度选择版本，外框尺寸固定，延迟加载不会改变页面布局。原始素材保留在源码中。页面共享透明蓝色闪电 SVG、PNG 和 ICO；社交分享图为 `public/social.png`。无第三方字体 CDN、追踪器、登录或运行时后端。
+Evidence Tracker 图示包含失败状态，是流程说明，不是产品截图或实验结果。全部配图完整显示，不叠加标签。论文与 PPT-Agent 图片通过 Astro Image 在构建时生成响应式 WebP；浏览器按显示宽度及像素密度选择版本，外框尺寸固定，延迟加载不会改变页面布局。头像同样生成响应式 WebP，设置固定尺寸并高优先级加载；头像和缩略图的原始素材保留在源码中。输出宽度与质量参数统一记录在 [视觉规范](typography.md)。页面共享透明蓝色闪电 SVG、PNG 和 ICO；社交分享图为 `public/social.png`。无第三方字体 CDN、追踪器、登录或运行时后端。
 
-南科大校徽来自[官网学校标识页](https://www.sustech.edu.cn/zh/school_logo.html)的[原始 PNG](https://www.sustech.edu.cn/uploads/logo1.png)，保留原始文件、色彩和比例，仅在本地静态托管并按布局尺寸显示，不重绘或改色。
+南科大校徽来自[官网学校标识页](https://www.sustech.edu.cn/zh/school_logo.html)的[原始 PNG](https://www.sustech.edu.cn/uploads/logo1.png)。源码以无损 WebP 保存，解码像素、色彩和比例与来源一致，不重绘或改色；构建通过导入地址直接输出带内容哈希的文件，不再次编码。按布局尺寸等比显示。
 
 本地查看、构建和测试命令见 [README](../README.md)。

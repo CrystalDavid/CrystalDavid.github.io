@@ -20,8 +20,8 @@ https://crystaldavid.github.io/. The `main` branch publishes through GitHub Page
 
 - Keep the restrained two-column desktop layout, sticky sidebar and native
   scrolling. Use one column on small screens.
-- Render English only, including metadata, alternative text and accessibility
-  labels. Only English fields from bilingual source data render.
+- Keep source data and rendered content in English, including metadata,
+  alternative text and accessibility labels.
 - Keep the white background, blue palette, `color-scheme: only light`
   and light metadata, without theme or language controls.
 - Preserve Nunito throughout the interface, `(Dawei HUANG)`, the
@@ -61,8 +61,13 @@ https://crystaldavid.github.io/. The `main` branch publishes through GitHub Page
 - Astro pages, components, data and scripts live in `src/`; static resources
   live in `public/`. Keep UnoCSS, native document navigation and direct anchor
   jumps, with boundary-based section highlighting.
-- Keep original thumbnail sources in `src/assets/`; generate responsive images
-  during the build. Preserve figure contents and verify their displayed quality.
+  Generate UnoCSS preflight on demand while retaining the base reset. Load the
+  navigation script on the homepage only; keep the 404 page free of JavaScript.
+- Keep the avatar and original thumbnail sources in `src/assets/`; generate
+  responsive WebP images during the build. Preserve figure contents and verify
+  their displayed quality. Store the school emblem as lossless WebP with the
+  original decoded pixels, colors and proportions, and serve its content-hashed
+  resource directly without re-encoding.
 - Keep the fixed-weight Nunito fonts self-hosted; preserve their files, loading
   strategy and licenses.
   Use unmodified upstream font files and standard browser rendering. Do not add

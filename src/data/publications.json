@@ -1,7 +1,6 @@
 [
   {
     "slug": "prome-group-robust-learning",
-    "name": "ProME",
     "authors": [
       "Qianqian Wang",
       "Yunshan Li",
@@ -16,7 +15,6 @@
   },
   {
     "slug": "gra-flow-image-restoration",
-    "name": "GRA-Flow",
     "authors": [
       "Qianqian Wang",
       "Dawei Huang",
@@ -31,7 +29,6 @@
   },
   {
     "slug": "recast-image-restoration",
-    "name": "RECAST",
     "authors": [
       "Qianqian Wang",
       "Wenwu Gong",

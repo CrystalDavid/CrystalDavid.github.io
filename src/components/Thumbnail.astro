@@ -8,7 +8,7 @@ const { src, alt } = Astro.props;
 {typeof src === 'string' ? (
   <img src={src} alt={alt} width="900" height="600" loading="lazy" decoding="async" />
 ) : (
-  <Image src={src} alt={alt} width={480} widths={[240, 480, 720]}
+  <Image src={src} alt={alt} width={480} widths={[192, 240, 384, 480, 576, 720]}
     sizes="(max-width: 520px) 240px, 192px" format="webp" quality={95}
     loading="lazy" decoding="async" />
 )}

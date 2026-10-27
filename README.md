@@ -18,8 +18,8 @@
 | 字体、颜色、间距与响应式布局 | `src/styles/global.css` |
 | 页面元数据与 favicon 声明 | `src/layouts/BaseLayout.astro` |
 | 根据栏目位置更新导航当前项 | `src/scripts/site.ts` |
-| 原始缩略图与常用字体 | `src/assets/`，构建时生成响应式图片和带内容哈希的字体资源 |
-| 头像、校徽、SVG、许可证与图标 | `public/` |
+| 头像、校徽、原始缩略图与字体 | `src/assets/`，构建时生成响应式图片和带内容哈希的资源 |
+| SVG、许可证、分享图与图标 | `public/` |
 
 首页依次展示 About Me、Education、Research Interests、Publications 和 Projects。构建仅生成首页与 404，站点地图收录首页。论文保留标题、作者、配图及已有 arXiv 外链，项目提供 Code/Demo。公开内容及资料使用边界见 [研究资料来源](docs/research-sources.md)。
 
@@ -48,6 +48,6 @@ npm run dev
 
 ## 技术与参考
 
-使用 Astro 静态生成、UnoCSS、浏览器原生导航和本地字体。依赖版本以 `package.json` 与 `package-lock.json` 为准。
+使用 Astro 静态生成、UnoCSS、浏览器原生导航和本地字体。UnoCSS 按需生成 preflight 并保留基础 reset；仅首页加载导航高亮脚本，404 不加载 JavaScript。头像和缩略图使用响应式 WebP，校徽使用保留原始像素的无损 WebP。依赖版本以 `package.json` 与 `package-lock.json` 为准。
 
 布局参考 [Weihuang Wen 的主页](https://markwwen.github.io/)；技术参考 [Kyaw 的网站](https://kyswtn.com/)及其[源代码](https://github.com/kyswtn/kyswtn.com)。
