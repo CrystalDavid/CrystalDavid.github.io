@@ -24,6 +24,8 @@
   --line-body: 32px;
   --line-heading: 36px;
   --line-title: 40px;
+  --item-gap: 24px;
+  --media-gap: 32px;
   --paragraph-gap: 24px;
   --heading-content-gap: 24px;
   --section-gap: 56px;
@@ -62,14 +64,15 @@ ol { list-style: decimal; padding-left: 32px; }
 .profile-name { font-size: var(--text-title); font-weight: 700; line-height: var(--line-title); margin: 0; }
 .profile-name a { color: var(--ink); }
 .profile-handle { display: block; font-size: var(--text-subheading); line-height: var(--line-meta); margin-top: 4px; white-space: nowrap; }
-.social-icons { display: flex; justify-content: center; gap: 8px; margin: 32px 0 0; }
+/* Each icon has 8px of space inside its hit area on either side. */
+.social-icons { display: flex; justify-content: center; gap: calc(var(--item-gap) - 16px); margin: 32px 0 0; }
 .social-icons a { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; color: var(--ink); }
 .social-icons a:hover { color: var(--accent); }
 .section-nav { display: grid; gap: 4px; margin: 32px 0 24px; padding: 0 16px; text-align: left; font-size: var(--text-meta); font-weight: 700; line-height: var(--line-meta); }
-.section-nav--classic .nav-link { display: flex; align-items: center; min-height: 44px; gap: 12px; padding: 6px 0 6px 12px; border-left: 2px solid transparent; color: var(--body); }
-.nav-number { font-variant-numeric: tabular-nums; }
+.section-nav--classic .nav-link { display: flex; align-items: center; min-height: 44px; gap: var(--item-gap); padding: 6px 0 6px 12px; border-left: 2px solid transparent; color: var(--body); }
+.nav-number { flex-shrink: 0; font-variant-numeric: tabular-nums; }
 .section-nav--classic .nav-link[aria-current='location'] { border-color: var(--accent); color: var(--accent); font-weight: 700; }
-.section-nav--buttons { gap: 8px; }
+.section-nav--buttons { gap: 8px var(--item-gap); }
 .section-nav--buttons .nav-link { display: flex; align-items: center; justify-content: center; min-height: 48px; padding: 8px 16px; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); background: var(--paper); font-weight: 700; }
 .section-nav--buttons .nav-link:hover, .section-nav--buttons .nav-link[aria-current='location'] { color: var(--accent); border-color: var(--accent); background: var(--nav-surface); }
 .main-content { width: 648px; min-width: 0; padding-top: 64px; padding-bottom: 64px; }
@@ -79,13 +82,13 @@ ol { list-style: decimal; padding-left: 32px; }
 .home-section.publications + .home-section { margin-top: var(--figure-section-gap); }
 .home-section > :last-child { margin-bottom: 0; }
 .home-section > h2 { margin-top: 0; margin-bottom: var(--heading-content-gap); }
-.education-entry { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; column-gap: 24px; row-gap: 8px; }
+.education-entry { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; column-gap: var(--item-gap); row-gap: 8px; }
 .education-entry p { margin: 0; }
 .education-school { color: var(--ink); font-size: var(--text-body); }
 .education-period { font-size: var(--text-meta); line-height: var(--line-meta); white-space: nowrap; }
 /* Keep the degree on one line, using the desktop margin or local horizontal scrolling. */
 .education-degree { grid-column: 1 / -1; font-size: var(--text-meta); line-height: var(--line-meta); white-space: nowrap; width: max-content; max-width: calc(100% + max(0px, (100vw - 960px) / 2 - 24px)); overflow-x: auto; scrollbar-width: thin; }
-.education-timeline { display: grid; grid-template-columns: max-content 2px 88px minmax(0, 1fr); align-items: center; gap: 24px; min-height: 80px; }
+.education-timeline { display: grid; grid-template-columns: max-content 2px 88px minmax(0, 1fr); align-items: center; gap: var(--item-gap); min-height: 80px; }
 .education-timeline p { margin: 0; }
 .education-years { color: var(--ink); font-size: var(--text-meta); font-weight: 700; line-height: var(--line-meta); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .education-divider { align-self: stretch; background: var(--line); border-radius: 999px; }
@@ -93,7 +96,10 @@ ol { list-style: decimal; padding-left: 32px; }
 .education-details { min-width: 0; }
 .education-timeline .education-degree { margin-top: 8px; }
 .about-copy, .interest-list { font-weight: 400; }
-.publication-row { display: grid; grid-template-columns: 192px minmax(0, 1fr); align-items: center; gap: 32px; margin: 0 0 48px; scroll-margin-top: 64px; }
+.interest-list { list-style: none; padding-left: 20px; }
+.interest-list li { display: grid; grid-template-columns: 6px minmax(0, 1fr); column-gap: var(--item-gap); }
+.interest-list li::before { content: ''; width: 6px; height: 6px; margin-top: calc((var(--line-body) - 6px) / 2); border-radius: 50%; background: currentColor; }
+.publication-row { display: grid; grid-template-columns: 192px minmax(0, 1fr); align-items: center; gap: var(--media-gap); margin: 0 0 48px; scroll-margin-top: 64px; }
 /* Show the complete figures and screenshots without image overlays or cropping. */
 .publication-image { position: relative; display: block; margin: 0; background: white; border-radius: 8px; box-shadow: 3px 3px 6px var(--image-shadow); }
 .publication-image img { display: block; width: 192px; height: 128px; padding: 8px; border-radius: 8px; object-fit: contain; }
@@ -107,8 +113,8 @@ ol { list-style: decimal; padding-left: 32px; }
 .publication-authors strong { color: var(--ink); }
 .project-type { font-size: var(--text-meta); line-height: var(--line-meta); }
 /* Balance visible text gaps with the button edge, accounting for font leading. */
-.publication-links { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; }
-.publication-links a { display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--button-border); color: var(--ink); font-size: var(--text-button); line-height: var(--line-compact); padding: 3px 12px; border-radius: 16px; }
+.publication-links { display: flex; flex-wrap: wrap; gap: var(--item-gap); margin-top: 16px; }
+.publication-links a { display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--button-border); color: var(--ink); font-size: var(--text-button); line-height: var(--line-compact); padding: 1px 10px; border-radius: 14px; }
 .publication-links a:hover { color: var(--accent); border-color: var(--accent); }
 .source-link { display: block; width: fit-content; font-size: var(--text-meta); line-height: var(--line-meta); }
 .not-found { padding-top: 32px; }
@@ -123,9 +129,9 @@ ol { list-style: decimal; padding-left: 32px; }
   .site-shell { width: auto; max-width: 720px; display: block; margin-inline: auto; padding: 0 24px; }
   .sidebar { position: static; width: auto; max-height: none; overflow: visible; padding-top: 48px; padding-bottom: 32px; }
   .profile-avatar { width: 128px; height: 128px; padding: 12px; margin-bottom: 20px; }
-  .section-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 24px; margin: 32px 0 0; padding: 0; }
+  .section-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px var(--item-gap); margin: 32px 0 0; padding: 0; }
   .section-nav--classic .nav-link { border-left: 0; border-bottom: 2px solid transparent; padding: 6px 0; }
-  .section-nav--buttons { gap: 8px; }
+  .section-nav--buttons { gap: 8px var(--item-gap); }
   .nav-number { display: none; }
   .main-content { width: auto; padding-top: 32px; border-top: 1px solid var(--line); }
   .publication-authors { max-width: 100%; }
@@ -139,10 +145,10 @@ ol { list-style: decimal; padding-left: 32px; }
   .profile-avatar img { width: 88px; height: 88px; }
   .education-entry { grid-template-columns: minmax(0, 1fr); }
   .education-period { order: 1; }
-  .education-timeline { grid-template-columns: 2px 64px minmax(0, 1fr); gap: 16px; }
+  .education-timeline { grid-template-columns: 2px 64px minmax(0, 1fr); }
   .education-years { grid-column: 1 / -1; }
   .education-emblem { width: 64px; height: 64px; }
-  .publication-row { grid-template-columns: 1fr; gap: 24px; margin: 0 0 40px; }
+  .publication-row { grid-template-columns: 1fr; margin: 0 0 40px; }
   .publication-image { width: 240px; margin: 0 auto; }
   .publication-image img { width: 240px; height: 160px; }
 }
