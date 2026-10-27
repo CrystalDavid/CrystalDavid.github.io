@@ -8,5 +8,5 @@ export default defineConfig({
   trailingSlash: 'always',
   devToolbar: { enabled: false },
   integrations: [UnoCSS({ injectReset: true }), sitemap()],
-  build: { inlineStylesheets: 'auto' },
+  build: { inlineStylesheets: 'always' },
 });

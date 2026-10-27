@@ -20,7 +20,7 @@
 | `src/scripts/site.ts` | 根据栏目位置更新导航当前项 |
 | `public/` | 按需加载的扩展字体与许可证、图片、图标、分享图和 robots |
 
-构建仅生成首页和 404 两个 HTML 页面，站点地图仅收录首页。数值设计规则统一维护在 [视觉规范](typography.md)。
+构建仅生成首页和 404 两个 HTML 页面，站点地图仅收录首页。小体积公共样式在构建时内联到 HTML，避免首次渲染等待额外的样式表请求；字体与图片仍使用独立缓存资源。数值设计规则统一维护在 [视觉规范](typography.md)。
 
 ## 页面与交互
 
@@ -32,13 +32,15 @@ Education 使用时间轴布局，桌面按年份、分隔线、南科大校徽�
 
 导航通过浏览器原生 hash 直接定位章节。IntersectionObserver 观察标题是否越过顶部定位线，以及最后一个项目是否到达页尾留白线，仅在越过这些边界时读取位置并更新 aria-current；到达页底时高亮 Projects，离开页底时恢复栏目位置判断。requestAnimationFrame 合并同一帧中的观察回调。ResizeObserver 在布局尺寸改变后更新观察范围，字体就绪、窗口变化和历史页面恢复时也会校准。没有逐帧滚动监听、滚轮接管或持续运行的动画循环。直接链接、键盘操作和浏览器前进后退均保留原生行为。
 
+在支持 overflow-clip-margin 的浏览器中，导航使用布局与绘制包含，将当前项更新的独立绘制范围限制在导航内，不对正文提升图层。裁剪留白覆盖键盘焦点轮廓；不支持时保留普通导航绘制，避免裁掉焦点提示。
+
 首页与 404 之间使用普通文档导航，栏目点击直接定位，不添加平滑跳转、整页淡入淡出或惯性滚动。所有页面固定浅色，仅输出英文，并尊重减少动态效果偏好。禁用 JavaScript 时栏目锚点和外链仍正常工作；脚本只负责当前栏目的视觉提示。
 
 ## 字体与资源
 
 本地 Nunito 使用固定字重，分为常用英文 core、Latin supplement 和 latin-ext。两份 core 覆盖完整 ASCII、常用英文标点及原有箭头/符号，其余字符保存在补充字体中，通过 unicode-range 按需选择；不能按当前文案任意删除将来可能使用的字符。页面高优先级预加载实际使用的 core 字体，字体和样式使用相同的构建资源地址；内容哈希使字体更新能正确失效缓存。补充字体不预加载。使用的字重及加载规则见 [视觉规范](typography.md)。
 
-core 和 supplement 从固定字重的 Nunito Latin 经 ttfautohint 1.8.4.16-eb64（ttfautohint-py 0.6.1）处理，再用 fontTools 分集。处理使用 `--increase-x-height=0 --stem-width-mode=qsq`，保留原有字形轮廓、字宽、字距和垂直度量，仅补充像素对齐指令。分集保留全部布局特性和原字符映射，两个集合的并集与原 Latin 字体一致。许可证保存在 `public/fonts/`。
+core 和 supplement 从固定字重的 Nunito Latin 经 ttfautohint 1.8.4.16-eb64（ttfautohint-py 0.6.1）处理，再用 fontTools 分集。处理使用 `--increase-x-height=0 --stem-width-mode=sss`，将横向笔画厚度及字形对齐区域尽可能对齐整数像素，保留抗锯齿、原有轮廓数据、字宽、字距和垂直度量。分集保留全部布局特性和原字符映射，两个集合的并集与原 Latin 字体一致。许可证保存在 `public/fonts/`。
 
 保留 `font-display: block` 和 `font-synthesis: none`。临时后备使用本机 Arial，分别校准普通文字、紧凑标签和数字，通过 size-adjust 与字体度量覆盖减少加载时的换行和位置变化；不增加后备字体网络请求，加载完成后统一使用 Nunito。latin-ext 和 Noto Sans SC 后备按字符需要加载。主内容、侧栏及条目文字区域保持不透明白色背景，不对正文使用 transform、图层提升或透明度动画。404 返回箭头使用现有 SVG 图标，避免为单个箭头字形加载后备字体。
 

@@ -80,6 +80,10 @@ ol { list-style: decimal; padding-left: 32px; }
 .social-icons a { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; color: var(--ink); }
 .social-icons a:hover { color: var(--accent); }
 .section-nav { display: grid; gap: 4px; margin: 32px 0 24px; padding: 0 16px; text-align: left; font-size: var(--text-meta); font-weight: 700; line-height: var(--line-meta); }
+/* Bound active-link painting without clipping the keyboard focus outline. */
+@supports (overflow-clip-margin: 6px) {
+  .section-nav { contain: layout paint; overflow-clip-margin: 6px; }
+}
 .section-nav .nav-link { display: flex; align-items: center; min-height: 44px; gap: var(--control-gap); padding: 6px 0 6px var(--control-gap); border-left: 2px solid transparent; color: var(--body); }
 .education-school strong, .section-nav { font-family: 'Nunito', 'Nunito UI Fallback', var(--font-interface); }
 .nav-number, .education-years { font-family: 'Nunito', 'Nunito Numeric Fallback', var(--font-interface); }
